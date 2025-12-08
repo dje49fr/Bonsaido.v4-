@@ -17,7 +17,7 @@
         * { box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: var(--text); -webkit-tap-highlight-color: transparent; font-size: 16px; }
         
-        /* HEADER: Titre Vertical et Centré */
+        /* HEADER: Titre Horizontal et Alignement Gauche */
         .app-header { 
             background: var(--primary); 
             color: var(--card-bg); 
@@ -32,37 +32,29 @@
             transition: height 0.3s;
         }
 
-        /* Conteneur de l'en-tête pour la liste (centrage simple du bloc vertical) */
+        /* Alignement Gauche du Titre */
         .header-top { 
             display: flex; 
-            justify-content: center; /* Centre le bloc vertical horizontalement */
+            justify-content: space-between; /* Titre à gauche, compteur à droite */
             width: 100%; 
             align-items: center; 
-            position: relative; /* Base pour le compteur absolu */
+            position: relative;
         }
         
-        /* Titre Vertical (Mes Bonsaïs) */
-        .header-title-vertical { 
-            display: block; 
-            margin: 0 auto; 
-            font-size: 2.5rem; /* Grande taille */
-            writing-mode: vertical-rl; /* Texte vertical */
-            text-orientation: mixed; 
-            white-space: nowrap;
-            padding: 10px 0;
-            line-height: 1.1;
+        /* Titre (2x plus grand, horizontal, aligné à gauche) */
+        .header-title { 
+            display: flex; 
+            align-items: center; 
+            font-size: 2rem; 
         }
         
-        /* Compteur d'arbres (position absolue pour éviter d'être déplacé par le titre vertical) */
+        /* Compteur d'arbres */
         .bonsai-count { 
-            position: absolute; 
-            right: 15px; /* Décalage sur le bord droit */
-            top: 50%; /* Centrage vertical */
-            transform: translateY(-50%);
-            font-size: 0.8rem; 
+            font-size: 0.75rem; 
             background: rgba(255,255,255,0.25); 
-            padding: 4px 8px; 
+            padding: 2px 8px; 
             border-radius: 10px; 
+            /* Reste à droite grâce à justify-content: space-between */
         }
 
         /* Barre de tri */
@@ -151,11 +143,8 @@
     <div id="screen-list" class="screen active">
         <div class="app-header">
             <div class="header-top">
-                <div style="width: 30px;"></div> 
                 
-                <div class="centered-title-container">
-                    <span class="header-title-vertical">Mes Bonsaïs</span>
-                </div>
+                <span class="header-title">Mes Bonsaïs</span>
 
                 <span id="bonsai-count" class="bonsai-count">0</span>
             </div>
@@ -256,7 +245,13 @@
             <div class="card">
                 <h3>Derniers Travaux</h3>
                 <div style="display:flex; gap:10px;"><div style="flex:1"><label>Rempotage</label><input type="date" id="edit-last-pot"></div><div style="flex:1"><label>Taille</label><input type="date" id="edit-last-cut"></div></div>
-                <div style="display:flex; gap:10px; margin-top:10px;"><div style="flex:1"><label>Engrais</label><input type="date" id="edit-last-fertil"></div><div style="flex:1"><label>Ligature</label><input type="date" id="edit-last-wire"></div></div>
+                <div style="display:flex; gap:10px; margin-top:10px;"><div style="flex:1"><label>Effeuillage</label><input type="date" id="edit-last-defo"></div><div style="flex:1"><label>Engrais</label><input type="date" id="edit-last-fertil"></div></div>
+                <div style="display:flex; gap:10px; margin-top:10px;"><div style="flex:1"><label>Ligature</label><input type="date" id="edit-last-wire"></div></div>
+            </div>
+
+            <div class="card">
+                <h3>Observations</h3>
+                <textarea id="edit-notes" rows="3" placeholder="Notes générales, taille, maladies..."></textarea>
             </div>
 
             <button class="btn-action bg-blue" onclick="saveBonsai()">💾 Enregistrer</button>
@@ -489,7 +484,8 @@
                 list.sort((a,b) => getSpec(a.sid, a.customName).nom.localeCompare(getSpec(b.sid, b.customName).nom));
             } else if (criteria === 'last_work') {
                 const getLastWorkDate = (b) => {
-                    const dates = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire].filter(d => d).map(d => new Date(d));
+                    // Ajout de lastDefo au calcul du dernier travail
+                    const dates = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire, b.lastDefo].filter(d => d).map(d => new Date(d));
                     return dates.length ? Math.max(...dates) : 0;
                 };
                 list.sort((a,b) => getLastWorkDate(b) - getLastWorkDate(a));
@@ -553,6 +549,8 @@
                     document.getElementById('edit-last-cut').value = b.lastCut || "";
                     document.getElementById('edit-last-fertil').value = b.lastFertil || "";
                     document.getElementById('edit-last-wire').value = b.lastWire || "";
+                    document.getElementById('edit-last-defo').value = b.lastDefo || ""; // NOUVEAU: Effeuillage
+                    document.getElementById('edit-notes').value = b.notes || ""; // NOUVEAU: Observations
                     
                     if(b.photo) currentPhotoBase64 = b.photo;
                 }
@@ -578,7 +576,9 @@
                 lastPot: document.getElementById('edit-last-pot').value,
                 lastCut: document.getElementById('edit-last-cut').value,
                 lastFertil: document.getElementById('edit-last-fertil').value,
-                lastWire: document.getElementById('edit-last-wire').value
+                lastWire: document.getElementById('edit-last-wire').value,
+                lastDefo: document.getElementById('edit-last-defo').value, // NOUVEAU: Effeuillage
+                notes: document.getElementById('edit-notes').value // NOUVEAU: Observations
             };
 
             try {
