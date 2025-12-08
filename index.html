@@ -42,11 +42,11 @@
             position: relative;
         }
 
-        /* Titre Central (utilisant transform: translateX pour un centrage parfait) */
+        /* Titre Central (Utilise absolute + transform pour un centrage parfait) */
         .centered-title-container {
             position: absolute; 
             left: 50%;
-            transform: translateX(-50%); /* Centrage horizontal parfait */
+            transform: translateX(-50%); 
             display: flex;
             align-items: center;
         }
@@ -58,7 +58,7 @@
             font-size: 2rem; 
         }
         
-        /* Compteur d'arbres */
+        /* Compteur d'arbres (décalé à droite) */
         .bonsai-count { 
             position: absolute; 
             right: 0;
@@ -73,14 +73,14 @@
         .sort-select { flex: 1; padding: 8px; border-radius: 6px; border: none; font-size: 0.9rem; background: rgba(255,255,255,0.2); color: white; font-weight: 600; }
         .sort-select option { color: #333; background: white; }
         
-        /* NAVIGATION FIXE EN BAS (RESTAURÉE ET AGRANDIE) */
+        /* NAVIGATION FIXE EN BAS (icônes 2x plus grandes) */
         .bottom-nav { 
             position: fixed; 
             bottom: 0; 
             left: 0; 
             right: 0; 
             background: var(--card-bg); 
-            height: 80px; /* Plus grand pour les icônes */
+            height: 80px; 
             display: flex; 
             justify-content: space-around; 
             align-items: center; 
@@ -423,7 +423,7 @@
             "Quercus wislizeni (Chêne de Wislizenus)", "Salix nigra (Saule noir)", "Sophora microphylla (Sophora à petites feuilles)", "Sorbus commixta (Sorbier du Japon)"
         ];
 
-        // Base simplifiée pour l'exemple (à étendre)
+        // Base simplifiée pour l'exemple
         const DB_SPECS = [
             {nom:"Acer", usda:"-15°C", expo:"Mi-Ombre", type:"Caduc", potFreq: 2},
             {nom:"Pinus", usda:"-20°C", expo:"Soleil", type:"Persistant", potFreq: 3},
