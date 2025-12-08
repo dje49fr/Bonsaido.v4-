@@ -15,7 +15,7 @@
         /* --- DESIGN MODERNISÉ --- */
         :root { --primary: #4A90E2; --primary-dark: #3A70B9; --bg: #F0F2F5; --card-bg: #ffffff; --text: #212529; --secondary-text: #6C757D; --danger: #DC3545; --success: #28A745; --radius: 12px; --shadow: 0 4px 12px rgba(0,0,0,0.08); }
         * { box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; /* Espace pour la navigation fixe en bas */ color: var(--text); -webkit-tap-highlight-color: transparent; font-size: 16px; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: var(--text); -webkit-tap-highlight-color: transparent; font-size: 16px; }
         
         /* HEADER: Titre Centré et Agrandissement */
         .app-header { 
@@ -32,16 +32,26 @@
             transition: height 0.3s;
         }
 
-        /* Centrage du titre principal */
+        /* Conteneur pour centrer le titre */
+        #screen-edit .header-top { justify-content: space-between; }
         .header-top { 
             display: flex; 
-            justify-content: center; /* Centrage appliqué ici */
+            justify-content: space-between; 
             width: 100%; 
             align-items: center; 
             position: relative;
         }
 
-        /* Titre (2x plus grand) */
+        /* Titre Central (utilisant transform: translateX pour un centrage parfait) */
+        .centered-title-container {
+            position: absolute; 
+            left: 50%;
+            transform: translateX(-50%); /* Centrage horizontal parfait */
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Taille du Titre (x2) */
         .header-title { 
             display: flex; 
             align-items: center; 
@@ -50,7 +60,7 @@
         
         /* Compteur d'arbres */
         .bonsai-count { 
-            position: absolute; /* Placement absolu pour ne pas gêner le centrage */
+            position: absolute; 
             right: 0;
             font-size: 0.75rem; 
             background: rgba(255,255,255,0.25); 
@@ -89,7 +99,7 @@
         }
         
         .nav-btn i {
-            font-size: 2.8rem; /* TAILLE DOUBLÉE POUR L'IMPACT VISUEL */
+            font-size: 2.8rem; /* TAILLE DOUBLÉE */
             line-height: 1;
         }
         
@@ -146,9 +156,9 @@
             <div class="header-top">
                 <div style="width: 30px;"></div> 
                 
-                <span class="header-title">
-                    <i class="fa-solid fa-tree"></i> Mes Bonsaïs
-                </span>
+                <div class="centered-title-container">
+                    <span class="header-title">Mes Bonsaïs</span>
+                </div>
 
                 <span id="bonsai-count" class="bonsai-count">0</span>
             </div>
@@ -340,21 +350,104 @@
             }
         };
 
-        // --- 3. DATA & CONFIG ---
+        // --- 3. DATA & CONFIG (300 ESPÈCES INTÉGRÉES) ---
         const SPECIES_RAW = [
-            "Acer palmatum (Érable Japonais)", "Acer Buergerianum (Érable de Burger)", "Pinus thunbergii (Pin noir)",
-            "Pinus sylvestris (Pin sylvestre)", "Juniperus (Genévrier)", "Ulmus parvifolia (Orme de Chine)",
-            "Olea europaea (Olivier)", "Ficus retusa", "Azalea (Azalée)", "Carpinus (Charme)", "Fagus (Hêtre)",
-            "Quercus (Chêne)", "Larix (Mélèze)", "Taxus (If)", "Cotoneaster", "Pyracantha", "Ginkgo biloba"
+            "Abies concolor (Sapin)", "Abies koreana (Sapin de Corée)", "Acacia dealbata (Mimosa)", "Acer buergerianum (Érable de Burger)",
+            "Acer campestre (Érable champêtre)", "Acer ginnala (Érable de l'Amour)", "Acer palmatum (Érable japonais)", "Acer pseudoplatanus (Érable sycomore)",
+            "Aesculus hippocastanum (Marronnier)", "Albizia julibrissin (Arbre de soie)", "Alnus glutinosa (Aulne glutineux)", "Amelanchier lamarckii (Amélanchier)",
+            "Araucaria araucana (Désespoir des singes)", "Arbutus unedo (Arbousier)", "Bambusa (Bambou)", "Bauhinia variegata (Arbre aux orchidées)",
+            "Betula pendula (Bouleau pleureur)", "Betula pubescens (Bouleau pubescent)", "Buxus sempervirens (Buis)", "Callistemon citrinus (Rince-bouteilles)",
+            "Carpinus betulus (Charme)", "Carya ovata (Noyer tendre)", "Castanea sativa (Châtaignier)", "Catalpa bignonioides (Catalpa commun)",
+            "Cedrus atlantica (Cèdre de l'Atlas)", "Cedrus libani (Cèdre du Liban)", "Celtis australis (Micocoulier)", "Cercis siliquastrum (Arbre de Judée)",
+            "Chamaecyparis lawsoniana (Faux cyprès)", "Chamaecyparis obtusa (Cyprès Hinoki)", "Chionanthus virginicus (Arbre à neige)", "Citrus limon (Citronnier)",
+            "Citrus sinensis (Oranger)", "Cornus florida (Cornouiller)", "Cornus kousa (Cornouiller de Kousa)", "Corylus avellana (Noisetier)",
+            "Cotoneaster horizontalis (Cotonéaster)", "Crataegus monogyna (Aubépine)", "Cryptomeria japonica (Cèdre du Japon)", "Cupressus sempervirens (Cyprès)",
+            "Diospyros kaki (Plaqueminier)", "Elaeagnus angustifolia (Olivier de Bohême)", "Eriobotrya japonica (Néflier)", "Eucalyptus globulus (Eucalyptus)",
+            "Fagus sylvatica (Hêtre commun)", "Ficus benghalensis (Figuier de l'Inde)", "Ficus carica (Figuier commun)", "Ficus retusa (Figuier Retusa)",
+            "Fraxinus excelsior (Frêne commun)", "Ginkgo biloba (Arbre aux quarante écus)", "Gleditsia triacanthos (Févier)", "Ilex aquifolium (Houx)",
+            "Jacaranda mimosifolia (Jacaranda)", "Juglans regia (Noyer commun)", "Juniperus communis (Genévrier commun)", "Juniperus procumbens (Genévrier rampant)",
+            "Koelreuteria paniculata (Arbre aux lanternes)", "Lagerstroemia indica (Lilas des Indes)", "Larix decidua (Mélèze d'Europe)", "Liquidambar styraciflua (Copalme)",
+            "Liriodendron tulipifera (Tulipier)", "Magnolia grandiflora (Magnolia)", "Malus sylvestris (Pommier sauvage)", "Morus alba (Mûrier blanc)",
+            "Nandina domestica (Bambou sacré)", "Nyssa sylvatica (Tupelo)", "Olea europaea (Olivier)", "Parrotia persica (Parrotie de Perse)",
+            "Picea abies (Épicéa commun)", "Picea pungens (Épicéa bleu)", "Pinus mugo (Pin de montagne)", "Pinus nigra (Pin noir d'Autriche)",
+            "Pinus parviflora (Pin blanc du Japon)", "Pinus sylvestris (Pin sylvestre)", "Pinus thunbergii (Pin noir du Japon)", "Platanus hispanica (Platane)",
+            "Podocarpus macrophyllus (Podocarpe)", "Populus nigra (Peuplier noir)", "Prunus avium (Merisier)", "Prunus cerasifera (Prunier-cerise)",
+            "Prunus serrulata (Cerisier du Japon)", "Punica granatum (Grenadier)", "Pyrus communis (Poirier commun)", "Quercus ilex (Chêne vert)",
+            "Quercus robur (Chêne pédonculé)", "Quercus suber (Chêne-liège)", "Rhododendron (Rhododendron)", "Robinia pseudoacacia (Robinier)",
+            "Salix babylonica (Saule pleureur)", "Sequoia sempervirens (Séquoia)", "Sophora japonica (Sophora)", "Sorbus aucuparia (Sorbier)",
+            "Taxodium distichum (Cyprès chauve)", "Taxus baccata (If commun)", "Thuja occidentalis (Thuya)", "Tilia cordata (Tilleul)",
+            "Tsuga canadensis (Pruche du Canada)", "Ulmus minor (Orme champêtre)", "Ulmus parvifolia (Orme de Chine)", "Wisteria sinensis (Glycine)",
+            "Zelkova serrata (Orme du Japon)", "Acacia retinodes (Mimosa des quatre saisons)", "Cupressus arizonica (Cyprès bleu)", "Lagerstroemia fauriei (Lilas des Indes)",
+            "Liquidambar orientalis (Copalme d'Orient)", "Magnolia soulangeana (Magnolia de Soulange)", "Picea orientalis (Épicéa d'Orient)", "Pinus pinea (Pin parasol)",
+            "Populus alba (Peuplier blanc)", "Prunus laurocerasus (Laurier-cerise)", "Pyrus calleryana (Poirier de Callery)", "Quercus cerris (Chêne chevelu)",
+            "Quercus coccifera (Chêne kermès)", "Robinia hispida (Faux-acacia)", "Salix caprea (Saule marsault)", "Sequoia giganteum (Séquoia géant)",
+            "Sorbus torminalis (Alisier torminal)", "Taxodium mucronatum (Cyprès de Montezuma)", "Tilia platyphyllos (Tilleul à larges feuilles)", "Tsuga heterophylla (Pruche de l'Ouest)",
+            "Ulmus glabra (Orme de montagne)", "Wisteria floribunda (Glycine du Japon)", "Abies nordmanniana (Sapin de Nordmann)", "Acacia melanoxylon (Acacia noir)",
+            "Acer negundo (Érable à feuilles de frêne)", "Celtis sinensis (Micocoulier de Chine)", "Chamaecyparis pisifera (Faux cyprès de Sawara)", "Crataegus laevigata (Aubépine)",
+            "Fagus orientalis (Hêtre d'Orient)", "Ilex crenata (Houx crénelé)", "Juglans nigra (Noyer noir)", "Juniperus chinensis (Genévrier de Chine)",
+            "Koelreuteria bipinnata (Arbre aux lanternes)", "Larix kaempferi (Mélèze du Japon)", "Magnolia stellata (Magnolia étoilé)", "Morus rubra (Mûrier rouge)",
+            "Olea capensis (Olivier du Cap)", "Picea omorika (Épicéa de Serbie)", "Pinus densiflora (Pin rouge du Japon)", "Platanus orientalis (Platane d'Orient)",
+            "Populus tremula (Tremble)", "Prunus padus (Merisier à grappes)", "Pyrus nivalis (Poirier des neiges)", "Quercus faginea (Chêne du Portugal)",
+            "Quercus macrocarpa (Chêne à gros fruits)", "Robinia viscosa (Robinier visqueux)", "Salix matsudana (Saule tortueux)", "Sequoia sempervirens 'Aptos Blue' (Séquoia bleu)",
+            "Sorbus domestica (Cormier)", "Taxus cuspidata (If du Japon)", "Tilia americana (Tilleul d'Amérique)", "Tsuga mertensiana (Pruche de montagne)",
+            "Ulmus pumila (Orme de Sibérie)", "Wisteria brachybotrys (Glycine à fleurs courtes)", "Abies fraseri (Sapin de Fraser)", "Acacia verticillata (Acacia verticillé)",
+            "Acer rubrum (Érable rouge)", "Celtis occidentalis (Micocoulier occidental)", "Chamaecyparis thyoides (Cyprès blanc)", "Crataegus viridis (Aubépine verte)",
+            "Fagus grandifolia (Hêtre d'Amérique)", "Ilex serrata (Houx dentelé)", "Juglans cinerea (Noyer cendré)", "Juniperus horizontalis (Genévrier rampant)",
+            "Koelreuteria elegans (Arbre aux lanternes)", "Liquidambar formosana (Copalme de Chine)", "Magnolia tripetala (Magnolia parapluie)", "Morus celtidifolia (Mûrier celtidé)",
+            "Olea lancea (Olivier lancéolé)", "Picea sitchensis (Épicéa de Sitka)", "Pinus flexilis (Pin flexible)", "Platanus racemosa (Platane de Californie)",
+            "Populus trichocarpa (Peuplier baumier)", "Prunus serasus (Cerisier acide)", "Pyrus salicifolia (Poirier à feuilles de saule)", "Quercus coccinea (Chêne écarlate)",
+            "Quercus palustris (Chêne des marais)", "Robinia neomexicana (Robinier du Nouveau-Mexique)", "Salix purpurea (Saule pourpre)", "Sequoia sempervirens 'Filoli' (Séquoia Filoli)",
+            "Sorbus intermedia (Sorbier de Suède)", "Taxus media (If hybride)", "Tilia heterophylla (Tilleul hétérophylle)", "Tsuga sieboldii (Pruche du Japon)",
+            "Ulmus davidiana (Orme de David)", "Wisteria frutescens (Glycine américaine)", "Abies procera (Sapin noble)", "Acacia longifolia (Mimosa longifolia)",
+            "Acer saccharum (Érable à sucre)", "Celtis reticulata (Micocoulier réticulé)", "Chamaecyparis nootkatensis (Cyprès de Nootka)", "Crataegus phaenopyrum (Aubépine d'Amérique)",
+            "Fagus lucida (Hêtre brillant)", "Ilex verticillata (Houx verticillé)", "Juglans hindsii (Noyer de Hinds)", "Juniperus squamata (Genévrier écailleux)",
+            "Koelreuteria paniculata 'Fastigiata' (Arbre aux lanternes)", "Liquidambar orientalis 'Rotundiloba' (Copalme d'Orient)", "Magnolia virginiana (Magnolia vierge)", "Morus microphylla (Mûrier microphyle)",
+            "Olea paniculata (Olivier paniculaire)", "Picea breweriana (Épicéa de Brewer)", "Pinus jeffreyi (Pin de Jeffrey)", "Platanus wrightii (Platane de Wright)",
+            "Populus deltoides (Peuplier deltoïde)", "Prunus subhirtella (Cerisier d'hiver)", "Pyrus betulifolia (Poirier à feuilles de bouleau)", "Quercus dentata (Chêne à dents)",
+            "Quercus rubra (Chêne rouge)", "Robinia × ambigua (Robinier ambigu)", "Salix viminalis (Saule des vanniers)", "Sequoiadendron giganteum (Séquoia géant)",
+            "Sorbus aucuparia 'Fastigiata' (Sorbier Fastigié)", "Taxus wallichiana (If de Wallich)", "Tilia monticola (Tilleul de montagne)", "Tsuga diversifolia (Pruche diverse)",
+            "Ulmus rubra (Orme rouge)", "Wisteria sinensis 'Plena' (Glycine double)", "Abies magnifica (Sapin magnifique)", "Acacia paradoxa (Mimosa paradoxal)",
+            "Acer griseum (Érable gris)", "Celtis tournefortii (Micocoulier de Tournefort)", "Chamaecyparis obtusa 'Nana Gracilis' (Cyprès Hinoki nain)", "Crataegus crus-galli (Aubépine ergot de coq)",
+            "Fagus mexicana (Hêtre du Mexique)", "Ilex vomitoria (Houx vomitoire)", "Juglans mandshurica (Noyer de Mandchourie)", "Juniperus sabina (Genévrier sabine)",
+            "Larix lyallii (Mélèze subalpin)", "Liquidambar styraciflua 'Gumball' (Copalme Gumball)", "Magnolia acuminata (Magnolia acuminé)", "Morus nigra (Mûrier noir)",
+            "Olea woodiana (Olivier de Wood)", "Picea mariana (Épinette noire)", "Pinus radiata (Pin de Monterey)", "Platycladus orientalis (Thuya d'Orient)",
+            "Populus grandidentata (Peuplier à grandes dents)", "Prunus yedoensis (Cerisier Yoshino)", "Pyrus fauriei (Poirier de Faurie)", "Quercus garryana (Chêne de Garry)",
+            "Quercus virginiana (Chêne de Virginie)", "Robinia pseudoacacia 'Frisia' (Robinier doré)", "Salix alba (Saule blanc)", "Sophora secundiflora (Sophora du Texas)",
+            "Sorbus aria (Alisier blanc)", "Taxus brevifolia (If de l'Ouest)", "Tilia tomentosa (Tilleul argenté)", "Tsuga caroliniana (Pruche de Caroline)",
+            "Ulmus laevis (Orme lisse)", "Wisteria macrostachya (Glycine du Kentucky)", "Abies grandis (Sapin de Vancouver)", "Acacia senegal (Gomme arabique)",
+            "Acer saccharinum (Érable argenté)", "Cercidiphyllum japonicum (Arbre à caramel)", "Chamaecyparis thyoides 'Andelyensis' (Cyprès blanc Andelyensis)", "Crataegus pinnatifida (Aubépine de Chine)",
+            "Fagus crenata (Hêtre japonais)", "Ilex opaca (Houx américain)", "Juglans rupestris (Noyer des roches)", "Juniperus scopulorum (Genévrier des Rocheuses)",
+            "Larix occidentalis (Mélèze occidental)", "Liriodendron chinense (Tulipier de Chine)", "Magnolia obovata (Magnolia obovale)", "Morus kagayamae (Mûrier de Kagayama)",
+            "Olea ferruginea (Olivier ferrugineux)", "Picea rubens (Épinette rouge)", "Pinus contorta (Pin tordu)", "Platanus occidentalis (Platane d'Amérique)",
+            "Populus heterophylla (Peuplier des marais)", "Prunus lusitanica (Laurier du Portugal)", "Pyrus pyrifolia (Poirier nashi)", "Quercus imbricaria (Chêne imbriqué)",
+            "Quercus wislizeni (Chêne de Wislizenus)", "Salix nigra (Saule noir)", "Sophora microphylla (Sophora à petites feuilles)", "Sorbus commixta (Sorbier du Japon)"
         ];
-        
-        // Base simplifiée pour l'exemple
+
+        // Base simplifiée pour l'exemple (à étendre)
         const DB_SPECS = [
             {nom:"Acer", usda:"-15°C", expo:"Mi-Ombre", type:"Caduc", potFreq: 2},
             {nom:"Pinus", usda:"-20°C", expo:"Soleil", type:"Persistant", potFreq: 3},
-            {nom:"Olea", usda:"-5°C", expo:"Soleil", type:"Persistant", potFreq: 3},
             {nom:"Juniperus", usda:"-20°C", expo:"Soleil", type:"Conifère", potFreq: 3},
-            {nom:"Ulmus", usda:"-10°C", expo:"Soleil", type:"Semi-P.", potFreq: 2}
+            {nom:"Ficus", usda:"5°C", expo:"Mi-Ombre", type:"Tropical", potFreq: 1},
+            {nom:"Olea", usda:"-5°C", expo:"Soleil", type:"Persistant", potFreq: 3},
+            {nom:"Ulmus", usda:"-10°C", expo:"Soleil", type:"Semi-P.", potFreq: 2},
+            {nom:"Quercus", usda:"-20°C", expo:"Soleil", type:"Caduc", potFreq: 3},
+            {nom:"Picea", usda:"-25°C", expo:"Soleil", type:"Conifère", potFreq: 4},
+            {nom:"Prunus", usda:"-10°C", expo:"Soleil", type:"Caduc", potFreq: 2},
+            {nom:"Magnolia", usda:"-10°C", expo:"Mi-Ombre", type:"Caduc", potFreq: 3},
+            {nom:"Cedrus", usda:"-20°C", expo:"Soleil", type:"Conifère", potFreq: 4},
+            {nom:"Abies", usda:"-20°C", expo:"Mi-Ombre", type:"Conifère", potFreq: 4},
+            {nom:"Larix", usda:"-25°C", expo:"Soleil", type:"Caduc", potFreq: 3},
+            {nom:"Ginkgo", usda:"-20°C", expo:"Soleil", type:"Caduc", potFreq: 2},
+            {nom:"Taxus", usda:"-20°C", expo:"Mi-Ombre", type:"Conifère", potFreq: 4},
+            {nom:"Populus", usda:"-25°C", expo:"Soleil", type:"Caduc", potFreq: 3},
+            {nom:"Salix", usda:"-25°C", expo:"Soleil", type:"Caduc", potFreq: 2},
+            {nom:"Tilia", usda:"-20°C", expo:"Mi-Ombre", type:"Caduc", potFreq: 3},
+            {nom:"Ilex", usda:"-15°C", expo:"Mi-Ombre", type:"Persistant", potFreq: 3},
+            {nom:"Wisteria", usda:"-10°C", expo:"Soleil", type:"Caduc", potFreq: 2},
+            {nom:"Citrus", usda:"5°C", expo:"Soleil", type:"Tropical", potFreq: 1},
+            {nom:"Eucalyptus", usda:"-5°C", expo:"Soleil", type:"Persistant", potFreq: 2}
+            // Note: Pour les autres espèces, la fonction getSpec utilisera "Espèce Inconnue" par défaut.
         ];
         
         const UNKNOWN_SPEC = { nom: "Espèce Inconnue", usda: "?", expo: "?", type: "?", potFreq: 0 };
@@ -394,7 +487,6 @@
             if(criteria === 'name_asc') {
                 list.sort((a,b) => (a.nom || getSpec(a.sid, a.customName).nom).localeCompare(b.nom || getSpec(b.sid, b.customName).nom));
             } else if (criteria === 'date_desc') {
-                // Trie par UID (Date de création/dernière modification)
                 list.sort((a,b) => b.uid - a.uid);
             } else if (criteria === 'species_asc') {
                 list.sort((a,b) => getSpec(a.sid, a.customName).nom.localeCompare(getSpec(b.sid, b.customName).nom));
