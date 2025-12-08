@@ -17,7 +17,7 @@
         * { box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: var(--text); -webkit-tap-highlight-color: transparent; font-size: 16px; }
         
-        /* HEADER: Titre Centré et Agrandissement */
+        /* HEADER: Titre Vertical et Centré */
         .app-header { 
             background: var(--primary); 
             color: var(--card-bg); 
@@ -32,39 +32,36 @@
             transition: height 0.3s;
         }
 
-        /* Conteneur pour centrer le titre */
-        #screen-edit .header-top { justify-content: space-between; }
+        /* Conteneur de l'en-tête pour la liste (centrage simple du bloc vertical) */
         .header-top { 
             display: flex; 
-            justify-content: space-between; 
+            justify-content: center; /* Centre le bloc vertical horizontalement */
             width: 100%; 
             align-items: center; 
-            position: relative;
-        }
-
-        /* Titre Central (Utilise absolute + transform pour un centrage parfait) */
-        .centered-title-container {
-            position: absolute; 
-            left: 50%;
-            transform: translateX(-50%); 
-            display: flex;
-            align-items: center;
+            position: relative; /* Base pour le compteur absolu */
         }
         
-        /* Taille du Titre (x2) */
-        .header-title { 
-            display: flex; 
-            align-items: center; 
-            font-size: 2rem; 
+        /* Titre Vertical (Mes Bonsaïs) */
+        .header-title-vertical { 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 2.5rem; /* Grande taille */
+            writing-mode: vertical-rl; /* Texte vertical */
+            text-orientation: mixed; 
+            white-space: nowrap;
+            padding: 10px 0;
+            line-height: 1.1;
         }
         
-        /* Compteur d'arbres (décalé à droite) */
+        /* Compteur d'arbres (position absolue pour éviter d'être déplacé par le titre vertical) */
         .bonsai-count { 
             position: absolute; 
-            right: 0;
-            font-size: 0.75rem; 
+            right: 15px; /* Décalage sur le bord droit */
+            top: 50%; /* Centrage vertical */
+            transform: translateY(-50%);
+            font-size: 0.8rem; 
             background: rgba(255,255,255,0.25); 
-            padding: 2px 8px; 
+            padding: 4px 8px; 
             border-radius: 10px; 
         }
 
@@ -157,7 +154,7 @@
                 <div style="width: 30px;"></div> 
                 
                 <div class="centered-title-container">
-                    <span class="header-title">Mes Bonsaïs</span>
+                    <span class="header-title-vertical">Mes Bonsaïs</span>
                 </div>
 
                 <span id="bonsai-count" class="bonsai-count">0</span>
