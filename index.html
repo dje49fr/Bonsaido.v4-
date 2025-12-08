@@ -4,55 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bonsai Do - Gestionnaire Pro</title>
+    
+    <link rel="icon" type="image/jpeg" href="1764885908678~2.jpg">
+    <link rel="apple-touch-icon" href="1764885908678~2.jpg">
+
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* --- DESIGN MODERNISÉ (Mêmes styles + Ajouts pour le tri) --- */
+        /* --- DESIGN MODERNISÉ (Flat & Epuré) --- */
         :root { --primary: #4A90E2; --primary-dark: #3A70B9; --bg: #F0F2F5; --card-bg: #ffffff; --text: #212529; --secondary-text: #6C757D; --danger: #DC3545; --success: #28A745; --radius: 12px; --shadow: 0 4px 12px rgba(0,0,0,0.08); }
         * { box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: var(--text); -webkit-tap-highlight-color: transparent; font-size: 16px; }
         
-        /* HEADER & FILTER */
-        .app-header { background: var(--primary); color: var(--card-bg); padding: 16px 15px; position: sticky; top: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.15); font-weight: 600; transition: height 0.3s;}
-        .header-top { display: flex; justify-content: space-between; width: 100%; align-items: center; }
-        .header-title { display: flex; align-items: center; font-size: 1.3rem; }
-        .header-btn { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+        /* HEADER: Centré et Agrandissement du Titre */
+        .app-header { 
+            background: var(--primary); 
+            color: var(--card-bg); 
+            padding: 16px 15px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15); 
+            font-weight: 600; 
+            transition: height 0.3s;
+        }
+
+        /* Centrage du Titre et du Bouton Retour */
+        #screen-edit .header-top { justify-content: space-between; }
+        .header-top { 
+            display: flex; 
+            justify-content: center; /* Centrage appliqué ici */
+            width: 100%; 
+            align-items: center; 
+        }
+
+        /* Taille du Titre (x2) */
+        .header-title { 
+            display: flex; 
+            align-items: center; 
+            font-size: 2rem; /* Taille augmentée */
+        }
         
-        /* Barre de tri (Nouveau) */
+        /* Barre de tri */
         .sort-bar { width: 100%; margin-top: 10px; display: flex; gap: 10px; }
         .sort-select { flex: 1; padding: 8px; border-radius: 6px; border: none; font-size: 0.9rem; background: rgba(255,255,255,0.2); color: white; font-weight: 600; }
         .sort-select option { color: #333; background: white; }
-        .sort-select:focus { outline: none; background: rgba(255,255,255,0.3); }
-
         .bonsai-count { font-size: 0.75rem; background: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 10px; margin-left: 10px; }
         
+        /* CONTAINERS & LISTE */
         .main-container { padding: 15px; max-width: 600px; margin: 0 auto; }
         .card { background: var(--card-bg); border-radius: var(--radius); padding: 20px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid #E9ECEF; }
         .card h3 { border-bottom: 1px solid #F1F3F5; padding-bottom: 10px; margin: 0 0 15px 0; font-size: 1rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; }
-        
         .bonsai-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #F1F3F5; cursor: pointer; transition: background 0.2s; }
         .bonsai-item:hover { background: #F8F9FA; }
         .thumb-icon { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--card-bg); border: 2px solid; flex-shrink: 0; overflow: hidden; background-size: cover; background-position: center; }
         
-        /* EDITEUR & INPUTS */
+        /* FORM & INPUTS */
         .leaf-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 180px; margin-bottom: 20px; border-radius: var(--radius); background: #E9ECEF; border: 1px dashed #ADB5BD; position: relative; overflow: hidden; }
         .leaf-preview img { width: 100%; height: 180px; object-fit: cover; position: absolute; top: 0; left: 0; }
         .placeholder-content { display: flex; flex-direction: column; align-items: center; z-index: 2; }
         .icon-container { width: 70px; height: 70px; border-radius: 50%; border: 4px solid; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; background: var(--card-bg); font-size: 2.5rem; }
-        
         .form-group { margin-bottom: 15px; }
         label { display: block; color: var(--secondary-text); font-weight: 600; font-size: 0.85rem; margin-bottom: 5px; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #CED4DA; border-radius: 8px; font-size: 16px; background: #fff; }
         
-        /* BOUTONS */
+        /* SPECS */
+        .specs-row { display: flex; justify-content: space-between; margin-top: 15px; text-align: center; }
+        .spec-box { display: flex; flex-direction: column; align-items: center; width: 19%; }
+        .icon-square { width: 38px; height: 38px; border-radius: 10px; border: 2px solid; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; background: white; font-size: 1rem; }
+        .spec-text { font-size: 0.75rem; font-weight: 700; white-space: nowrap; overflow: hidden; max-width: 100%; }
+        .c-blue { color: #3498db; border-color: #3498db; } .c-orange { color: #e67e22; border-color: #e67e22; } .c-green { color: #2ecc71; border-color: #2ecc71; }
+        
+        /* BOUTONS & NAV */
         .btn-action { display: block; width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .bg-blue { background: var(--primary); }
-        .bg-green { background: var(--success); }
-        .bg-red { background: var(--danger); }
+        .bg-blue { background: var(--primary); } .bg-green { background: var(--success); } .bg-red { background: var(--danger); }
         .add-bonsai-btn-float { width: 100%; padding: 15px; margin-bottom: 20px; text-align: center; font-size: 1.1rem; font-weight: 700; background: var(--success); color: white; border: none; border-radius: var(--radius); cursor: pointer; }
         
-        /* NAV & SCREENS */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); height: 65px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #E9ECEF; z-index: 900; }
         .nav-btn { color: #ADB5BD; background: none; border: none; font-size: 1.4rem; display: flex; flex-direction: column; align-items: center; padding: 5px; }
         .nav-btn span { font-size: 0.65rem; margin-top: 4px; font-weight: 600; }
         .nav-btn.active { color: var(--primary); }
@@ -68,14 +98,8 @@
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
         
-        /* STYLES ICONES RAPIDES */
-        .style-érable-1 { color: #1E8449; border-color: #27AE60; }
-        .style-pine-1 { color: #154360; border-color: #1A5276; }
-        .specs-row { display: flex; justify-content: space-between; margin-top: 15px; text-align: center; }
-        .spec-box { display: flex; flex-direction: column; align-items: center; width: 19%; }
-        .icon-square { width: 38px; height: 38px; border-radius: 10px; border: 2px solid; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; background: white; font-size: 1rem; }
-        .spec-text { font-size: 0.75rem; font-weight: 700; white-space: nowrap; overflow: hidden; max-width: 100%; }
-        .c-blue { color: #3498db; border-color: #3498db; } .c-orange { color: #e67e22; border-color: #e67e22; } .c-green { color: #2ecc71; border-color: #2ecc71; }
+        /* ICON STYLES */
+        .style-érable-1 { color: #1E8449; border-color: #27AE60; } .style-pine-1 { color: #154360; border-color: #1A5276; }
     </style>
 </head>
 <body>
@@ -83,7 +107,9 @@
     <div id="screen-list" class="screen active">
         <div class="app-header">
             <div class="header-top">
-                <span class="header-title"><i class="fa-solid fa-tree"></i>&nbsp;Bonsai Do<span id="bonsai-count" class="bonsai-count">0</span></span>
+                <span class="header-title">
+                    <i class="fa-solid fa-tree"></i> Mon Gestionnaire <span id="bonsai-count" class="bonsai-count">0</span>
+                </span>
             </div>
             <div class="sort-bar">
                 <select class="sort-select" id="sort-filter" onchange="renderList()">
@@ -103,7 +129,11 @@
     </div>
 
     <div id="screen-calendar" class="screen">
-        <div class="app-header"><div class="header-top"><span class="header-title"><i class="fa-solid fa-calendar-check"></i> Calendrier</span></div></div>
+        <div class="app-header">
+            <div class="header-top">
+                <span class="header-title"><i class="fa-solid fa-calendar-check"></i> Calendrier</span>
+            </div>
+        </div>
         <div class="main-container">
             <div class="card">
                 <h3><i class="fa-solid fa-list-ul"></i> Travaux à Venir</h3>
@@ -113,7 +143,11 @@
     </div>
 
     <div id="screen-settings" class="screen">
-        <div class="app-header"><div class="header-top"><span class="header-title"><i class="fa-solid fa-gear"></i> Paramètres</span></div></div>
+        <div class="app-header">
+            <div class="header-top">
+                <span class="header-title"><i class="fa-solid fa-gear"></i> Paramètres</span>
+            </div>
+        </div>
         <div class="main-container">
             <div class="card">
                 <h3><i class="fa-solid fa-database"></i> Sauvegarde (JSON)</h3>
@@ -193,6 +227,7 @@
         // --- 1. SERVICE WORKER REGISTRATION (PWA) ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
+                // S'assure que le chemin est correct (./sw.js)
                 navigator.serviceWorker.register('./sw.js')
                     .then(reg => console.log('SW enregistré:', reg))
                     .catch(err => console.log('SW erreur:', err));
@@ -235,7 +270,12 @@
                     const store = tx.objectStore(STORE_NAME);
                     const request = store.put(item);
                     request.onsuccess = () => resolve(request.result);
-                    request.onerror = () => reject(request.error);
+                    request.onerror = (e) => {
+                        if (e.target.error.name === "QuotaExceededError") {
+                            showToast("Espace disque plein. Impossible de sauvegarder plus de photos.", true);
+                        }
+                        reject(e.target.error);
+                    };
                 });
             },
             delete: async (uid) => {
@@ -267,14 +307,17 @@
             "Quercus (Chêne)", "Larix (Mélèze)", "Taxus (If)", "Cotoneaster", "Pyracantha", "Ginkgo biloba"
         ];
         
-        // Base simplifiée pour l'exemple (à étendre)
+        // Base simplifiée pour l'exemple
         const DB_SPECS = [
-            {nom:"Acer", usda:"-15°C", expo:"Mi-Ombre", type:"Caduc"},
-            {nom:"Pinus", usda:"-20°C", expo:"Soleil", type:"Persistant"},
-            {nom:"Olea", usda:"-5°C", expo:"Soleil", type:"Persistant"},
-            {nom:"Juniperus", usda:"-20°C", expo:"Soleil", type:"Conifère"},
-            {nom:"Ulmus", usda:"-10°C", expo:"Soleil", type:"Semi-P."}
+            {nom:"Acer", usda:"-15°C", expo:"Mi-Ombre", type:"Caduc", potFreq: 2},
+            {nom:"Pinus", usda:"-20°C", expo:"Soleil", type:"Persistant", potFreq: 3},
+            {nom:"Olea", usda:"-5°C", expo:"Soleil", type:"Persistant", potFreq: 3},
+            {nom:"Juniperus", usda:"-20°C", expo:"Soleil", type:"Conifère", potFreq: 3},
+            {nom:"Ulmus", usda:"-10°C", expo:"Soleil", type:"Semi-P.", potFreq: 2}
         ];
+        
+        const UNKNOWN_SPEC = { nom: "Espèce Inconnue", usda: "?", expo: "?", type: "?", potFreq: 0 };
+
 
         let bonsais = [];
         let currentUid = null;
@@ -286,6 +329,7 @@
             const dl = document.getElementById('species-list');
             SPECIES_RAW.forEach(s => { let o = document.createElement('option'); o.value=s; dl.appendChild(o); });
             
+            // Initialisation des données asynchrones
             await refreshData();
             renderList();
         };
@@ -293,7 +337,12 @@
         async function refreshData() {
             try {
                 bonsais = await dbApi.getAll();
-            } catch (e) { console.error(e); bonsais = []; }
+            } catch (e) { console.error("Erreur de chargement DB:", e); bonsais = []; }
+        }
+
+        function getSpec(sid, name) {
+            let found = DB_SPECS.find(s => name && name.includes(s.nom));
+            return found ? { ...found, nom: name } : { nom: name || "Inconnu", ...UNKNOWN_SPEC };
         }
 
         // TRI ET FILTRE
@@ -304,11 +353,11 @@
             if(criteria === 'name_asc') {
                 list.sort((a,b) => (a.nom || getSpec(a.sid, a.customName).nom).localeCompare(b.nom || getSpec(b.sid, b.customName).nom));
             } else if (criteria === 'date_desc') {
+                // Trie par UID (Date de création/dernière modification)
                 list.sort((a,b) => b.uid - a.uid);
             } else if (criteria === 'species_asc') {
                 list.sort((a,b) => getSpec(a.sid, a.customName).nom.localeCompare(getSpec(b.sid, b.customName).nom));
             } else if (criteria === 'last_work') {
-                // Tri par date du dernier travail effectué (le plus récent en premier)
                 const getLastWorkDate = (b) => {
                     const dates = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire].filter(d => d).map(d => new Date(d));
                     return dates.length ? Math.max(...dates) : 0;
@@ -345,7 +394,7 @@
                     <div style="flex:1">
                         <div style="font-weight:700;">${name}</div>
                         <div style="font-size:0.8rem; color:var(--secondary-text)">${sp.nom}</div>
-                        <div style="font-size:0.7rem; margin-top:4px; color:#999"><i class="fa-solid fa-leaf"></i> ${sp.type}</div>
+                        <div style="font-size:0.7rem; margin-top:4px; color:#999"><i class="fa-solid fa-snowflake"></i> ${sp.usda} | <i class="fa-solid fa-sun"></i> ${sp.expo}</div>
                     </div>
                     <i class="fa-solid fa-chevron-right" style="color:#ddd"></i>
                 `;
@@ -353,25 +402,28 @@
             });
         }
 
-        // --- 5. LOGIQUE ÉDITEUR ---
+        // --- 5. LOGIQUE ÉDITEUR (ASYNCHRONE) ---
         function openEditor(uid) {
             currentUid = uid;
             currentPhotoBase64 = null;
+            
             // Reset Form
-            document.querySelectorAll('input').forEach(i => i.value = "");
-            document.getElementById('editor-title').innerText = uid ? "Modifier" : "Nouveau";
+            document.querySelectorAll('input, select, textarea').forEach(i => i.value = "");
+            document.getElementById('editor-title').innerText = uid ? "Modifier" : "Nouvel Arbre";
             document.getElementById('btn-delete').style.display = uid ? "block" : "none";
             
             if(uid) {
                 const b = bonsais.find(x => x.uid === uid);
                 if(b) {
-                    document.getElementById('edit-species-input').value = getSpec(b.sid, b.customName).nom;
+                    document.getElementById('edit-species-input').value = b.customName;
                     document.getElementById('edit-name').value = b.nom || "";
                     document.getElementById('edit-date').value = b.date || "";
+                    
                     document.getElementById('edit-last-pot').value = b.lastPot || "";
                     document.getElementById('edit-last-cut').value = b.lastCut || "";
                     document.getElementById('edit-last-fertil').value = b.lastFertil || "";
                     document.getElementById('edit-last-wire').value = b.lastWire || "";
+                    
                     if(b.photo) currentPhotoBase64 = b.photo;
                 }
             }
@@ -381,42 +433,46 @@
         }
 
         async function saveBonsai() {
-            const speciesInput = document.getElementById('edit-species-input').value;
-            if(!speciesInput) return showToast("Choisissez une espèce", true);
+            const speciesInput = document.getElementById('edit-species-input').value.trim();
+            if(!speciesInput) return showToast("Veuillez choisir ou saisir une espèce.", true);
 
             const item = {
                 uid: currentUid || Date.now(),
-                sid: 9999, // Simplification pour demo
+                sid: 9999,
                 customName: speciesInput,
+                
                 nom: document.getElementById('edit-name').value,
                 date: document.getElementById('edit-date').value,
                 photo: currentPhotoBase64,
+                
                 lastPot: document.getElementById('edit-last-pot').value,
                 lastCut: document.getElementById('edit-last-cut').value,
                 lastFertil: document.getElementById('edit-last-fertil').value,
                 lastWire: document.getElementById('edit-last-wire').value
             };
 
-            await dbApi.put(item);
-            await refreshData();
-            showToast("Sauvegardé !");
-            nav('list');
+            try {
+                await dbApi.put(item);
+                await refreshData();
+                showToast(`Arbre "${item.nom || item.customName}" sauvegardé !`);
+                nav('list');
+            } catch(e) {
+                 showToast("Erreur de sauvegarde.", true);
+            }
         }
 
         async function deleteBonsai() {
-            if(confirm("Supprimer cet arbre ?")) {
+            const b = bonsais.find(x => x.uid === currentUid);
+            const name = b.nom || b.customName;
+            if(confirm(`Supprimer définitivement l'arbre "${name}" ?`)) {
                 await dbApi.delete(currentUid);
                 await refreshData();
+                showToast(`Arbre "${name}" supprimé.`);
                 nav('list');
             }
         }
 
-        // --- UTILS ---
-        function getSpec(sid, name) {
-            let found = DB_SPECS.find(s => name && name.includes(s.nom));
-            return found ? { ...found, nom: name } : { nom: name || "Inconnu", usda:"?", expo:"?", type:"?" };
-        }
-
+        // --- UTILS & PHOTO LOGIC ---
         function updateSpecsFromInput() {
             const val = document.getElementById('edit-species-input').value;
             const sp = getSpec(0, val);
@@ -434,7 +490,7 @@
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
-                        const MAX_W = 400; // Qualité augmentée pour IndexedDB
+                        const MAX_W = 400; 
                         const scale = MAX_W / img.width;
                         canvas.width = MAX_W;
                         canvas.height = img.height * scale;
@@ -460,7 +516,11 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('screen-'+screen).classList.add('active');
-            if(screen === 'list') { document.getElementById('nav-list').classList.add('active'); renderList(); }
+            
+            if(screen === 'list') { 
+                document.getElementById('nav-list').classList.add('active'); 
+                renderList(); 
+            }
             if(screen === 'calendar') document.getElementById('nav-cal').classList.add('active');
             if(screen === 'settings') document.getElementById('nav-set').classList.add('active');
         }
@@ -472,33 +532,52 @@
             setTimeout(() => t.className = t.className.replace('show',''), 3000);
         }
 
-        // --- BACKUP ---
+        // --- BACKUP & RESTORE (ASYNCHRONE) ---
         async function downloadBackup() {
             const data = await dbApi.getAll();
-            const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+            if (data.length === 0) {
+                showToast("Rien à sauvegarder, la collection est vide.", true);
+                return;
+            }
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = "bonsai_backup.json";
+            a.download = "bonsai_backup_" + new Date().toISOString().slice(0,10).replace(/-/g, '') + ".json";
             a.click();
+            showToast("Sauvegarde téléchargée !");
         }
 
         function restoreBackup() {
-            const file = document.getElementById('backup-file').files[0];
-            if(!file) return;
+            const fileInput = document.getElementById('backup-file');
+            const file = fileInput.files[0];
+            if(!file) return showToast("Veuillez sélectionner un fichier JSON.", true);
+            
             const reader = new FileReader();
             reader.onload = async (e) => {
-                const data = JSON.parse(e.target.result);
-                if(Array.isArray(data)) {
-                    for(let item of data) await dbApi.put(item);
-                    await refreshData();
-                    showToast("Restauré !");
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(Array.isArray(data)) {
+                        for(let item of data) await dbApi.put(item);
+                        await refreshData();
+                        fileInput.value = '';
+                        showToast(`Restauration réussie ! ${data.length} arbres chargés.`);
+                        nav('list');
+                    } else {
+                        showToast("Le contenu du fichier est invalide.", true);
+                    }
+                } catch (err) {
+                    showToast("Erreur de lecture : Fichier JSON invalide.", true);
                 }
             };
             reader.readAsText(file);
         }
         
         async function resetApp() {
-            if(confirm("Tout effacer ?")) { await dbApi.clear(); location.reload(); }
+            if(confirm("ATTENTION : Cette action va EFFACER TOUS VOS BONSÄIS (photos incluses). Continuer ?")) { 
+                await dbApi.clear();
+                showToast("Application réinitialisée.", true);
+                setTimeout(() => location.reload(), 1500);
+            }
         }
     </script>
 </body>
