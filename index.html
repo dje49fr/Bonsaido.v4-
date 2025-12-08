@@ -17,7 +17,7 @@
         * { box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: var(--text); -webkit-tap-highlight-color: transparent; font-size: 16px; }
         
-        /* HEADER: Centré et Agrandissement du Titre */
+        /* HEADER: Centrage et Agrandissement du Titre */
         .app-header { 
             background: var(--primary); 
             color: var(--card-bg); 
@@ -32,27 +32,45 @@
             transition: height 0.3s;
         }
 
-        /* Centrage du Titre et du Bouton Retour */
-        #screen-edit .header-top { justify-content: space-between; }
+        /* Conteneur principal de l'en-tête pour la liste */
         .header-top { 
             display: flex; 
-            justify-content: center; /* Centrage appliqué ici */
+            justify-content: space-between; /* Pour séparer le titre des bords */
             width: 100%; 
             align-items: center; 
+            position: relative;
         }
 
+        /* Titre Centré (nouveau conteneur) */
+        .centered-title-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+        }
+        
         /* Taille du Titre (x2) */
         .header-title { 
             display: flex; 
             align-items: center; 
             font-size: 2rem; /* Taille augmentée */
         }
-        
-        /* Barre de tri */
+
+        /* Barre de tri (doit être après le titre sur la liste) */
         .sort-bar { width: 100%; margin-top: 10px; display: flex; gap: 10px; }
         .sort-select { flex: 1; padding: 8px; border-radius: 6px; border: none; font-size: 0.9rem; background: rgba(255,255,255,0.2); color: white; font-weight: 600; }
         .sort-select option { color: #333; background: white; }
-        .bonsai-count { font-size: 0.75rem; background: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 10px; margin-left: 10px; }
+        
+        /* Compteur d'arbres (décalé à droite dans la liste) */
+        .bonsai-count { 
+            font-size: 0.75rem; 
+            background: rgba(255,255,255,0.25); 
+            padding: 2px 8px; 
+            border-radius: 10px; 
+            margin-left: 10px;
+            /* Le compteur est maintenant positionné à la fin du header-top */
+        }
         
         /* CONTAINERS & LISTE */
         .main-container { padding: 15px; max-width: 600px; margin: 0 auto; }
@@ -107,9 +125,15 @@
     <div id="screen-list" class="screen active">
         <div class="app-header">
             <div class="header-top">
-                <span class="header-title">
-                    <i class="fa-solid fa-tree"></i> Mon Gestionnaire <span id="bonsai-count" class="bonsai-count">0</span>
-                </span>
+                <div style="width: 30px;"></div> 
+                
+                <div class="centered-title-container">
+                    <span class="header-title">
+                        <i class="fa-solid fa-tree"></i> Mon Gestionnaire 
+                    </span>
+                </div>
+
+                <span id="bonsai-count" class="bonsai-count">0</span>
             </div>
             <div class="sort-bar">
                 <select class="sort-select" id="sort-filter" onchange="renderList()">
@@ -130,7 +154,7 @@
 
     <div id="screen-calendar" class="screen">
         <div class="app-header">
-            <div class="header-top">
+            <div class="header-top" style="justify-content: center;">
                 <span class="header-title"><i class="fa-solid fa-calendar-check"></i> Calendrier</span>
             </div>
         </div>
@@ -144,7 +168,7 @@
 
     <div id="screen-settings" class="screen">
         <div class="app-header">
-            <div class="header-top">
+            <div class="header-top" style="justify-content: center;">
                 <span class="header-title"><i class="fa-solid fa-gear"></i> Paramètres</span>
             </div>
         </div>
