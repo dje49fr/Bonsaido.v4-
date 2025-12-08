@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bonsai Do - Gestionnaire Pro</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- DESIGN MODERNISÉ (Mêmes styles + Ajouts pour le tri) --- */
+        :root { --primary: #4A90E2; --primary-dark: #3A70B9; --bg: #F0F2F5; --card-bg: #ffffff; --text: #212529; --secondary-text: #6C757D; --danger: #DC3545; --success: #28A745; --radius: 12px; --shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: var(--text); -webkit-tap-highlight-color: transparent; font-size: 16px; }
+        
+        /* HEADER & FILTER */
+        .app-header { background: var(--primary); color: var(--card-bg); padding: 16px 15px; position: sticky; top: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.15); font-weight: 600; transition: height 0.3s;}
+        .header-top { display: flex; justify-content: space-between; width: 100%; align-items: center; }
+        .header-title { display: flex; align-items: center; font-size: 1.3rem; }
+        .header-btn { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+        
+        /* Barre de tri (Nouveau) */
+        .sort-bar { width: 100%; margin-top: 10px; display: flex; gap: 10px; }
+        .sort-select { flex: 1; padding: 8px; border-radius: 6px; border: none; font-size: 0.9rem; background: rgba(255,255,255,0.2); color: white; font-weight: 600; }
+        .sort-select option { color: #333; background: white; }
+        .sort-select:focus { outline: none; background: rgba(255,255,255,0.3); }
+
+        .bonsai-count { font-size: 0.75rem; background: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 10px; margin-left: 10px; }
+        
+        .main-container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        .card { background: var(--card-bg); border-radius: var(--radius); padding: 20px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid #E9ECEF; }
+        .card h3 { border-bottom: 1px solid #F1F3F5; padding-bottom: 10px; margin: 0 0 15px 0; font-size: 1rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; }
+        
+        .bonsai-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #F1F3F5; cursor: pointer; transition: background 0.2s; }
+        .bonsai-item:hover { background: #F8F9FA; }
+        .thumb-icon { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--card-bg); border: 2px solid; flex-shrink: 0; overflow: hidden; background-size: cover; background-position: center; }
+        
+        /* EDITEUR & INPUTS */
+        .leaf-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 180px; margin-bottom: 20px; border-radius: var(--radius); background: #E9ECEF; border: 1px dashed #ADB5BD; position: relative; overflow: hidden; }
+        .leaf-preview img { width: 100%; height: 180px; object-fit: cover; position: absolute; top: 0; left: 0; }
+        .placeholder-content { display: flex; flex-direction: column; align-items: center; z-index: 2; }
+        .icon-container { width: 70px; height: 70px; border-radius: 50%; border: 4px solid; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; background: var(--card-bg); font-size: 2.5rem; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; color: var(--secondary-text); font-weight: 600; font-size: 0.85rem; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #CED4DA; border-radius: 8px; font-size: 16px; background: #fff; }
+        
+        /* BOUTONS */
+        .btn-action { display: block; width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .bg-blue { background: var(--primary); }
+        .bg-green { background: var(--success); }
+        .bg-red { background: var(--danger); }
+        .add-bonsai-btn-float { width: 100%; padding: 15px; margin-bottom: 20px; text-align: center; font-size: 1.1rem; font-weight: 700; background: var(--success); color: white; border: none; border-radius: var(--radius); cursor: pointer; }
+        
+        /* NAV & SCREENS */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); height: 65px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #E9ECEF; z-index: 900; }
+        .nav-btn { color: #ADB5BD; background: none; border: none; font-size: 1.4rem; display: flex; flex-direction: column; align-items: center; padding: 5px; }
+        .nav-btn span { font-size: 0.65rem; margin-top: 4px; font-weight: 600; }
+        .nav-btn.active { color: var(--primary); }
+        .screen { display: none; padding-bottom: 20px; }
+        .screen.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+        
+        /* CALENDAR & TOAST */
+        .work-item { padding: 12px 0; display: flex; align-items: center; border-bottom: 1px dashed #E9ECEF; }
+        .badge-task { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; margin-right: 5px; font-weight: 600; }
+        #toast { visibility: hidden; min-width: 250px; margin-left: -125px; background-color: var(--success); color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 80px; font-size: 16px; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        
+        /* STYLES ICONES RAPIDES */
+        .style-érable-1 { color: #1E8449; border-color: #27AE60; }
+        .style-pine-1 { color: #154360; border-color: #1A5276; }
+        .specs-row { display: flex; justify-content: space-between; margin-top: 15px; text-align: center; }
+        .spec-box { display: flex; flex-direction: column; align-items: center; width: 19%; }
+        .icon-square { width: 38px; height: 38px; border-radius: 10px; border: 2px solid; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; background: white; font-size: 1rem; }
+        .spec-text { font-size: 0.75rem; font-weight: 700; white-space: nowrap; overflow: hidden; max-width: 100%; }
+        .c-blue { color: #3498db; border-color: #3498db; } .c-orange { color: #e67e22; border-color: #e67e22; } .c-green { color: #2ecc71; border-color: #2ecc71; }
+    </style>
+</head>
+<body>
+
+    <div id="screen-list" class="screen active">
+        <div class="app-header">
+            <div class="header-top">
+                <span class="header-title"><i class="fa-solid fa-tree"></i>&nbsp;Bonsai Do<span id="bonsai-count" class="bonsai-count">0</span></span>
+            </div>
+            <div class="sort-bar">
+                <select class="sort-select" id="sort-filter" onchange="renderList()">
+                    <option value="name_asc">🔤 Nom (A-Z)</option>
+                    <option value="date_desc">📅 Ajout Récent</option>
+                    <option value="species_asc">🌿 Espèce</option>
+                    <option value="last_work">🛠️ Dernier Travail</option>
+                </select>
+            </div>
+        </div>
+        <div class="main-container">
+            <button class="add-bonsai-btn-float" onclick="openEditor(null)">
+                <i class="fa-solid fa-plus"></i> Ajouter un arbre
+            </button>
+            <div id="list-container">Chargement de la base de données...</div>
+        </div>
+    </div>
+
+    <div id="screen-calendar" class="screen">
+        <div class="app-header"><div class="header-top"><span class="header-title"><i class="fa-solid fa-calendar-check"></i> Calendrier</span></div></div>
+        <div class="main-container">
+            <div class="card">
+                <h3><i class="fa-solid fa-list-ul"></i> Travaux à Venir</h3>
+                <div id="calendar-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-settings" class="screen">
+        <div class="app-header"><div class="header-top"><span class="header-title"><i class="fa-solid fa-gear"></i> Paramètres</span></div></div>
+        <div class="main-container">
+            <div class="card">
+                <h3><i class="fa-solid fa-database"></i> Sauvegarde (JSON)</h3>
+                <button class="btn-action bg-blue" onclick="downloadBackup()"><i class="fa-solid fa-download"></i> Télécharger</button>
+                <hr style="margin:20px 0; border:0; border-top:1px solid #eee;">
+                <label>Restaurer :</label>
+                <input type="file" id="backup-file" accept=".json">
+                <button class="btn-action bg-green" onclick="restoreBackup()"><i class="fa-solid fa-upload"></i> Restaurer</button>
+            </div>
+            <div class="card">
+                 <h3><i class="fa-solid fa-mobile-screen"></i> Installation</h3>
+                 <p style="font-size:0.9rem; color:var(--secondary-text)">Pour installer l'app, utilisez l'option "Ajouter à l'écran d'accueil" de votre navigateur.</p>
+            </div>
+             <button class="btn-action bg-red" onclick="resetApp()">⚠️ Tout effacer</button>
+        </div>
+    </div>
+
+    <div id="screen-edit" class="screen">
+        <div class="app-header">
+            <div class="header-top">
+                <button class="header-btn" onclick="nav('list')"><i class="fa-solid fa-arrow-left"></i></button>
+                <span id="editor-title">Nouveau</span>
+                <div style="width:30px;"></div>
+            </div>
+        </div>
+        <div class="main-container">
+            <div class="card">
+                <div class="leaf-preview" id="leaf-preview">
+                    <img id="preview-image-tag" style="display:none;" />
+                    <div class="placeholder-content" id="placeholder-content">
+                        <div class="icon-container style-érable-1"><i class="fa-solid fa-cannabis"></i></div>
+                        <div style="font-weight:600; color:var(--secondary-text)">Ajouter Photo</div>
+                    </div>
+                    <input type="file" id="photo-upload" accept="image/*" style="display:none;" onchange="handlePhotoUpload(this)">
+                </div>
+                <div style="text-align:center;">
+                    <button class="btn-action bg-blue" style="width:auto; display:inline-block; margin:0;" onclick="document.getElementById('photo-upload').click()">Photo</button>
+                    <button class="btn-action bg-red" style="width:auto; display:inline-block; margin:0;" onclick="removePhoto()"><i class="fa-solid fa-trash"></i></button>
+                </div>
+                <div class="form-group" style="margin-top:15px;">
+                    <label>Espèce (Tapez pour rechercher)</label>
+                    <input list="species-list" id="edit-species-input" onchange="updateSpecsFromInput()">
+                    <datalist id="species-list"></datalist>
+                </div>
+                <div class="specs-row">
+                    <div class="spec-box"><div class="icon-square c-blue"><i class="fa-solid fa-snowflake"></i></div><span class="spec-text" id="v-usda">-</span></div>
+                    <div class="spec-box"><div class="icon-square c-orange"><i class="fa-solid fa-sun"></i></div><span class="spec-text" id="v-expo">-</span></div>
+                    <div class="spec-box"><div class="icon-square c-green"><i class="fa-solid fa-leaf"></i></div><span class="spec-text" id="v-type">-</span></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Identité</h3>
+                <label>Surnom</label><input type="text" id="edit-name">
+                <label>Date Achat</label><input type="date" id="edit-date">
+            </div>
+
+            <div class="card">
+                <h3>Derniers Travaux</h3>
+                <div style="display:flex; gap:10px;"><div style="flex:1"><label>Rempotage</label><input type="date" id="edit-last-pot"></div><div style="flex:1"><label>Taille</label><input type="date" id="edit-last-cut"></div></div>
+                <div style="display:flex; gap:10px; margin-top:10px;"><div style="flex:1"><label>Engrais</label><input type="date" id="edit-last-fertil"></div><div style="flex:1"><label>Ligature</label><input type="date" id="edit-last-wire"></div></div>
+            </div>
+
+            <button class="btn-action bg-blue" onclick="saveBonsai()">💾 Enregistrer</button>
+            <button class="btn-action bg-red" id="btn-delete" style="margin-top: 10px;" onclick="deleteBonsai()">Supprimer</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-btn active" id="nav-list" onclick="nav('list')"><i class="fa-solid fa-seedling"></i><span>Arbres</span></button>
+        <button class="nav-btn" id="nav-cal" onclick="nav('calendar')"><i class="fa-solid fa-calendar"></i><span>Calendrier</span></button>
+        <button class="nav-btn" id="nav-set" onclick="nav('settings')"><i class="fa-solid fa-gear"></i><span>Réglages</span></button>
+    </div>
+    <div id="toast"></div>
+
+    <script>
+        // --- 1. SERVICE WORKER REGISTRATION (PWA) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW enregistré:', reg))
+                    .catch(err => console.log('SW erreur:', err));
+            });
+        }
+
+        // --- 2. GESTION INDEXED DB (Stockage Pro) ---
+        const DB_NAME = 'BonsaiDoDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'trees';
+
+        const dbApi = {
+            open: () => {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(DB_NAME, DB_VERSION);
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains(STORE_NAME)) {
+                            db.createObjectStore(STORE_NAME, { keyPath: 'uid' });
+                        }
+                    };
+                    request.onsuccess = (e) => resolve(e.target.result);
+                    request.onerror = (e) => reject(e.target.error);
+                });
+            },
+            getAll: async () => {
+                const db = await dbApi.open();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const store = tx.objectStore(STORE_NAME);
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            },
+            put: async (item) => {
+                const db = await dbApi.open();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    const request = store.put(item);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            },
+            delete: async (uid) => {
+                const db = await dbApi.open();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    const request = store.delete(uid);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            },
+            clear: async () => {
+                const db = await dbApi.open();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    store.clear();
+                    tx.oncomplete = () => resolve();
+                });
+            }
+        };
+
+        // --- 3. DATA & CONFIG ---
+        const SPECIES_RAW = [
+            "Acer palmatum (Érable Japonais)", "Acer Buergerianum (Érable de Burger)", "Pinus thunbergii (Pin noir)",
+            "Pinus sylvestris (Pin sylvestre)", "Juniperus (Genévrier)", "Ulmus parvifolia (Orme de Chine)",
+            "Olea europaea (Olivier)", "Ficus retusa", "Azalea (Azalée)", "Carpinus (Charme)", "Fagus (Hêtre)",
+            "Quercus (Chêne)", "Larix (Mélèze)", "Taxus (If)", "Cotoneaster", "Pyracantha", "Ginkgo biloba"
+        ];
+        
+        // Base simplifiée pour l'exemple (à étendre)
+        const DB_SPECS = [
+            {nom:"Acer", usda:"-15°C", expo:"Mi-Ombre", type:"Caduc"},
+            {nom:"Pinus", usda:"-20°C", expo:"Soleil", type:"Persistant"},
+            {nom:"Olea", usda:"-5°C", expo:"Soleil", type:"Persistant"},
+            {nom:"Juniperus", usda:"-20°C", expo:"Soleil", type:"Conifère"},
+            {nom:"Ulmus", usda:"-10°C", expo:"Soleil", type:"Semi-P."}
+        ];
+
+        let bonsais = [];
+        let currentUid = null;
+        let currentPhotoBase64 = null;
+
+        // --- 4. LOGIQUE PRINCIPALE ---
+        window.onload = async function() {
+            // Remplir datalist
+            const dl = document.getElementById('species-list');
+            SPECIES_RAW.forEach(s => { let o = document.createElement('option'); o.value=s; dl.appendChild(o); });
+            
+            await refreshData();
+            renderList();
+        };
+
+        async function refreshData() {
+            try {
+                bonsais = await dbApi.getAll();
+            } catch (e) { console.error(e); bonsais = []; }
+        }
+
+        // TRI ET FILTRE
+        function getSortedBonsais() {
+            const criteria = document.getElementById('sort-filter').value;
+            let list = [...bonsais];
+            
+            if(criteria === 'name_asc') {
+                list.sort((a,b) => (a.nom || getSpec(a.sid, a.customName).nom).localeCompare(b.nom || getSpec(b.sid, b.customName).nom));
+            } else if (criteria === 'date_desc') {
+                list.sort((a,b) => b.uid - a.uid);
+            } else if (criteria === 'species_asc') {
+                list.sort((a,b) => getSpec(a.sid, a.customName).nom.localeCompare(getSpec(b.sid, b.customName).nom));
+            } else if (criteria === 'last_work') {
+                // Tri par date du dernier travail effectué (le plus récent en premier)
+                const getLastWorkDate = (b) => {
+                    const dates = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire].filter(d => d).map(d => new Date(d));
+                    return dates.length ? Math.max(...dates) : 0;
+                };
+                list.sort((a,b) => getLastWorkDate(b) - getLastWorkDate(a));
+            }
+            return list;
+        }
+
+        function renderList() {
+            const container = document.getElementById('list-container');
+            container.innerHTML = "";
+            const sortedList = getSortedBonsais();
+            document.getElementById('bonsai-count').innerText = sortedList.length;
+
+            if(sortedList.length === 0) {
+                container.innerHTML = `<div style="text-align:center;margin-top:40px;opacity:0.6"><i class="fa-solid fa-seedling" style="font-size:3rem;"></i><br><br>Aucun arbre.<br>Ajoutez-en un !</div>`;
+                return;
+            }
+
+            sortedList.forEach(b => {
+                let sp = getSpec(b.sid, b.customName);
+                let name = b.nom || sp.nom.split('(')[0];
+                
+                let iconHtml = b.photo 
+                    ? `<div class="thumb-icon" style="background-image: url('${b.photo}'); border-color:#ccc;"></div>`
+                    : `<div class="thumb-icon style-érable-1"><i class="fa-solid fa-tree"></i></div>`;
+
+                const div = document.createElement('div');
+                div.className = 'bonsai-item';
+                div.onclick = () => openEditor(b.uid);
+                div.innerHTML = `
+                    ${iconHtml}
+                    <div style="flex:1">
+                        <div style="font-weight:700;">${name}</div>
+                        <div style="font-size:0.8rem; color:var(--secondary-text)">${sp.nom}</div>
+                        <div style="font-size:0.7rem; margin-top:4px; color:#999"><i class="fa-solid fa-leaf"></i> ${sp.type}</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color:#ddd"></i>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // --- 5. LOGIQUE ÉDITEUR ---
+        function openEditor(uid) {
+            currentUid = uid;
+            currentPhotoBase64 = null;
+            // Reset Form
+            document.querySelectorAll('input').forEach(i => i.value = "");
+            document.getElementById('editor-title').innerText = uid ? "Modifier" : "Nouveau";
+            document.getElementById('btn-delete').style.display = uid ? "block" : "none";
+            
+            if(uid) {
+                const b = bonsais.find(x => x.uid === uid);
+                if(b) {
+                    document.getElementById('edit-species-input').value = getSpec(b.sid, b.customName).nom;
+                    document.getElementById('edit-name').value = b.nom || "";
+                    document.getElementById('edit-date').value = b.date || "";
+                    document.getElementById('edit-last-pot').value = b.lastPot || "";
+                    document.getElementById('edit-last-cut').value = b.lastCut || "";
+                    document.getElementById('edit-last-fertil').value = b.lastFertil || "";
+                    document.getElementById('edit-last-wire').value = b.lastWire || "";
+                    if(b.photo) currentPhotoBase64 = b.photo;
+                }
+            }
+            updateSpecsFromInput();
+            updateLeafPreview();
+            nav('edit');
+        }
+
+        async function saveBonsai() {
+            const speciesInput = document.getElementById('edit-species-input').value;
+            if(!speciesInput) return showToast("Choisissez une espèce", true);
+
+            const item = {
+                uid: currentUid || Date.now(),
+                sid: 9999, // Simplification pour demo
+                customName: speciesInput,
+                nom: document.getElementById('edit-name').value,
+                date: document.getElementById('edit-date').value,
+                photo: currentPhotoBase64,
+                lastPot: document.getElementById('edit-last-pot').value,
+                lastCut: document.getElementById('edit-last-cut').value,
+                lastFertil: document.getElementById('edit-last-fertil').value,
+                lastWire: document.getElementById('edit-last-wire').value
+            };
+
+            await dbApi.put(item);
+            await refreshData();
+            showToast("Sauvegardé !");
+            nav('list');
+        }
+
+        async function deleteBonsai() {
+            if(confirm("Supprimer cet arbre ?")) {
+                await dbApi.delete(currentUid);
+                await refreshData();
+                nav('list');
+            }
+        }
+
+        // --- UTILS ---
+        function getSpec(sid, name) {
+            let found = DB_SPECS.find(s => name && name.includes(s.nom));
+            return found ? { ...found, nom: name } : { nom: name || "Inconnu", usda:"?", expo:"?", type:"?" };
+        }
+
+        function updateSpecsFromInput() {
+            const val = document.getElementById('edit-species-input').value;
+            const sp = getSpec(0, val);
+            document.getElementById('v-usda').innerText = sp.usda;
+            document.getElementById('v-expo').innerText = sp.expo;
+            document.getElementById('v-type').innerText = sp.type;
+        }
+
+        function handlePhotoUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const MAX_W = 400; // Qualité augmentée pour IndexedDB
+                        const scale = MAX_W / img.width;
+                        canvas.width = MAX_W;
+                        canvas.height = img.height * scale;
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        currentPhotoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                        updateLeafPreview();
+                    };
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removePhoto() { currentPhotoBase64 = null; updateLeafPreview(); }
+
+        function updateLeafPreview() {
+            const img = document.getElementById('preview-image-tag');
+            const ph = document.getElementById('placeholder-content');
+            if(currentPhotoBase64) { img.src = currentPhotoBase64; img.style.display='block'; ph.style.display='none'; }
+            else { img.style.display='none'; ph.style.display='flex'; }
+        }
+
+        function nav(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('screen-'+screen).classList.add('active');
+            if(screen === 'list') { document.getElementById('nav-list').classList.add('active'); renderList(); }
+            if(screen === 'calendar') document.getElementById('nav-cal').classList.add('active');
+            if(screen === 'settings') document.getElementById('nav-set').classList.add('active');
+        }
+
+        function showToast(msg, err=false) {
+            const t = document.getElementById('toast');
+            t.className = 'show'; t.style.background = err ? 'var(--danger)' : 'var(--success)';
+            t.innerText = msg;
+            setTimeout(() => t.className = t.className.replace('show',''), 3000);
+        }
+
+        // --- BACKUP ---
+        async function downloadBackup() {
+            const data = await dbApi.getAll();
+            const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = "bonsai_backup.json";
+            a.click();
+        }
+
+        function restoreBackup() {
+            const file = document.getElementById('backup-file').files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const data = JSON.parse(e.target.result);
+                if(Array.isArray(data)) {
+                    for(let item of data) await dbApi.put(item);
+                    await refreshData();
+                    showToast("Restauré !");
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        async function resetApp() {
+            if(confirm("Tout effacer ?")) { await dbApi.clear(); location.reload(); }
+        }
+    </script>
+</body>
+</html>
