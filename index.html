@@ -8,7 +8,7 @@
     <link rel="icon" type="image/jpeg" href="icon.jpg">
     <link rel="apple-touch-icon" href="icon.jpg">
     
-    <meta name="theme-color" content="#B0D3E5">
+    <meta name="theme-color" content="#A9D18E">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
     <link rel="manifest" href="manifest.json">
@@ -17,11 +17,12 @@
     <style>
         /* --- DESIGN GLOBAL MODIFIÉ --- */
         :root { 
-            /* MODIFICATION : COULEURS PRINCIPALES EN BLEU CLAIR */
-            --primary: #B0D3E5; 
-            --primary-dark: #8AB3C9; /* Version plus foncée pour le contraste dans les titres de cartes */
+            /* COULEURS PRINCIPALES (Vert Pistache Pâle) */
+            --primary: #A9D18E; 
+            --primary-dark: #84AC6E; 
             
-            --bg: #D5D1C0; /* Fond beige foncé */
+            /* MODIFICATION 1 : Fond beige très clair */
+            --bg: #EBE7D9; 
             --card-bg: #FDFBF4; 
             
             /* TEXTE */
@@ -37,7 +38,9 @@
 
             /* DIVERS */
             --radius: 12px; 
-            --shadow: 0 4px 12px rgba(0,0,0,0.06); 
+            /* MODIFICATION 2 : Ombre douce sous les fiches */
+            --shadow-card: 0 4px 10px rgba(0,0,0,0.1); 
+            --shadow-btn: 0 4px 6px rgba(0,0,0,0.08); 
 
             /* ICONES SPECS */
             --spec-cold: #93B8C8; 
@@ -49,7 +52,6 @@
         
         /* HEADER */
         .app-header { 
-            /* Utilise la nouvelle couleur --primary (Bleu Clair) */
             background: var(--primary); 
             color: #000000; 
             padding: 16px 15px; 
@@ -103,7 +105,14 @@
         
         /* CONTAINERS */
         .main-container { padding: 15px; max-width: 800px; margin: 0 auto; }
-        .card { background: var(--card-bg); border-radius: var(--radius); padding: 20px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid #E5E2D5; }
+        .card { 
+            background: var(--card-bg); 
+            border-radius: var(--radius); 
+            padding: 20px; 
+            margin-bottom: 15px; 
+            box-shadow: var(--shadow-card); /* Utilise la nouvelle ombre */
+            border: 1px solid #E5E2D5; 
+        }
         .card h3 { border-bottom: 1px solid #F1F3F5; padding-bottom: 10px; margin: 0 0 15px 0; font-size: 1rem; font-weight: 700; color: var(--primary-dark); }
         
         /* --- STYLE MOSAÏQUE (GRID) --- */
@@ -119,7 +128,7 @@
             flex-direction: column;
             background: var(--card-bg);
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: var(--shadow-card); /* Utilise la nouvelle ombre */
             border: 1px solid #E5E2D5;
             overflow: hidden;
             cursor: pointer; 
@@ -171,7 +180,7 @@
         .c-orange { color: var(--spec-warm); border-color: var(--spec-warm); }
         .c-green { color: var(--spec-type); border-color: var(--spec-type); }
         
-        .btn-action { display: block; width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
+        .btn-action { display: block; width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; box-shadow: var(--shadow-btn); }
         .bg-blue { background: var(--primary); } .bg-green { background: var(--success); } .bg-red { background: var(--danger); }
         
         /* Bouton flottant en Marron clair */
