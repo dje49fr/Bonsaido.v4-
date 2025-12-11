@@ -8,7 +8,7 @@
     <link rel="icon" type="image/jpeg" href="icon.jpg">
     <link rel="apple-touch-icon" href="icon.jpg">
     
-    <meta name="theme-color" content="#A9D18E">
+    <meta name="theme-color" content="#B0D3E5">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
     <link rel="manifest" href="manifest.json">
@@ -17,11 +17,11 @@
     <style>
         /* --- DESIGN GLOBAL MODIFIÉ --- */
         :root { 
-            /* COULEURS PRINCIPALES (Vert Pistache Pâle) */
-            --primary: #A9D18E; 
-            --primary-dark: #84AC6E; 
+            /* MODIFICATION 1 : COULEURS PRINCIPALES EN BLEU CLAIR */
+            --primary: #B0D3E5; 
+            --primary-dark: #8AB3C9; /* Version plus foncée pour le contraste */
             
-            /* MODIFICATION 1 : Fond beige très clair */
+            /* MODIFICATION 2 : Fond beige très clair */
             --bg: #EBE7D9; 
             --card-bg: #FDFBF4; 
             
@@ -38,7 +38,7 @@
 
             /* DIVERS */
             --radius: 12px; 
-            /* MODIFICATION 2 : Ombre douce sous les fiches */
+            /* MODIFICATION 3 : Ombre douce sous les fiches */
             --shadow-card: 0 4px 10px rgba(0,0,0,0.1); 
             --shadow-btn: 0 4px 6px rgba(0,0,0,0.08); 
 
@@ -52,6 +52,7 @@
         
         /* HEADER */
         .app-header { 
+            /* Utilise la couleur --primary (Bleu Clair) */
             background: var(--primary); 
             color: #000000; 
             padding: 16px 15px; 
@@ -100,7 +101,7 @@
         .nav-btn i { font-size: 2.5rem; line-height: 1; }
         .nav-btn span { font-size: 0.7rem; margin-top: 4px; font-weight: 600; }
         
-        /* L'élément actif du menu reprend la couleur --primary */
+        /* L'élément actif du menu reprend la couleur --primary (Bleu Clair) */
         .nav-btn.active { color: var(--primary); }
         
         /* CONTAINERS */
@@ -110,7 +111,7 @@
             border-radius: var(--radius); 
             padding: 20px; 
             margin-bottom: 15px; 
-            box-shadow: var(--shadow-card); /* Utilise la nouvelle ombre */
+            box-shadow: var(--shadow-card); /* Ombre douce */
             border: 1px solid #E5E2D5; 
         }
         .card h3 { border-bottom: 1px solid #F1F3F5; padding-bottom: 10px; margin: 0 0 15px 0; font-size: 1rem; font-weight: 700; color: var(--primary-dark); }
@@ -128,7 +129,7 @@
             flex-direction: column;
             background: var(--card-bg);
             border-radius: 12px;
-            box-shadow: var(--shadow-card); /* Utilise la nouvelle ombre */
+            box-shadow: var(--shadow-card); /* Ombre douce */
             border: 1px solid #E5E2D5;
             overflow: hidden;
             cursor: pointer; 
@@ -174,11 +175,13 @@
         .specs-row { display: flex; justify-content: space-between; margin-top: 15px; text-align: center; }
         .spec-box { display: flex; flex-direction: column; align-items: center; width: 19%; }
         .icon-square { width: 38px; height: 38px; border-radius: 10px; border: 2px solid; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; background: var(--card-bg); font-size: 1rem; }
-        .spec-text { font-size: 0.75rem; font-weight: 700; white-space: nowrap; overflow: hidden; max-width: 100%; }
         
+        /* Ces couleurs sont indépendantes du thème principal */
         .c-blue { color: var(--spec-cold); border-color: var(--spec-cold); }
         .c-orange { color: var(--spec-warm); border-color: var(--spec-warm); }
         .c-green { color: var(--spec-type); border-color: var(--spec-type); }
+
+        .spec-text { font-size: 0.75rem; font-weight: 700; white-space: nowrap; overflow: hidden; max-width: 100%; }
         
         .btn-action { display: block; width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; box-shadow: var(--shadow-btn); }
         .bg-blue { background: var(--primary); } .bg-green { background: var(--success); } .bg-red { background: var(--danger); }
