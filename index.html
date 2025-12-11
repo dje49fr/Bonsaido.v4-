@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bonsai Do - Gestionnaire Pro</title>
     
-    <link rel="icon" type="image/jpeg" href="1764885908678~2.jpg">
-    <link rel="apple-touch-icon" href="1764885908678~2.jpg">
+    <link rel="icon" type="image/jpeg" href="icon.jpg">
+    <link rel="apple-touch-icon" href="icon.jpg">
 
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- DESIGN MODERNISÉ --- */
+        /* --- DESIGN GLOBAL --- */
         :root { --primary: #4A90E2; --primary-dark: #3A70B9; --bg: #F0F2F5; --card-bg: #ffffff; --text: #212529; --secondary-text: #6C757D; --danger: #DC3545; --success: #28A745; --radius: 12px; --shadow: 0 4px 12px rgba(0,0,0,0.08); }
         * { box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: var(--text); -webkit-tap-highlight-color: transparent; font-size: 16px; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; color: var(--text); -webkit-tap-highlight-color: transparent; font-size: 16px; }
         
-        /* HEADER: Titre Horizontal et Alignement Gauche */
+        /* HEADER */
         .app-header { 
             background: var(--primary); 
             color: var(--card-bg); 
@@ -29,83 +29,85 @@
             flex-direction: column; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.15); 
             font-weight: 600; 
-            transition: height 0.3s;
         }
 
-        /* Alignement Gauche du Titre */
         .header-top { 
             display: flex; 
-            justify-content: space-between; /* Titre à gauche, compteur à droite */
+            justify-content: space-between; 
             width: 100%; 
             align-items: center; 
-            position: relative;
         }
         
-        /* Titre (2x plus grand, horizontal, aligné à gauche) */
-        .header-title { 
-            display: flex; 
-            align-items: center; 
-            font-size: 2rem; 
-        }
-        
-        /* Compteur d'arbres */
-        .bonsai-count { 
-            font-size: 0.75rem; 
-            background: rgba(255,255,255,0.25); 
-            padding: 2px 8px; 
-            border-radius: 10px; 
-            /* Reste à droite grâce à justify-content: space-between */
-        }
+        .header-title { font-size: 2rem; display: flex; align-items: center; }
+        .bonsai-count { font-size: 0.75rem; background: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 10px; }
 
-        /* Barre de tri */
         .sort-bar { width: 100%; margin-top: 10px; display: flex; gap: 10px; }
         .sort-select { flex: 1; padding: 8px; border-radius: 6px; border: none; font-size: 0.9rem; background: rgba(255,255,255,0.2); color: white; font-weight: 600; }
         .sort-select option { color: #333; background: white; }
         
-        /* NAVIGATION FIXE EN BAS (icônes 2x plus grandes) */
+        /* NAVIGATION */
         .bottom-nav { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            background: var(--card-bg); 
-            height: 80px; 
-            display: flex; 
-            justify-content: space-around; 
-            align-items: center; 
-            border-top: 1px solid #E9ECEF; 
-            z-index: 900; 
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            background: var(--card-bg); height: 80px; 
+            display: flex; justify-content: space-around; align-items: center; 
+            border-top: 1px solid #E9ECEF; z-index: 900; 
         }
-        
-        .nav-btn { 
-            color: #ADB5BD; 
-            background: none; 
-            border: none; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding: 5px; 
-        }
-        
-        .nav-btn i {
-            font-size: 2.8rem; /* TAILLE DOUBLÉE */
-            line-height: 1;
-        }
-        
+        .nav-btn { color: #ADB5BD; background: none; border: none; display: flex; flex-direction: column; align-items: center; padding: 5px; }
+        .nav-btn i { font-size: 2.5rem; line-height: 1; }
         .nav-btn span { font-size: 0.7rem; margin-top: 4px; font-weight: 600; }
         .nav-btn.active { color: var(--primary); }
         
-        /* CONTAINERS & LISTE */
-        .main-container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        /* CONTAINERS */
+        .main-container { padding: 15px; max-width: 800px; margin: 0 auto; }
         .card { background: var(--card-bg); border-radius: var(--radius); padding: 20px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid #E9ECEF; }
-        .card h3 { border-bottom: 1px solid #F1F3F5; padding-bottom: 10px; margin: 0 0 15px 0; font-size: 1rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; }
-        .bonsai-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #F1F3F5; cursor: pointer; transition: background 0.2s; }
-        .bonsai-item:hover { background: #F8F9FA; }
+        .card h3 { border-bottom: 1px solid #F1F3F5; padding-bottom: 10px; margin: 0 0 15px 0; font-size: 1rem; font-weight: 700; color: var(--primary-dark); }
         
-        /* MODIFICATION PRECEDENTE : Taille 75px + Bords arrondis */
-        .thumb-icon { width: 75px; height: 75px; border-radius: 12px; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--card-bg); border: 2px solid; flex-shrink: 0; overflow: hidden; background-size: cover; background-position: center; }
-        
-        /* FORM & INPUTS */
+        /* --- NOUVEAU STYLE MOSAÏQUE (GRID) --- */
+        #list-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Colonnes adaptatives */
+            gap: 15px;
+            padding-bottom: 20px;
+        }
+
+        .bonsai-item { 
+            display: flex; 
+            flex-direction: column; /* Empilement vertical */
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden; /* Pour que l'image ne dépasse pas */
+            cursor: pointer; 
+            transition: transform 0.1s;
+            height: 100%;
+        }
+        .bonsai-item:active { transform: scale(0.98); }
+
+        /* IMAGE EN HAUT DE LA CARTE */
+        .thumb-icon { 
+            width: 100%; 
+            height: 150px; /* Hauteur fixe pour l'uniformité */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 3rem; 
+            background: #f8f9fa; 
+            background-size: cover; 
+            background-position: center; 
+            margin: 0;
+            border: none;
+            border-radius: 0;
+        }
+
+        /* INFO EN BAS DE LA CARTE */
+        .bonsai-info {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* BOUTONS & FORM */
         .leaf-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 180px; margin-bottom: 20px; border-radius: var(--radius); background: #E9ECEF; border: 1px dashed #ADB5BD; position: relative; overflow: hidden; }
         .leaf-preview img { width: 100%; height: 180px; object-fit: cover; position: absolute; top: 0; left: 0; }
         .placeholder-content { display: flex; flex-direction: column; align-items: center; z-index: 2; }
@@ -114,14 +116,12 @@
         label { display: block; color: var(--secondary-text); font-weight: 600; font-size: 0.85rem; margin-bottom: 5px; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #CED4DA; border-radius: 8px; font-size: 16px; background: #fff; }
         
-        /* SPECS */
         .specs-row { display: flex; justify-content: space-between; margin-top: 15px; text-align: center; }
         .spec-box { display: flex; flex-direction: column; align-items: center; width: 19%; }
         .icon-square { width: 38px; height: 38px; border-radius: 10px; border: 2px solid; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; background: white; font-size: 1rem; }
         .spec-text { font-size: 0.75rem; font-weight: 700; white-space: nowrap; overflow: hidden; max-width: 100%; }
         .c-blue { color: #3498db; border-color: #3498db; } .c-orange { color: #e67e22; border-color: #e67e22; } .c-green { color: #2ecc71; border-color: #2ecc71; }
         
-        /* BOUTONS & SCREENS */
         .btn-action { display: block; width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .bg-blue { background: var(--primary); } .bg-green { background: var(--success); } .bg-red { background: var(--danger); }
         .add-bonsai-btn-float { width: 100%; padding: 15px; margin-bottom: 20px; text-align: center; font-size: 1.1rem; font-weight: 700; background: var(--success); color: white; border: none; border-radius: var(--radius); cursor: pointer; }
@@ -130,14 +130,12 @@
         .screen.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from {opacity:0} to {opacity:1} }
         
-        /* TOAST */
         #toast { visibility: hidden; min-width: 250px; margin-left: -125px; background-color: var(--success); color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 80px; font-size: 16px; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
         
-        /* ICON STYLES */
-        .style-érable-1 { color: #1E8449; border-color: #27AE60; } .style-pine-1 { color: #154360; border-color: #1A5276; }
+        .style-érable-1 { color: #1E8449; border-color: #27AE60; }
     </style>
 </head>
 <body>
@@ -145,9 +143,7 @@
     <div id="screen-list" class="screen active">
         <div class="app-header">
             <div class="header-top">
-                
                 <span class="header-title">Bonsai Do</span>
-
                 <span id="bonsai-count" class="bonsai-count">0</span>
             </div>
             <div class="sort-bar">
@@ -163,7 +159,7 @@
             <button class="add-bonsai-btn-float" onclick="openEditor(null)">
                 <i class="fa-solid fa-plus"></i> Ajouter un arbre
             </button>
-            <div id="list-container">Chargement de la base de données...</div>
+            <div id="list-container">Chargement...</div>
         </div>
     </div>
 
@@ -207,7 +203,7 @@
     <div id="screen-edit" class="screen">
         <div class="app-header">
             <div class="header-top">
-                <button class="header-btn" onclick="nav('list')"><i class="fa-solid fa-arrow-left"></i></button>
+                <button class="header-btn" style="background:none;border:none;color:white;font-size:1.5rem;" onclick="nav('list')"><i class="fa-solid fa-arrow-left"></i></button>
                 <span id="editor-title">Nouveau</span>
                 <div style="width:30px;"></div>
             </div>
@@ -269,17 +265,14 @@
     <div id="toast"></div>
 
     <script>
-        // --- 1. SERVICE WORKER REGISTRATION (PWA) ---
+        // --- SERVICE WORKER ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                // S'assure que le chemin est correct (./sw.js)
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW enregistré:', reg))
-                    .catch(err => console.log('SW erreur:', err));
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW erreur:', err));
             });
         }
 
-        // --- 2. GESTION INDEXED DB (Stockage Pro) ---
+        // --- DB (IndexedDB) ---
         const DB_NAME = 'BonsaiDoDB';
         const DB_VERSION = 1;
         const STORE_NAME = 'trees';
@@ -290,9 +283,7 @@
                     const request = indexedDB.open(DB_NAME, DB_VERSION);
                     request.onupgradeneeded = (e) => {
                         const db = e.target.result;
-                        if (!db.objectStoreNames.contains(STORE_NAME)) {
-                            db.createObjectStore(STORE_NAME, { keyPath: 'uid' });
-                        }
+                        if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME, { keyPath: 'uid' });
                     };
                     request.onsuccess = (e) => resolve(e.target.result);
                     request.onerror = (e) => reject(e.target.error);
@@ -316,9 +307,7 @@
                     const request = store.put(item);
                     request.onsuccess = () => resolve(request.result);
                     request.onerror = (e) => {
-                        if (e.target.error.name === "QuotaExceededError") {
-                            showToast("Espace disque plein. Impossible de sauvegarder plus de photos.", true);
-                        }
+                        if (e.target.error.name === "QuotaExceededError") showToast("Espace disque plein.", true);
                         reject(e.target.error);
                     };
                 });
@@ -344,7 +333,7 @@
             }
         };
 
-        // --- 3. DATA & CONFIG (300 ESPÈCES INTÉGRÉES) ---
+        // --- DATA ---
         const SPECIES_RAW = [
             "Abies concolor (Sapin)", "Abies koreana (Sapin de Corée)", "Acacia dealbata (Mimosa)", "Acer buergerianum (Érable de Burger)",
             "Acer campestre (Érable champêtre)", "Acer ginnala (Érable de l'Amour)", "Acer palmatum (Érable japonais)", "Acer pseudoplatanus (Érable sycomore)",
@@ -417,7 +406,6 @@
             "Quercus wislizeni (Chêne de Wislizenus)", "Salix nigra (Saule noir)", "Sophora microphylla (Sophora à petites feuilles)", "Sorbus commixta (Sorbier du Japon)"
         ];
 
-        // Base simplifiée pour l'exemple
         const DB_SPECS = [
             {nom:"Acer", usda:"-15°C", expo:"Mi-Ombre", type:"Caduc", potFreq: 2},
             {nom:"Pinus", usda:"-20°C", expo:"Soleil", type:"Persistant", potFreq: 3},
@@ -441,7 +429,6 @@
             {nom:"Wisteria", usda:"-10°C", expo:"Soleil", type:"Caduc", potFreq: 2},
             {nom:"Citrus", usda:"5°C", expo:"Soleil", type:"Tropical", potFreq: 1},
             {nom:"Eucalyptus", usda:"-5°C", expo:"Soleil", type:"Persistant", potFreq: 2}
-            // Note: Pour les autres espèces, la fonction getSpec utilisera "Espèce Inconnue" par défaut.
         ];
         
         const UNKNOWN_SPEC = { nom: "Espèce Inconnue", usda: "?", expo: "?", type: "?", potFreq: 0 };
@@ -451,21 +438,16 @@
         let currentUid = null;
         let currentPhotoBase64 = null;
 
-        // --- 4. LOGIQUE PRINCIPALE ---
+        // --- APP LOGIC ---
         window.onload = async function() {
-            // Remplir datalist
             const dl = document.getElementById('species-list');
             SPECIES_RAW.forEach(s => { let o = document.createElement('option'); o.value=s; dl.appendChild(o); });
-            
-            // Initialisation des données asynchrones
             await refreshData();
             renderList();
         };
 
         async function refreshData() {
-            try {
-                bonsais = await dbApi.getAll();
-            } catch (e) { console.error("Erreur de chargement DB:", e); bonsais = []; }
+            try { bonsais = await dbApi.getAll(); } catch (e) { console.error(e); bonsais = []; }
         }
 
         function getSpec(sid, name) {
@@ -473,7 +455,6 @@
             return found ? { ...found, nom: name } : { nom: name || "Inconnu", ...UNKNOWN_SPEC };
         }
 
-        // TRI ET FILTRE
         function getSortedBonsais() {
             const criteria = document.getElementById('sort-filter').value;
             let list = [...bonsais];
@@ -486,7 +467,6 @@
                 list.sort((a,b) => getSpec(a.sid, a.customName).nom.localeCompare(getSpec(b.sid, b.customName).nom));
             } else if (criteria === 'last_work') {
                 const getLastWorkDate = (b) => {
-                    // Ajout de lastDefo au calcul du dernier travail
                     const dates = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire, b.lastDefo].filter(d => d).map(d => new Date(d));
                     return dates.length ? Math.max(...dates) : 0;
                 };
@@ -495,6 +475,7 @@
             return list;
         }
 
+        // --- NOUVEAU RENDER POUR MOSAÏQUE ---
         function renderList() {
             const container = document.getElementById('list-container');
             container.innerHTML = "";
@@ -502,7 +483,7 @@
             document.getElementById('bonsai-count').innerText = sortedList.length;
 
             if(sortedList.length === 0) {
-                container.innerHTML = `<div style="text-align:center;margin-top:40px;opacity:0.6"><i class="fa-solid fa-seedling" style="font-size:3rem;"></i><br><br>Aucun arbre.<br>Ajoutez-en un !</div>`;
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align:center;margin-top:40px;opacity:0.6"><i class="fa-solid fa-seedling" style="font-size:3rem;"></i><br><br>Aucun arbre.<br>Ajoutez-en un !</div>`;
                 return;
             }
 
@@ -511,7 +492,7 @@
                 let name = b.nom || sp.nom.split('(')[0];
                 
                 let iconHtml = b.photo 
-                    ? `<div class="thumb-icon" style="background-image: url('${b.photo}'); border-color:#ccc;"></div>`
+                    ? `<div class="thumb-icon" style="background-image: url('${b.photo}');"></div>`
                     : `<div class="thumb-icon style-érable-1"><i class="fa-solid fa-tree"></i></div>`;
 
                 const div = document.createElement('div');
@@ -519,23 +500,24 @@
                 div.onclick = () => openEditor(b.uid);
                 div.innerHTML = `
                     ${iconHtml}
-                    <div style="flex:1">
-                        <div style="font-weight:700;">${name}</div>
-                        <div style="font-size:0.8rem; color:var(--secondary-text)">${sp.nom}</div>
-                        <div style="font-size:0.7rem; margin-top:4px; color:#999"><i class="fa-solid fa-snowflake"></i> ${sp.usda} | <i class="fa-solid fa-sun"></i> ${sp.expo}</div>
+                    <div class="bonsai-info">
+                        <div style="font-weight:700; font-size:1rem; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%">${name}</div>
+                        <div style="font-size:0.8rem; color:var(--secondary-text); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%">${sp.nom}</div>
+                        <div style="font-size:0.75rem; color:#999; display:flex; gap:8px;">
+                            <span><i class="fa-solid fa-snowflake"></i> ${sp.usda}</span>
+                            <span><i class="fa-solid fa-sun"></i> ${sp.expo}</span>
+                        </div>
                     </div>
-                    <i class="fa-solid fa-chevron-right" style="color:#ddd"></i>
                 `;
                 container.appendChild(div);
             });
         }
 
-        // --- 5. LOGIQUE ÉDITEUR (ASYNCHRONE) ---
+        // --- EDITOR & UTILS ---
         function openEditor(uid) {
             currentUid = uid;
             currentPhotoBase64 = null;
             
-            // Reset Form
             document.querySelectorAll('input, select, textarea').forEach(i => i.value = "");
             document.getElementById('editor-title').innerText = uid ? "Modifier" : "Nouvel Arbre";
             document.getElementById('btn-delete').style.display = uid ? "block" : "none";
@@ -546,14 +528,12 @@
                     document.getElementById('edit-species-input').value = b.customName;
                     document.getElementById('edit-name').value = b.nom || "";
                     document.getElementById('edit-date').value = b.date || "";
-                    
                     document.getElementById('edit-last-pot').value = b.lastPot || "";
                     document.getElementById('edit-last-cut').value = b.lastCut || "";
                     document.getElementById('edit-last-fertil').value = b.lastFertil || "";
                     document.getElementById('edit-last-wire').value = b.lastWire || "";
-                    document.getElementById('edit-last-defo').value = b.lastDefo || ""; // NOUVEAU: Effeuillage
-                    document.getElementById('edit-notes').value = b.notes || ""; // NOUVEAU: Observations
-                    
+                    document.getElementById('edit-last-defo').value = b.lastDefo || "";
+                    document.getElementById('edit-notes').value = b.notes || "";
                     if(b.photo) currentPhotoBase64 = b.photo;
                 }
             }
@@ -564,47 +544,40 @@
 
         async function saveBonsai() {
             const speciesInput = document.getElementById('edit-species-input').value.trim();
-            if(!speciesInput) return showToast("Veuillez choisir ou saisir une espèce.", true);
+            if(!speciesInput) return showToast("Espèce requise", true);
 
             const item = {
                 uid: currentUid || Date.now(),
                 sid: 9999,
                 customName: speciesInput,
-                
                 nom: document.getElementById('edit-name').value,
                 date: document.getElementById('edit-date').value,
                 photo: currentPhotoBase64,
-                
                 lastPot: document.getElementById('edit-last-pot').value,
                 lastCut: document.getElementById('edit-last-cut').value,
                 lastFertil: document.getElementById('edit-last-fertil').value,
                 lastWire: document.getElementById('edit-last-wire').value,
-                lastDefo: document.getElementById('edit-last-defo').value, // NOUVEAU: Effeuillage
-                notes: document.getElementById('edit-notes').value // NOUVEAU: Observations
+                lastDefo: document.getElementById('edit-last-defo').value,
+                notes: document.getElementById('edit-notes').value
             };
 
             try {
                 await dbApi.put(item);
                 await refreshData();
-                showToast(`Arbre "${item.nom || item.customName}" sauvegardé !`);
+                showToast("Sauvegardé !");
                 nav('list');
-            } catch(e) {
-                 showToast("Erreur de sauvegarde.", true);
-            }
+            } catch(e) { showToast("Erreur sauvegarde", true); }
         }
 
         async function deleteBonsai() {
-            const b = bonsais.find(x => x.uid === currentUid);
-            const name = b.nom || b.customName;
-            if(confirm(`Supprimer définitivement l'arbre "${name}" ?`)) {
+            if(confirm("Supprimer ?")) {
                 await dbApi.delete(currentUid);
                 await refreshData();
-                showToast(`Arbre "${name}" supprimé.`);
+                showToast("Supprimé.");
                 nav('list');
             }
         }
 
-        // --- UTILS & PHOTO LOGIC ---
         function updateSpecsFromInput() {
             const val = document.getElementById('edit-species-input').value;
             const sp = getSpec(0, val);
@@ -636,7 +609,7 @@
         }
 
         function removePhoto() { currentPhotoBase64 = null; updateLeafPreview(); }
-
+        
         function updateLeafPreview() {
             const img = document.getElementById('preview-image-tag');
             const ph = document.getElementById('placeholder-content');
@@ -648,14 +621,9 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('screen-'+screen).classList.add('active');
-            
-            // Met en évidence le bouton correspondant dans la barre fixe en bas
             const navBtn = document.querySelector(`#nav-${screen}`);
             if(navBtn) navBtn.classList.add('active');
-
-            if(screen === 'list') { 
-                renderList(); 
-            }
+            if(screen === 'list') renderList(); 
         }
 
         function showToast(msg, err=false) {
@@ -665,52 +633,31 @@
             setTimeout(() => t.className = t.className.replace('show',''), 3000);
         }
 
-        // --- BACKUP & RESTORE (ASYNCHRONE) ---
         async function downloadBackup() {
             const data = await dbApi.getAll();
-            if (data.length === 0) {
-                showToast("Rien à sauvegarder, la collection est vide.", true);
-                return;
-            }
             const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = "bonsai_backup_" + new Date().toISOString().slice(0,10).replace(/-/g, '') + ".json";
+            a.download = "backup.json";
             a.click();
-            showToast("Sauvegarde téléchargée !");
         }
 
         function restoreBackup() {
             const fileInput = document.getElementById('backup-file');
             const file = fileInput.files[0];
-            if(!file) return showToast("Veuillez sélectionner un fichier JSON.", true);
-            
+            if(!file) return;
             const reader = new FileReader();
             reader.onload = async (e) => {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if(Array.isArray(data)) {
-                        for(let item of data) await dbApi.put(item);
-                        await refreshData();
-                        fileInput.value = '';
-                        showToast(`Restauration réussie ! ${data.length} arbres chargés.`);
-                        nav('list');
-                    } else {
-                        showToast("Le contenu du fichier est invalide.", true);
-                    }
-                } catch (err) {
-                    showToast("Erreur de lecture : Fichier JSON invalide.", true);
-                }
+                const data = JSON.parse(e.target.result);
+                for(let item of data) await dbApi.put(item);
+                await refreshData();
+                nav('list');
             };
             reader.readAsText(file);
         }
         
         async function resetApp() {
-            if(confirm("ATTENTION : Cette action va EFFACER TOUS VOS BONSÄIS (photos incluses). Continuer ?")) { 
-                await dbApi.clear();
-                showToast("Application réinitialisée.", true);
-                setTimeout(() => location.reload(), 1500);
-            }
+            if(confirm("Tout effacer ?")) { await dbApi.clear(); location.reload(); }
         }
     </script>
 </body>
