@@ -31,8 +31,8 @@
             --danger: #DC3545; 
             --success: #28A745; 
             
-            /* MODIFICATION : Nouvelle couleur Vert pâle pour le bouton */
-            --pale-green-btn: #C5E1A5;
+            /* MODIFICATION : Nouvelle couleur Marron clair pastel pour le bouton */
+            --pastel-brown-btn: #DCC4AC;
 
             /* DIVERS */
             --radius: 12px; 
@@ -49,7 +49,7 @@
         /* HEADER */
         .app-header { 
             background: var(--primary); 
-            color: #000000; /* Le texte du titre reste noir */
+            color: #000000; 
             padding: 16px 15px; 
             position: sticky; 
             top: 0; 
@@ -74,7 +74,6 @@
             gap: 15px;
         }
         
-        /* MODIFICATION : Cible spécifiquement l'icône (le logo Torii) pour le mettre en rouge */
         .header-title i {
             color: #D32F2F; /* Rouge japonais */
         }
@@ -171,109 +170,7 @@
         .btn-action { display: block; width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
         .bg-blue { background: var(--primary); } .bg-green { background: var(--success); } .bg-red { background: var(--danger); }
         
-        /* MODIFICATION : Bouton flottant en vert pâle */
+        /* MODIFICATION : Bouton flottant en Marron Pastel */
         .add-bonsai-btn-float { 
             width: 100%; 
-            padding: 15px; 
-            margin-bottom: 20px; 
-            text-align: center; 
-            font-size: 1.1rem; 
-            font-weight: 700; 
-            background: var(--pale-green-btn); /* Nouvelle variable vert pâle */
-            color: #000000; /* Texte noir */
-            border: none; 
-            border-radius: var(--radius); 
-            cursor: pointer; 
-        }
-        
-        .screen { display: none; padding-bottom: 20px; }
-        .screen.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
-        
-        #toast { visibility: hidden; min-width: 250px; margin-left: -125px; background-color: var(--success); color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 80px; font-size: 16px; }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-        
-        .style-érable-1 { color: var(--primary-dark); }
-    </style>
-</head>
-<body>
-
-    <div id="screen-list" class="screen active">
-        <div class="app-header">
-            <div class="header-top">
-                <span class="header-title">
-                    <i class="fa-solid fa-torii-gate"></i>
-                    Bonsai Do
-                </span>
-                <span id="bonsai-count" class="bonsai-count">0</span>
-            </div>
-            <div class="sort-bar">
-                <select class="sort-select" id="sort-filter" onchange="renderList()">
-                    <option value="name_asc">🔤 Nom (A-Z)</option>
-                    <option value="date_desc">📅 Ajout Récent</option>
-                    <option value="species_asc">🌿 Espèce</option>
-                    <option value="last_work">🛠️ Dernier Travail</option>
-                </select>
-            </div>
-        </div>
-        <div class="main-container">
-            <button class="add-bonsai-btn-float" onclick="openEditor(null)">
-                <i class="fa-solid fa-plus"></i> Ajouter un arbre
-            </button>
-            <div id="list-container">Chargement...</div>
-        </div>
-    </div>
-
-    <div id="screen-calendar" class="screen">
-        <div class="app-header">
-            <div class="header-top" style="justify-content: center;">
-                <span class="header-title"><i class="fa-solid fa-calendar-check"></i> Calendrier</span>
-            </div>
-        </div>
-        <div class="main-container">
-            <div class="card">
-                <h3><i class="fa-solid fa-list-ul"></i> Travaux à Venir</h3>
-                <div id="calendar-list"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="screen-settings" class="screen">
-        <div class="app-header">
-            <div class="header-top" style="justify-content: center;">
-                <span class="header-title"><i class="fa-solid fa-gear"></i> Paramètres</span>
-            </div>
-        </div>
-        <div class="main-container">
-            <div class="card">
-                <h3><i class="fa-solid fa-database"></i> Sauvegarde (JSON)</h3>
-                <button class="btn-action bg-blue" onclick="downloadBackup()"><i class="fa-solid fa-download"></i> Télécharger</button>
-                <hr style="margin:20px 0; border:0; border-top:1px solid #E5E2D5;">
-                <label>Restaurer :</label>
-                <input type="file" id="backup-file" accept=".json">
-                <button class="btn-action bg-green" onclick="restoreBackup()"><i class="fa-solid fa-upload"></i> Restaurer</button>
-            </div>
-            <div class="card">
-                 <h3><i class="fa-solid fa-mobile-screen"></i> Installation</h3>
-                 <p style="font-size:0.9rem; color:var(--secondary-text)">Pour installer l'app, utilisez l'option "Ajouter à l'écran d'accueil" de votre navigateur.</p>
-            </div>
-             <button class="btn-action bg-red" onclick="resetApp()">⚠️ Tout effacer</button>
-        </div>
-    </div>
-
-    <div id="screen-edit" class="screen">
-        <div class="app-header">
-            <div class="header-top">
-                <button class="header-btn" style="background:none;border:none;color:#000000;font-size:1.5rem;" onclick="nav('list')"><i class="fa-solid fa-arrow-left"></i></button>
-                <span id="editor-title">Nouveau</span>
-                <div style="width:30px;"></div>
-            </div>
-        </div>
-        <div class="main-container">
-            <div class="card">
-                <div class="leaf-preview" id="leaf-preview">
-                    <img id="preview-image-tag" style="display:none;" />
-                    <div class="placeholder-content" id="placeholder-content">
-                        <div class="icon-container style-érable-1"><i class="fa-
+            padding: 1
