@@ -3,8 +3,8 @@
   "short_name": "Bonsai Do",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#EFECE1",
-  "theme_color": "#9CAB53",
+  "background_color": "#D5D1C0",
+  "theme_color": "#A9C38E",
   "orientation": "portrait",
   "icons": [
     {
