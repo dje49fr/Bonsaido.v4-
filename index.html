@@ -15,13 +15,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- DESIGN GLOBAL MODIFIÉ (Vert Olive & Beige) --- */
+        /* --- DESIGN GLOBAL MODIFIÉ --- */
         :root { 
             /* COULEURS PRINCIPALES */
-            --primary: #9CAB53; /* Vert olive jaunâtre */
+            --primary: #9CAB53; /* Vert olive */
             --primary-dark: #818F41; 
-            --bg: #EFECE1; /* Fond principal beige clair */
-            --card-bg: #FDFBF4; /* Fond des cartes beige crème */
+            
+            /* MODIFICATION : Fond beige plus foncé */
+            --bg: #D5D1C0; 
+            
+            --card-bg: #FDFBF4; 
             
             /* TEXTE */
             --text: #3E3C35; 
@@ -31,6 +34,9 @@
             --danger: #DC3545; 
             --success: #28A745; 
             
+            /* NOUVELLE COULEUR : Bleu pâle pour le bouton */
+            --pale-blue-btn: #A8C8E0;
+
             /* DIVERS */
             --radius: 12px; 
             --shadow: 0 4px 12px rgba(0,0,0,0.06); 
@@ -46,7 +52,8 @@
         /* HEADER */
         .app-header { 
             background: var(--primary); 
-            color: var(--card-bg); 
+            /* MODIFICATION : Titre et logo en noir */
+            color: #000000;
             padding: 16px 15px; 
             position: sticky; 
             top: 0; 
@@ -70,10 +77,12 @@
             align-items: center; 
             gap: 15px;
         }
-        .bonsai-count { font-size: 0.75rem; background: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 10px; }
+        /* Compteur avec texte noir pour lisibilité sur fond olive */
+        .bonsai-count { font-size: 0.75rem; background: rgba(255,255,255,0.3); color: #000; padding: 2px 8px; border-radius: 10px; }
 
         .sort-bar { width: 100%; margin-top: 10px; display: flex; gap: 10px; }
-        .sort-select { flex: 1; padding: 8px; border-radius: 6px; border: none; font-size: 0.9rem; background: rgba(255,255,255,0.25); color: var(--card-bg); font-weight: 600; outline: none; }
+        /* Selecteurs ajustés pour le texte noir */
+        .sort-select { flex: 1; padding: 8px; border-radius: 6px; border: none; font-size: 0.9rem; background: rgba(0,0,0,0.1); color: #000; font-weight: 600; outline: none; }
         .sort-select option { color: var(--text); background: var(--card-bg); }
         
         /* NAVIGATION */
@@ -161,7 +170,21 @@
         
         .btn-action { display: block; width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
         .bg-blue { background: var(--primary); } .bg-green { background: var(--success); } .bg-red { background: var(--danger); }
-        .add-bonsai-btn-float { width: 100%; padding: 15px; margin-bottom: 20px; text-align: center; font-size: 1.1rem; font-weight: 700; background: var(--success); color: white; border: none; border-radius: var(--radius); cursor: pointer; }
+        
+        /* MODIFICATION : Bouton flottant en bleu pâle avec texte noir */
+        .add-bonsai-btn-float { 
+            width: 100%; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            text-align: center; 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            background: var(--pale-blue-btn); /* Couleur bleu pâle */
+            color: #000000; /* Texte noir */
+            border: none; 
+            border-radius: var(--radius); 
+            cursor: pointer; 
+        }
         
         .screen { display: none; padding-bottom: 20px; }
         .screen.active { display: block; animation: fadeIn 0.3s; }
@@ -243,7 +266,7 @@
     <div id="screen-edit" class="screen">
         <div class="app-header">
             <div class="header-top">
-                <button class="header-btn" style="background:none;border:none;color:var(--card-bg);font-size:1.5rem;" onclick="nav('list')"><i class="fa-solid fa-arrow-left"></i></button>
+                <button class="header-btn" style="background:none;border:none;color:#000000;font-size:1.5rem;" onclick="nav('list')"><i class="fa-solid fa-arrow-left"></i></button>
                 <span id="editor-title">Nouveau</span>
                 <div style="width:30px;"></div>
             </div>
