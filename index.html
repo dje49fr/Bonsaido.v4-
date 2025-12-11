@@ -173,4 +173,554 @@
         /* MODIFICATION : Bouton flottant en Marron Pastel */
         .add-bonsai-btn-float { 
             width: 100%; 
-            padding: 1
+            padding: 15px; 
+            margin-bottom: 20px; 
+            text-align: center; 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            background: var(--pastel-brown-btn); /* Variable modifiée */
+            color: #000000; /* Texte noir */
+            border: none; 
+            border-radius: var(--radius); 
+            cursor: pointer; 
+        }
+        
+        .screen { display: none; padding-bottom: 20px; }
+        .screen.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+        
+        #toast { visibility: hidden; min-width: 250px; margin-left: -125px; background-color: var(--success); color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 80px; font-size: 16px; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        
+        .style-érable-1 { color: var(--primary-dark); }
+    </style>
+</head>
+<body>
+
+    <div id="screen-list" class="screen active">
+        <div class="app-header">
+            <div class="header-top">
+                <span class="header-title">
+                    <i class="fa-solid fa-torii-gate"></i>
+                    Bonsai Do
+                </span>
+                <span id="bonsai-count" class="bonsai-count">0</span>
+            </div>
+            <div class="sort-bar">
+                <select class="sort-select" id="sort-filter" onchange="renderList()">
+                    <option value="name_asc">🔤 Nom (A-Z)</option>
+                    <option value="date_desc">📅 Ajout Récent</option>
+                    <option value="species_asc">🌿 Espèce</option>
+                    <option value="last_work">🛠️ Dernier Travail</option>
+                </select>
+            </div>
+        </div>
+        <div class="main-container">
+            <button class="add-bonsai-btn-float" onclick="openEditor(null)">
+                <i class="fa-solid fa-plus"></i> Ajouter un arbre
+            </button>
+            <div id="list-container">Chargement...</div>
+        </div>
+    </div>
+
+    <div id="screen-calendar" class="screen">
+        <div class="app-header">
+            <div class="header-top" style="justify-content: center;">
+                <span class="header-title"><i class="fa-solid fa-calendar-check"></i> Calendrier</span>
+            </div>
+        </div>
+        <div class="main-container">
+            <div class="card">
+                <h3><i class="fa-solid fa-list-ul"></i> Travaux à Venir</h3>
+                <div id="calendar-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-settings" class="screen">
+        <div class="app-header">
+            <div class="header-top" style="justify-content: center;">
+                <span class="header-title"><i class="fa-solid fa-gear"></i> Paramètres</span>
+            </div>
+        </div>
+        <div class="main-container">
+            <div class="card">
+                <h3><i class="fa-solid fa-database"></i> Sauvegarde (JSON)</h3>
+                <button class="btn-action bg-blue" onclick="downloadBackup()"><i class="fa-solid fa-download"></i> Télécharger</button>
+                <hr style="margin:20px 0; border:0; border-top:1px solid #E5E2D5;">
+                <label>Restaurer :</label>
+                <input type="file" id="backup-file" accept=".json">
+                <button class="btn-action bg-green" onclick="restoreBackup()"><i class="fa-solid fa-upload"></i> Restaurer</button>
+            </div>
+            <div class="card">
+                 <h3><i class="fa-solid fa-mobile-screen"></i> Installation</h3>
+                 <p style="font-size:0.9rem; color:var(--secondary-text)">Pour installer l'app, utilisez l'option "Ajouter à l'écran d'accueil" de votre navigateur.</p>
+            </div>
+             <button class="btn-action bg-red" onclick="resetApp()">⚠️ Tout effacer</button>
+        </div>
+    </div>
+
+    <div id="screen-edit" class="screen">
+        <div class="app-header">
+            <div class="header-top">
+                <button class="header-btn" style="background:none;border:none;color:#000000;font-size:1.5rem;" onclick="nav('list')"><i class="fa-solid fa-arrow-left"></i></button>
+                <span id="editor-title">Nouveau</span>
+                <div style="width:30px;"></div>
+            </div>
+        </div>
+        <div class="main-container">
+            <div class="card">
+                <div class="leaf-preview" id="leaf-preview">
+                    <img id="preview-image-tag" style="display:none;" />
+                    <div class="placeholder-content" id="placeholder-content">
+                        <div class="icon-container style-érable-1"><i class="fa-solid fa-cannabis"></i></div>
+                        <div style="font-weight:600; color:var(--secondary-text)">Ajouter Photo</div>
+                    </div>
+                    <input type="file" id="photo-upload" accept="image/*" style="display:none;" onchange="handlePhotoUpload(this)">
+                </div>
+                <div style="text-align:center;">
+                    <button class="btn-action bg-blue" style="width:auto; display:inline-block; margin:0;" onclick="document.getElementById('photo-upload').click()">Photo</button>
+                    <button class="btn-action bg-red" style="width:auto; display:inline-block; margin:0;" onclick="removePhoto()"><i class="fa-solid fa-trash"></i></button>
+                </div>
+                <div class="form-group" style="margin-top:15px;">
+                    <label>Espèce (Tapez pour rechercher)</label>
+                    <input list="species-list" id="edit-species-input" onchange="updateSpecsFromInput()">
+                    <datalist id="species-list"></datalist>
+                </div>
+                <div class="specs-row">
+                    <div class="spec-box"><div class="icon-square c-blue"><i class="fa-solid fa-snowflake"></i></div><span class="spec-text" id="v-usda">-</span></div>
+                    <div class="spec-box"><div class="icon-square c-orange"><i class="fa-solid fa-sun"></i></div><span class="spec-text" id="v-expo">-</span></div>
+                    <div class="spec-box"><div class="icon-square c-green"><i class="fa-solid fa-leaf"></i></div><span class="spec-text" id="v-type">-</span></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Identité</h3>
+                <label>Surnom</label><input type="text" id="edit-name">
+                <label>Date Achat</label><input type="date" id="edit-date">
+            </div>
+
+            <div class="card">
+                <h3>Derniers Travaux</h3>
+                <div style="display:flex; gap:10px;"><div style="flex:1"><label>Rempotage</label><input type="date" id="edit-last-pot"></div><div style="flex:1"><label>Taille</label><input type="date" id="edit-last-cut"></div></div>
+                <div style="display:flex; gap:10px; margin-top:10px;"><div style="flex:1"><label>Effeuillage</label><input type="date" id="edit-last-defo"></div><div style="flex:1"><label>Engrais</label><input type="date" id="edit-last-fertil"></div></div>
+                <div style="display:flex; gap:10px; margin-top:10px;"><div style="flex:1"><label>Ligature</label><input type="date" id="edit-last-wire"></div></div>
+            </div>
+
+            <div class="card">
+                <h3>Observations</h3>
+                <textarea id="edit-notes" rows="3" placeholder="Notes générales, taille, maladies..."></textarea>
+            </div>
+
+            <button class="btn-action bg-blue" onclick="saveBonsai()">💾 Enregistrer</button>
+            <button class="btn-action bg-red" id="btn-delete" style="margin-top: 10px;" onclick="deleteBonsai()">Supprimer</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-btn active" id="nav-list" onclick="nav('list')"><i class="fa-solid fa-seedling"></i><span>Arbres</span></button>
+        <button class="nav-btn" id="nav-cal" onclick="nav('calendar')"><i class="fa-solid fa-calendar"></i><span>Calendrier</span></button>
+        <button class="nav-btn" id="nav-set" onclick="nav('settings')"><i class="fa-solid fa-gear"></i><span>Réglages</span></button>
+    </div>
+    <div id="toast"></div>
+
+    <script>
+        // --- SERVICE WORKER ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW erreur:', err));
+            });
+        }
+
+        // --- DB (IndexedDB) ---
+        const DB_NAME = 'BonsaiDoDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'trees';
+
+        const dbApi = {
+            open: () => {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(DB_NAME, DB_VERSION);
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME, { keyPath: 'uid' });
+                    };
+                    request.onsuccess = (e) => resolve(e.target.result);
+                    request.onerror = (e) => reject(e.target.error);
+                });
+            },
+            getAll: async () => {
+                const db = await dbApi.open();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const store = tx.objectStore(STORE_NAME);
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            },
+            put: async (item) => {
+                const db = await dbApi.open();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    const request = store.put(item);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (e) => {
+                        if (e.target.error.name === "QuotaExceededError") showToast("Espace disque plein.", true);
+                        reject(e.target.error);
+                    };
+                });
+            },
+            delete: async (uid) => {
+                const db = await dbApi.open();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    const request = store.delete(uid);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            },
+            clear: async () => {
+                const db = await dbApi.open();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    store.clear();
+                    tx.oncomplete = () => resolve();
+                });
+            }
+        };
+
+        // --- DATA ---
+        const SPECIES_RAW = [
+            "Abies concolor (Sapin)", "Abies koreana (Sapin de Corée)", "Acacia dealbata (Mimosa)", "Acer buergerianum (Érable de Burger)",
+            "Acer campestre (Érable champêtre)", "Acer ginnala (Érable de l'Amour)", "Acer palmatum (Érable japonais)", "Acer pseudoplatanus (Érable sycomore)",
+            "Aesculus hippocastanum (Marronnier)", "Albizia julibrissin (Arbre de soie)", "Alnus glutinosa (Aulne glutineux)", "Amelanchier lamarckii (Amélanchier)",
+            "Araucaria araucana (Désespoir des singes)", "Arbutus unedo (Arbousier)", "Bambusa (Bambou)", "Bauhinia variegata (Arbre aux orchidées)",
+            "Betula pendula (Bouleau pleureur)", "Betula pubescens (Bouleau pubescent)", "Buxus sempervirens (Buis)", "Callistemon citrinus (Rince-bouteilles)",
+            "Carpinus betulus (Charme)", "Carya ovata (Noyer tendre)", "Castanea sativa (Châtaignier)", "Catalpa bignonioides (Catalpa commun)",
+            "Cedrus atlantica (Cèdre de l'Atlas)", "Cedrus libani (Cèdre du Liban)", "Celtis australis (Micocoulier)", "Cercis siliquastrum (Arbre de Judée)",
+            "Chamaecyparis lawsoniana (Faux cyprès)", "Chamaecyparis obtusa (Cyprès Hinoki)", "Chionanthus virginicus (Arbre à neige)", "Citrus limon (Citronnier)",
+            "Citrus sinensis (Oranger)", "Cornus florida (Cornouiller)", "Cornus kousa (Cornouiller de Kousa)", "Corylus avellana (Noisetier)",
+            "Cotoneaster horizontalis (Cotonéaster)", "Crataegus monogyna (Aubépine)", "Cryptomeria japonica (Cèdre du Japon)", "Cupressus sempervirens (Cyprès)",
+            "Diospyros kaki (Plaqueminier)", "Elaeagnus angustifolia (Olivier de Bohême)", "Eriobotrya japonica (Néflier)", "Eucalyptus globulus (Eucalyptus)",
+            "Fagus sylvatica (Hêtre commun)", "Ficus benghalensis (Figuier de l'Inde)", "Ficus carica (Figuier commun)", "Ficus retusa (Figuier Retusa)",
+            "Fraxinus excelsior (Frêne commun)", "Ginkgo biloba (Arbre aux quarante écus)", "Gleditsia triacanthos (Févier)", "Ilex aquifolium (Houx)",
+            "Jacaranda mimosifolia (Jacaranda)", "Juglans regia (Noyer commun)", "Juniperus communis (Genévrier commun)", "Juniperus procumbens (Genévrier rampant)",
+            "Koelreuteria paniculata (Arbre aux lanternes)", "Lagerstroemia indica (Lilas des Indes)", "Larix decidua (Mélèze d'Europe)", "Liquidambar styraciflua (Copalme)",
+            "Liriodendron tulipifera (Tulipier)", "Magnolia grandiflora (Magnolia)", "Malus sylvestris (Pommier sauvage)", "Morus alba (Mûrier blanc)",
+            "Nandina domestica (Bambou sacré)", "Nyssa sylvatica (Tupelo)", "Olea europaea (Olivier)", "Parrotia persica (Parrotie de Perse)",
+            "Picea abies (Épicéa commun)", "Picea pungens (Épicéa bleu)", "Pinus mugo (Pin de montagne)", "Pinus nigra (Pin noir d'Autriche)",
+            "Pinus parviflora (Pin blanc du Japon)", "Pinus sylvestris (Pin sylvestre)", "Pinus thunbergii (Pin noir du Japon)", "Platanus hispanica (Platane)",
+            "Podocarpus macrophyllus (Podocarpe)", "Populus nigra (Peuplier noir)", "Prunus avium (Merisier)", "Prunus cerasifera (Prunier-cerise)",
+            "Prunus serrulata (Cerisier du Japon)", "Punica granatum (Grenadier)", "Pyrus communis (Poirier commun)", "Quercus ilex (Chêne vert)",
+            "Quercus robur (Chêne pédonculé)", "Quercus suber (Chêne-liège)", "Rhododendron (Rhododendron)", "Robinia pseudoacacia (Robinier)",
+            "Salix babylonica (Saule pleureur)", "Sequoia sempervirens (Séquoia)", "Sophora japonica (Sophora)", "Sorbus aucuparia (Sorbier)",
+            "Taxodium distichum (Cyprès chauve)", "Taxus baccata (If commun)", "Thuja occidentalis (Thuya)", "Tilia cordata (Tilleul)",
+            "Tsuga canadensis (Pruche du Canada)", "Ulmus minor (Orme champêtre)", "Ulmus parvifolia (Orme de Chine)", "Wisteria sinensis (Glycine)",
+            "Zelkova serrata (Orme du Japon)", "Acacia retinodes (Mimosa des quatre saisons)", "Cupressus arizonica (Cyprès bleu)", "Lagerstroemia fauriei (Lilas des Indes)",
+            "Liquidambar orientalis (Copalme d'Orient)", "Magnolia soulangeana (Magnolia de Soulange)", "Picea orientalis (Épicéa d'Orient)", "Pinus pinea (Pin parasol)",
+            "Populus alba (Peuplier blanc)", "Prunus laurocerasus (Laurier-cerise)", "Pyrus calleryana (Poirier de Callery)", "Quercus cerris (Chêne chevelu)",
+            "Quercus coccifera (Chêne kermès)", "Robinia hispida (Faux-acacia)", "Salix caprea (Saule marsault)", "Sequoia giganteum (Séquoia géant)",
+            "Sorbus torminalis (Alisier torminal)", "Taxodium mucronatum (Cyprès de Montezuma)", "Tilia platyphyllos (Tilleul à larges feuilles)", "Tsuga heterophylla (Pruche de l'Ouest)",
+            "Ulmus glabra (Orme de montagne)", "Wisteria floribunda (Glycine du Japon)", "Abies nordmanniana (Sapin de Nordmann)", "Acacia melanoxylon (Acacia noir)",
+            "Acer negundo (Érable à feuilles de frêne)", "Celtis sinensis (Micocoulier de Chine)", "Chamaecyparis pisifera (Faux cyprès de Sawara)", "Crataegus laevigata (Aubépine)",
+            "Fagus orientalis (Hêtre d'Orient)", "Ilex crenata (Houx crénelé)", "Juglans nigra (Noyer noir)", "Juniperus chinensis (Genévrier de Chine)",
+            "Koelreuteria bipinnata (Arbre aux lanternes)", "Larix kaempferi (Mélèze du Japon)", "Magnolia stellata (Magnolia étoilé)", "Morus rubra (Mûrier rouge)",
+            "Olea capensis (Olivier du Cap)", "Picea omorika (Épicéa de Serbie)", "Pinus densiflora (Pin rouge du Japon)", "Platanus orientalis (Platane d'Orient)",
+            "Populus tremula (Tremble)", "Prunus padus (Merisier à grappes)", "Pyrus nivalis (Poirier des neiges)", "Quercus faginea (Chêne du Portugal)",
+            "Quercus macrocarpa (Chêne à gros fruits)", "Robinia viscosa (Robinier visqueux)", "Salix matsudana (Saule tortueux)", "Sequoia sempervirens 'Aptos Blue' (Séquoia bleu)",
+            "Sorbus domestica (Cormier)", "Taxus cuspidata (If du Japon)", "Tilia americana (Tilleul d'Amérique)", "Tsuga mertensiana (Pruche de montagne)",
+            "Ulmus pumila (Orme de Sibérie)", "Wisteria brachybotrys (Glycine à fleurs courtes)", "Abies fraseri (Sapin de Fraser)", "Acacia verticillata (Acacia verticillé)",
+            "Acer rubrum (Érable rouge)", "Celtis occidentalis (Micocoulier occidental)", "Chamaecyparis thyoides (Cyprès blanc)", "Crataegus viridis (Aubépine verte)",
+            "Fagus grandifolia (Hêtre d'Amérique)", "Ilex serrata (Houx dentelé)", "Juglans cinerea (Noyer cendré)", "Juniperus horizontalis (Genévrier rampant)",
+            "Koelreuteria elegans (Arbre aux lanternes)", "Liquidambar formosana (Copalme de Chine)", "Magnolia tripetala (Magnolia parapluie)", "Morus celtidifolia (Mûrier celtidé)",
+            "Olea lancea (Olivier lancéolé)", "Picea sitchensis (Épicéa de Sitka)", "Pinus flexilis (Pin flexible)", "Platanus racemosa (Platane de Californie)",
+            "Populus trichocarpa (Peuplier baumier)", "Prunus serasus (Cerisier acide)", "Pyrus salicifolia (Poirier à feuilles de saule)", "Quercus coccinea (Chêne écarlate)",
+            "Quercus palustris (Chêne des marais)", "Robinia neomexicana (Robinier du Nouveau-Mexique)", "Salix purpurea (Saule pourpre)", "Sequoia sempervirens 'Filoli' (Séquoia Filoli)",
+            "Sorbus intermedia (Sorbier de Suède)", "Taxus media (If hybride)", "Tilia heterophylla (Tilleul hétérophylle)", "Tsuga sieboldii (Pruche du Japon)",
+            "Ulmus davidiana (Orme de David)", "Wisteria frutescens (Glycine américaine)", "Abies procera (Sapin noble)", "Acacia longifolia (Mimosa longifolia)",
+            "Acer saccharum (Érable à sucre)", "Celtis reticulata (Micocoulier réticulé)", "Chamaecyparis nootkatensis (Cyprès de Nootka)", "Crataegus phaenopyrum (Aubépine d'Amérique)",
+            "Fagus lucida (Hêtre brillant)", "Ilex verticillata (Houx verticillé)", "Juglans hindsii (Noyer de Hinds)", "Juniperus squamata (Genévrier écailleux)",
+            "Koelreuteria paniculata 'Fastigiata' (Arbre aux lanternes)", "Liquidambar orientalis 'Rotundiloba' (Copalme d'Orient)", "Magnolia virginiana (Magnolia vierge)", "Morus microphylla (Mûrier microphyle)",
+            "Olea paniculata (Olivier paniculaire)", "Picea breweriana (Épicéa de Brewer)", "Pinus jeffreyi (Pin de Jeffrey)", "Platanus wrightii (Platane de Wright)",
+            "Populus deltoides (Peuplier deltoïde)", "Prunus subhirtella (Cerisier d'hiver)", "Pyrus betulifolia (Poirier à feuilles de bouleau)", "Quercus dentata (Chêne à dents)",
+            "Quercus rubra (Chêne rouge)", "Robinia × ambigua (Robinier ambigu)", "Salix viminalis (Saule des vanniers)", "Sequoiadendron giganteum (Séquoia géant)",
+            "Sorbus aucuparia 'Fastigiata' (Sorbier Fastigié)", "Taxus wallichiana (If de Wallich)", "Tilia monticola (Tilleul de montagne)", "Tsuga diversifolia (Pruche diverse)",
+            "Ulmus rubra (Orme rouge)", "Wisteria sinensis 'Plena' (Glycine double)", "Abies magnifica (Sapin magnifique)", "Acacia paradoxa (Mimosa paradoxal)",
+            "Acer griseum (Érable gris)", "Celtis tournefortii (Micocoulier de Tournefort)", "Chamaecyparis obtusa 'Nana Gracilis' (Cyprès Hinoki nain)", "Crataegus crus-galli (Aubépine ergot de coq)",
+            "Fagus mexicana (Hêtre du Mexique)", "Ilex vomitoria (Houx vomitoire)", "Juglans mandshurica (Noyer de Mandchourie)", "Juniperus sabina (Genévrier sabine)",
+            "Larix lyallii (Mélèze subalpin)", "Liquidambar styraciflua 'Gumball' (Copalme Gumball)", "Magnolia acuminata (Magnolia acuminé)", "Morus nigra (Mûrier noir)",
+            "Olea woodiana (Olivier de Wood)", "Picea mariana (Épinette noire)", "Pinus radiata (Pin de Monterey)", "Platycladus orientalis (Thuya d'Orient)",
+            "Populus grandidentata (Peuplier à grandes dents)", "Prunus yedoensis (Cerisier Yoshino)", "Pyrus fauriei (Poirier de Faurie)", "Quercus garryana (Chêne de Garry)",
+            "Quercus virginiana (Chêne de Virginie)", "Robinia pseudoacacia 'Frisia' (Robinier doré)", "Salix alba (Saule blanc)", "Sophora secundiflora (Sophora du Texas)",
+            "Sorbus aria (Alisier blanc)", "Taxus brevifolia (If de l'Ouest)", "Tilia tomentosa (Tilleul argenté)", "Tsuga caroliniana (Pruche de Caroline)",
+            "Ulmus laevis (Orme lisse)", "Wisteria macrostachya (Glycine du Kentucky)", "Abies grandis (Sapin de Vancouver)", "Acacia senegal (Gomme arabique)",
+            "Acer saccharinum (Érable argenté)", "Cercidiphyllum japonicum (Arbre à caramel)", "Chamaecyparis thyoides 'Andelyensis' (Cyprès blanc Andelyensis)", "Crataegus pinnatifida (Aubépine de Chine)",
+            "Fagus crenata (Hêtre japonais)", "Ilex opaca (Houx américain)", "Juglans rupestris (Noyer des roches)", "Juniperus scopulorum (Genévrier des Rocheuses)",
+            "Larix occidentalis (Mélèze occidental)", "Liriodendron chinense (Tulipier de Chine)", "Magnolia obovata (Magnolia obovale)", "Morus kagayamae (Mûrier de Kagayama)",
+            "Olea ferruginea (Olivier ferrugineux)", "Picea rubens (Épinette rouge)", "Pinus contorta (Pin tordu)", "Platanus occidentalis (Platane d'Amérique)",
+            "Populus heterophylla (Peuplier des marais)", "Prunus lusitanica (Laurier du Portugal)", "Pyrus pyrifolia (Poirier nashi)", "Quercus imbricaria (Chêne imbriqué)",
+            "Quercus wislizeni (Chêne de Wislizenus)", "Salix nigra (Saule noir)", "Sophora microphylla (Sophora à petites feuilles)", "Sorbus commixta (Sorbier du Japon)"
+        ];
+
+        const DB_SPECS = [
+            {nom:"Acer", usda:"-15°C", expo:"Mi-Ombre", type:"Caduc", potFreq: 2},
+            {nom:"Pinus", usda:"-20°C", expo:"Soleil", type:"Persistant", potFreq: 3},
+            {nom:"Juniperus", usda:"-20°C", expo:"Soleil", type:"Conifère", potFreq: 3},
+            {nom:"Ficus", usda:"5°C", expo:"Mi-Ombre", type:"Tropical", potFreq: 1},
+            {nom:"Olea", usda:"-5°C", expo:"Soleil", type:"Persistant", potFreq: 3},
+            {nom:"Ulmus", usda:"-10°C", expo:"Soleil", type:"Semi-P.", potFreq: 2},
+            {nom:"Quercus", usda:"-20°C", expo:"Soleil", type:"Caduc", potFreq: 3},
+            {nom:"Picea", usda:"-25°C", expo:"Soleil", type:"Conifère", potFreq: 4},
+            {nom:"Prunus", usda:"-10°C", expo:"Soleil", type:"Caduc", potFreq: 2},
+            {nom:"Magnolia", usda:"-10°C", expo:"Mi-Ombre", type:"Caduc", potFreq: 3},
+            {nom:"Cedrus", usda:"-20°C", expo:"Soleil", type:"Conifère", potFreq: 4},
+            {nom:"Abies", usda:"-20°C", expo:"Mi-Ombre", type:"Conifère", potFreq: 4},
+            {nom:"Larix", usda:"-25°C", expo:"Soleil", type:"Caduc", potFreq: 3},
+            {nom:"Ginkgo", usda:"-20°C", expo:"Soleil", type:"Caduc", potFreq: 2},
+            {nom:"Taxus", usda:"-20°C", expo:"Mi-Ombre", type:"Conifère", potFreq: 4},
+            {nom:"Populus", usda:"-25°C", expo:"Soleil", type:"Caduc", potFreq: 3},
+            {nom:"Salix", usda:"-25°C", expo:"Soleil", type:"Caduc", potFreq: 2},
+            {nom:"Tilia", usda:"-20°C", expo:"Mi-Ombre", type:"Caduc", potFreq: 3},
+            {nom:"Ilex", usda:"-15°C", expo:"Mi-Ombre", type:"Persistant", potFreq: 3},
+            {nom:"Wisteria", usda:"-10°C", expo:"Soleil", type:"Caduc", potFreq: 2},
+            {nom:"Citrus", usda:"5°C", expo:"Soleil", type:"Tropical", potFreq: 1},
+            {nom:"Eucalyptus", usda:"-5°C", expo:"Soleil", type:"Persistant", potFreq: 2}
+        ];
+        
+        const UNKNOWN_SPEC = { nom: "Espèce Inconnue", usda: "?", expo: "?", type: "?", potFreq: 0 };
+
+
+        let bonsais = [];
+        let currentUid = null;
+        let currentPhotoBase64 = null;
+
+        // --- APP LOGIC ---
+        window.onload = async function() {
+            const dl = document.getElementById('species-list');
+            SPECIES_RAW.forEach(s => { let o = document.createElement('option'); o.value=s; dl.appendChild(o); });
+            await refreshData();
+            renderList();
+        };
+
+        async function refreshData() {
+            try { bonsais = await dbApi.getAll(); } catch (e) { console.error(e); bonsais = []; }
+        }
+
+        function getSpec(sid, name) {
+            let found = DB_SPECS.find(s => name && name.includes(s.nom));
+            return found ? { ...found, nom: name } : { nom: name || "Inconnu", ...UNKNOWN_SPEC };
+        }
+
+        function getSortedBonsais() {
+            const criteria = document.getElementById('sort-filter').value;
+            let list = [...bonsais];
+            
+            if(criteria === 'name_asc') {
+                list.sort((a,b) => (a.nom || getSpec(a.sid, a.customName).nom).localeCompare(b.nom || getSpec(b.sid, b.customName).nom));
+            } else if (criteria === 'date_desc') {
+                list.sort((a,b) => b.uid - a.uid);
+            } else if (criteria === 'species_asc') {
+                list.sort((a,b) => getSpec(a.sid, a.customName).nom.localeCompare(getSpec(b.sid, b.customName).nom));
+            } else if (criteria === 'last_work') {
+                const getLastWorkDate = (b) => {
+                    const dates = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire, b.lastDefo].filter(d => d).map(d => new Date(d));
+                    return dates.length ? Math.max(...dates) : 0;
+                };
+                list.sort((a,b) => getLastWorkDate(b) - getLastWorkDate(a));
+            }
+            return list;
+        }
+
+        // --- RENDER MOSAÏQUE ---
+        function renderList() {
+            const container = document.getElementById('list-container');
+            container.innerHTML = "";
+            const sortedList = getSortedBonsais();
+            document.getElementById('bonsai-count').innerText = sortedList.length;
+
+            if(sortedList.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align:center;margin-top:40px;opacity:0.6; color: var(--secondary-text);"><i class="fa-solid fa-seedling" style="font-size:3rem;"></i><br><br>Aucun arbre.<br>Ajoutez-en un !</div>`;
+                return;
+            }
+
+            sortedList.forEach(b => {
+                let sp = getSpec(b.sid, b.customName);
+                let name = b.nom || sp.nom.split('(')[0];
+                
+                let iconHtml = b.photo 
+                    ? `<div class="thumb-icon" style="background-image: url('${b.photo}');"></div>`
+                    : `<div class="thumb-icon style-érable-1"><i class="fa-solid fa-tree"></i></div>`;
+
+                const div = document.createElement('div');
+                div.className = 'bonsai-item';
+                div.onclick = () => openEditor(b.uid);
+                div.innerHTML = `
+                    ${iconHtml}
+                    <div class="bonsai-info">
+                        <div style="font-weight:700; font-size:1rem; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%">${name}</div>
+                        <div style="font-size:0.8rem; color:var(--secondary-text); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%">${sp.nom}</div>
+                        <div style="font-size:0.75rem; color: var(--secondary-text); display:flex; gap:8px; opacity:0.8;">
+                            <span><i class="fa-solid fa-snowflake" style="color: var(--spec-cold)"></i> ${sp.usda}</span>
+                            <span><i class="fa-solid fa-sun" style="color: var(--spec-warm)"></i> ${sp.expo}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // --- EDITOR & UTILS ---
+        function openEditor(uid) {
+            currentUid = uid;
+            currentPhotoBase64 = null;
+            
+            document.querySelectorAll('input, select, textarea').forEach(i => i.value = "");
+            document.getElementById('editor-title').innerText = uid ? "Modifier" : "Nouvel Arbre";
+            document.getElementById('btn-delete').style.display = uid ? "block" : "none";
+            
+            if(uid) {
+                const b = bonsais.find(x => x.uid === uid);
+                if(b) {
+                    document.getElementById('edit-species-input').value = b.customName;
+                    document.getElementById('edit-name').value = b.nom || "";
+                    document.getElementById('edit-date').value = b.date || "";
+                    document.getElementById('edit-last-pot').value = b.lastPot || "";
+                    document.getElementById('edit-last-cut').value = b.lastCut || "";
+                    document.getElementById('edit-last-fertil').value = b.lastFertil || "";
+                    document.getElementById('edit-last-wire').value = b.lastWire || "";
+                    document.getElementById('edit-last-defo').value = b.lastDefo || "";
+                    document.getElementById('edit-notes').value = b.notes || "";
+                    if(b.photo) currentPhotoBase64 = b.photo;
+                }
+            }
+            updateSpecsFromInput();
+            updateLeafPreview();
+            nav('edit');
+        }
+
+        async function saveBonsai() {
+            const speciesInput = document.getElementById('edit-species-input').value.trim();
+            if(!speciesInput) return showToast("Espèce requise", true);
+
+            const item = {
+                uid: currentUid || Date.now(),
+                sid: 9999,
+                customName: speciesInput,
+                nom: document.getElementById('edit-name').value,
+                date: document.getElementById('edit-date').value,
+                photo: currentPhotoBase64,
+                lastPot: document.getElementById('edit-last-pot').value,
+                lastCut: document.getElementById('edit-last-cut').value,
+                lastFertil: document.getElementById('edit-last-fertil').value,
+                lastWire: document.getElementById('edit-last-wire').value,
+                lastDefo: document.getElementById('edit-last-defo').value,
+                notes: document.getElementById('edit-notes').value
+            };
+
+            try {
+                await dbApi.put(item);
+                await refreshData();
+                showToast("Sauvegardé !");
+                nav('list');
+            } catch(e) { showToast("Erreur sauvegarde", true); }
+        }
+
+        async function deleteBonsai() {
+            if(confirm("Supprimer ?")) {
+                await dbApi.delete(currentUid);
+                await refreshData();
+                showToast("Supprimé.");
+                nav('list');
+            }
+        }
+
+        function updateSpecsFromInput() {
+            const val = document.getElementById('edit-species-input').value;
+            const sp = getSpec(0, val);
+            document.getElementById('v-usda').innerText = sp.usda;
+            document.getElementById('v-expo').innerText = sp.expo;
+            document.getElementById('v-type').innerText = sp.type;
+        }
+
+        function handlePhotoUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const MAX_W = 400; 
+                        const scale = MAX_W / img.width;
+                        canvas.width = MAX_W;
+                        canvas.height = img.height * scale;
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        currentPhotoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                        updateLeafPreview();
+                    };
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removePhoto() { currentPhotoBase64 = null; updateLeafPreview(); }
+        
+        function updateLeafPreview() {
+            const img = document.getElementById('preview-image-tag');
+            const ph = document.getElementById('placeholder-content');
+            if(currentPhotoBase64) { img.src = currentPhotoBase64; img.style.display='block'; ph.style.display='none'; }
+            else { img.style.display='none'; ph.style.display='flex'; }
+        }
+
+        function nav(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('screen-'+screen).classList.add('active');
+            const navBtn = document.querySelector(`#nav-${screen}`);
+            if(navBtn) navBtn.classList.add('active');
+            if(screen === 'list') renderList(); 
+        }
+
+        function showToast(msg, err=false) {
+            const t = document.getElementById('toast');
+            t.className = 'show'; t.style.background = err ? 'var(--danger)' : 'var(--success)';
+            t.innerText = msg;
+            setTimeout(() => t.className = t.className.replace('show',''), 3000);
+        }
+
+        async function downloadBackup() {
+            const data = await dbApi.getAll();
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = "backup.json";
+            a.click();
+        }
+
+        function restoreBackup() {
+            const fileInput = document.getElementById('backup-file');
+            const file = fileInput.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const data = JSON.parse(e.target.result);
+                for(let item of data) await dbApi.put(item);
+                await refreshData();
+                nav('list');
+            };
+            reader.readAsText(file);
+        }
+        
+        async function resetApp() {
+            if(confirm("Tout effacer ?")) { await dbApi.clear(); location.reload(); }
+        }
+    </script>
+</body>
+</html>
