@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bonsai Do - Pro Tactile</title>
+    <title>Bonsai Do - Pro Tactile V3</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
@@ -16,8 +16,8 @@
             --font-serif: 'Noto Serif JP', serif; --font-sans: 'DM Sans', sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; touch-action: dashed; } /* Crucial pour le tactile custom */
-        body { font-family: var(--font-sans); background: var(--bg); padding-bottom: 80px; color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-sans); background: var(--bg); padding-bottom: 80px; color: var(--text); min-height: 100vh; }
 
         .app-header { background: linear-gradient(135deg, var(--primary-deep), var(--primary-dark)); color: #fff; padding: 14px 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 3px 16px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; }
@@ -50,38 +50,41 @@
         .bg-green { background: var(--success); }
         .bg-red { background: var(--danger); }
 
-        /* --- TACTILE CROP UI --- */
+        /* --- NOUVEAU CROP UI V3 (Masque Mobile) --- */
         #crop-screen {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 2000; flex-direction: column; overflow: hidden;
+            background: #000; z-index: 2000; flex-direction: column;
         }
         
-        /* La zone où l'image bouge */
-        #crop-container {
-            flex: 1; width: 100%; position: relative; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; cursor: grab;
+        /* Zone de l'image (statique, zoomable nativement) */
+        #crop-viewport {
+            flex: 1; width: 100%; position: relative; overflow: auto; /* Permet le scroll/zoom natif */
+            display: flex; align-items: center; justify-content: center;
+            -webkit-overflow-scrolling: touch; /* Scroll fluide iOS */
         }
         
-        /* L'image elle-même, gérée en JS */
         #crop-image {
-            max-width: none; max-height: none;
-            position: absolute;
-            transform-origin: center center; /* Important pour le zoom */
-            will-change: transform; /* Optimisation hardware */
+            max-width: 100%; max-height: 100%; /* S'adapte initialement */
+            display: block;
+            will-change: transform;
         }
         
-        /* Le masque fixe (rectangle au centre) */
-        #crop-mask {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; /* Laisse passer le toucher */
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7); /* Assombrit l'extérieur */
-            border: 2px solid #fff; /* Le rectangle de recadrage */
-            box-sizing: content-box; /* Pour que la bordure soit extérieure */
+        /* Le Masque Mobile (Carré qui bouge au doigt) */
+        #crop-mask-movable {
+            position: absolute;
+            width: 250px; /* Taille du carré de recadrage */
+            height: 250px;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); /* Fond assombri */
+            cursor: move;
+            z-index: 2010;
+            left: 50px; top: 50px; /* Position initiale */
+            touch-action: none; /* Désactive le scroll quand on touche le masque */
         }
         
         .crop-controls {
-            height: 80px; background: rgba(0,0,0,0.8); display: flex; gap: 10px; padding: 10px 20px;
-            border-top: 1px solid rgba(255,255,255,0.2);
+            height: 80px; background: rgba(0,0,0,0.9); display: flex; gap: 10px; padding: 10px 20px;
+            border-top: 1px solid rgba(255,255,255,0.2); z-index: 2020;
         }
 
         #toast { visibility: hidden; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--primary-deep); color: #fff; padding: 12px 20px; border-radius: 10px; z-index: 3000; font-weight: bold;}
@@ -91,9 +94,9 @@
 <body>
 
 <div id="crop-screen">
-    <div id="crop-container">
+    <div id="crop-viewport">
         <img id="crop-image" alt="Image à recadrer">
-        <div id="crop-mask"></div> </div>
+        <div id="crop-mask-movable"></div> </div>
     <div class="crop-controls">
         <button class="btn-action bg-red" onclick="closeCrop()"><i class="fa-solid fa-xmark"></i> Annuler</button>
         <button class="btn-action bg-green" onclick="confirmCrop()"><i class="fa-solid fa-check"></i> Valider</button>
@@ -151,8 +154,8 @@
 <div id="toast"></div>
 
 <script>
-// --- DB CORE ---
-const DB_NAME = 'BonsaiProTactileDB'; const STORE_NAME = 'trees'; let bonsais = []; let currentUid = null; let currentPhotoBase64 = null;
+// --- DB CORE (Simplifié pour l'exemple) ---
+const DB_NAME = 'BonsaiProV3DB'; const STORE_NAME = 'trees'; let bonsais = []; let currentUid = null; let currentPhotoBase64 = null;
 const dbApi = {
     open: () => new Promise(res => { const r = indexedDB.open(DB_NAME, 1); r.onupgradeneeded = e => e.target.result.createObjectStore(STORE_NAME, { keyPath: 'uid' }); r.onsuccess = e => res(e.target.result); }),
     getAll: async () => { const db = await dbApi.open(); return new Promise(res => { const tx = db.transaction(STORE_NAME, 'readonly'); const req = tx.objectStore(STORE_NAME).getAll(); req.onsuccess = () => res(req.result); }); },
@@ -160,19 +163,18 @@ const dbApi = {
     delete: async uid => { const db = await dbApi.open(); db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).delete(uid); }
 };
 
-// --- LOGIQUE RECADRAGE MOBILE TACTILE ---
+// --- LOGIQUE RECADRAGE MOBILE V3 (Masque Mobile) ---
 const imgEl = document.getElementById('crop-image');
-const maskEl = document.getElementById('crop-mask');
-const containerEl = document.getElementById('crop-container');
+const maskEl = document.getElementById('crop-mask-movable');
+const viewportEl = document.getElementById('crop-viewport');
 
-// Variables d'état de la transformation (CSS)
-let state = { scale: 1, pX: 0, pY: 0 };
-// Variables temporaires pour le calcul du geste
-let gesture = { dragging: false, pinching: false, startX: 0, startY: 0, startDist: 0, startScale: 1, startPX: 0, startPY: 0 };
+// Taille du carré de recadrage (fixe)
+const CROP_SIZE = 250; 
 
-// Taille cible du rectangle de recadrage (carré 1:1 pour l'exemple, s'adapte à l'écran)
-const CROP_W = 300; 
-const CROP_H = 300; 
+// Variables pour le déplacement du masque
+let isDraggingMask = false;
+let maskStartPos = { x: 0, y: 0 };
+let maskCurrentPos = { x: 50, y: 50 }; // Position initiale CSS
 
 function startCrop(input) {
     if (input.files && input.files[0]) {
@@ -180,9 +182,10 @@ function startCrop(input) {
         reader.onload = e => {
             imgEl.onload = () => {
                 document.getElementById('crop-screen').style.display = 'flex';
-                resetTransform();
-                setupMask();
-                updateTransform();
+                // Centrer le masque initialement
+                maskCurrentPos.x = (viewportEl.clientWidth - CROP_SIZE) / 2;
+                maskCurrentPos.y = (viewportEl.clientHeight - CROP_SIZE) / 2;
+                updateMaskPosition();
             };
             imgEl.src = e.target.result;
         };
@@ -190,114 +193,71 @@ function startCrop(input) {
     }
 }
 
-function resetTransform() {
-    state = { scale: 1, pX: 0, pY: 0 };
-    // Ajuster l'échelle initiale pour couvrir le masque
-    const containerRect = containerEl.getBoundingClientRect();
-    const sX = CROP_W / imgEl.naturalWidth;
-    const sY = CROP_H / imgEl.naturalHeight;
-    state.scale = Math.max(sX, sY, 0.5); // Échelle minimale pour couvrir le carré ou 0.5
+function updateMaskPosition() {
+    maskEl.style.left = maskCurrentPos.x + 'px';
+    maskEl.style.top = maskCurrentPos.y + 'px';
 }
 
-function setupMask() {
-    // Centrer le masque fixe
-    maskEl.style.width = CROP_W + 'px';
-    maskEl.style.height = CROP_H + 'px';
-    maskEl.style.left = (window.innerWidth - CROP_W) / 2 + 'px';
-    maskEl.style.top = (containerEl.clientHeight - CROP_H) / 2 + 'px';
-}
+// --- GESTION TACTILE DU MASQUE (Pointer Events) ---
 
-function updateTransform() {
-    // Appliquer translate3d pour la performance hardware
-    imgEl.style.transform = `translate3d(${state.pX}px, ${state.pY}px, 0) scale(${state.scale})`;
-}
-
-// --- GESTIONNAIRES TACTILES (Pointer Events) ---
-let evCache = []; // Cache pour gérer le multi-touch
-
-containerEl.onpointerdown = (e) => {
-    evCache.push(e);
-    gesture.startX = e.clientX;
-    gesture.startY = e.clientY;
-    gesture.startPX = state.pX;
-    gesture.startPY = state.pY;
-
-    if (evCache.length === 1) {
-        gesture.dragging = true;
-    } else if (evCache.length === 2) {
-        gesture.dragging = false;
-        gesture.pinching = true;
-        gesture.startDist = getDistance(evCache[0], evCache[1]);
-        gesture.startScale = state.scale;
-    }
-    containerEl.setPointerCapture(e.pointerId);
+maskEl.onpointerdown = (e) => {
+    isDraggingMask = true;
+    maskStartPos.x = e.clientX - maskCurrentPos.x;
+    maskStartPos.y = e.clientY - maskCurrentPos.y;
+    maskEl.setPointerCapture(e.pointerId);
+    e.stopPropagation(); // Empêche le viewport de scroller
 };
 
-containerEl.onpointermove = (e) => {
-    // Mettre à jour le cache des pointers
-    for (let i = 0; i < evCache.length; i++) { if (e.pointerId === evCache[i].pointerId) { evCache[i] = e; break; } }
-
-    if (gesture.dragging && evCache.length === 1) {
-        // Drag (1 doigt)
-        const dX = e.clientX - gesture.startX;
-        const dY = e.clientY - gesture.startY;
-        state.pX = gesture.startPX + dX;
-        state.pY = gesture.startPY + dY;
-        updateTransform();
-    } else if (gesture.pinching && evCache.length === 2) {
-        // Pinch Zoom (2 doigts)
-        const dist = getDistance(evCache[0], evCache[1]);
-        const scaleFactor = dist / gesture.startDist;
-        state.scale = gesture.startScale * scaleFactor;
-        
-        // Limites de zoom
-        if(state.scale < 0.2) state.scale = 0.2;
-        if(state.scale > 5) state.scale = 5;
-
-        updateTransform();
-    }
+maskEl.onpointermove = (e) => {
+    if (!isDraggingMask) return;
+    
+    maskCurrentPos.x = e.clientX - maskStartPos.x;
+    maskCurrentPos.y = e.clientY - maskStartPos.y;
+    
+    // Limites (ne pas sortir du viewport)
+    if(maskCurrentPos.x < 0) maskCurrentPos.x = 0;
+    if(maskCurrentPos.y < 0) maskCurrentPos.y = 0;
+    if(maskCurrentPos.x > viewportEl.clientWidth - CROP_SIZE) maskCurrentPos.x = viewportEl.clientWidth - CROP_SIZE;
+    if(maskCurrentPos.y > viewportEl.clientHeight - CROP_SIZE) maskCurrentPos.y = viewportEl.clientHeight - CROP_SIZE;
+    
+    updateMaskPosition();
+    e.stopPropagation();
 };
 
-containerEl.onpointerup = containerEl.onpointercancel = (e) => {
-    gesture.dragging = false;
-    gesture.pinching = false;
-    // Retirer du cache
-    evCache = evCache.filter(ev => ev.pointerId !== e.pointerId);
-    containerEl.releasePointerCapture(e.pointerId);
+maskEl.onpointerup = (e) => {
+    isDraggingMask = false;
+    maskEl.releasePointerCapture(e.pointerId);
 };
 
-// Fonction utilitaire distance entre deux points tactiles
-function getDistance(p1, p2) {
-    return Math.sqrt(Math.pow(p2.clientX - p1.clientX, 2) + Math.pow(p2.clientY - p1.clientY, 2));
-}
-
-// --- VALIDATION DU RECADRAGE ---
+// --- VALIDATION DU RECADRAGE V3 ---
 function confirmCrop() {
-    // Calculer les coordonnées réelles de l'image par rapport au masque fixe
+    // Canvas pour le calcul final
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = 500; // Taille standardisée
+    finalCanvas.height = 500;
+    const ctx = finalCanvas.getContext('2d');
+
+    // Récupérer les positions exactes
     const imgRect = imgEl.getBoundingClientRect();
     const maskRect = maskEl.getBoundingClientRect();
 
-    // Ratio d'affichage vs taille réelle de l'image chargée
-    const ratio = imgEl.naturalWidth / imgRect.width;
+    // Calculer les ratios d'affichage
+    // Note: On utilise naturalWidth car imgRect peut être zoomé nativement
+    const ratioX = imgEl.naturalWidth / imgRect.width;
+    const ratioY = imgEl.naturalHeight / imgRect.height;
 
-    // Coordonnées X,Y de départ dans l'image réelle
-    const cropX = (maskRect.left - imgRect.left) * ratio;
-    const cropY = (maskRect.top - imgRect.top) * ratio;
-    // Largeur/Hauteur à prendre dans l'image réelle
-    const cropW = CROP_W * ratio;
-    const cropH = CROP_H * ratio;
+    // Coordonnées de départ dans l'image RÉELLE
+    const sx = (maskRect.left - imgRect.left) * ratioX;
+    const sy = (maskRect.top - imgRect.top) * ratioY;
+    
+    // Largeur/Hauteur à prendre dans l'image RÉELLE
+    const sw = CROP_SIZE * ratioX;
+    const sh = CROP_SIZE * ratioY;
 
-    // Canvas final pour générer la base64
-    const finalCanvas = document.createElement('canvas');
-    finalCanvas.width = 500; // Largeur standardisée pour l'app
-    finalCanvas.height = 500; // Carré
+    // Dessiner sur le canvas final
+    ctx.drawImage(imgEl, sx, sy, sw, sh, 0, 0, 500, 500);
     
-    const ctx = finalCanvas.getContext('2d');
-    
-    // Dessiner la partie recadrée sur le canvas final
-    ctx.drawImage(imgEl, cropX, cropY, cropW, cropH, 0, 0, 500, 500);
-    
-    currentPhotoBase64 = finalCanvas.toDataURL('image/jpeg', 0.85); // Bonne qualité
+    currentPhotoBase64 = finalCanvas.toDataURL('image/jpeg', 0.85);
     document.getElementById('edit-photo-preview').style.backgroundImage = `url('${currentPhotoBase64}')`;
     document.getElementById('edit-photo-preview').style.display = 'block';
     closeCrop();
@@ -306,7 +266,7 @@ function confirmCrop() {
 
 function closeCrop() {
     document.getElementById('crop-screen').style.display = 'none';
-    document.getElementById('file-input').value = ""; // Reset input file
+    document.getElementById('file-input').value = "";
 }
 
 // --- APP CORE FUNCTIONS ---
