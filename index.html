@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bonsai Do - Pro</title>
+    <title>Bonsai Do - Pro Tactile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
@@ -16,8 +16,8 @@
             --font-serif: 'Noto Serif JP', serif; --font-sans: 'DM Sans', sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: var(--font-sans); background: var(--bg); padding-bottom: 80px; color: var(--text); min-height: 100vh; }
+        * { box-sizing: border-box; margin: 0; padding: 0; touch-action: dashed; } /* Crucial pour le tactile custom */
+        body { font-family: var(--font-sans); background: var(--bg); padding-bottom: 80px; color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
         .app-header { background: linear-gradient(135deg, var(--primary-deep), var(--primary-dark)); color: #fff; padding: 14px 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 3px 16px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; }
@@ -34,42 +34,69 @@
         .bonsai-origin-tag { font-size: 0.65rem; font-weight: 700; background: var(--primary-dark); color: white; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 5px; }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg2); height: 72px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(0,0,0,0.08); z-index: 900; }
-        .nav-btn { color: #B0ADA0; background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+        .nav-btn { color: #B0ADA0; background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; text-decoration: none;}
         .nav-btn.active { color: var(--primary-deep); }
 
         .screen { display: none; }
-        .screen.active { display: block; }
+        .screen.active { display: block; animation: fadeIn 0.2s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .card { background: var(--card-bg2); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; box-shadow: var(--shadow-card); }
         .form-group { margin-bottom: 14px; }
         label { display: block; color: var(--secondary-text); font-weight: 700; font-size: 0.75rem; margin-bottom: 5px; text-transform: uppercase; }
         input, select, textarea { width: 100%; padding: 11px; border: 1.5px solid #D5D2C0; border-radius: 9px; font-family: var(--font-sans); }
 
-        .btn-action { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: 700; color: white; cursor: pointer; margin-top: 10px; }
+        .btn-action { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: 700; color: white; cursor: pointer; margin-top: 10px; font-size: 1rem;}
         .bg-blue { background: var(--primary-deep); }
         .bg-green { background: var(--success); }
         .bg-red { background: var(--danger); }
 
-        /* CROPPING UI */
-        #crop-modal {
+        /* --- TACTILE CROP UI --- */
+        #crop-screen {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 2000; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+            background: #000; z-index: 2000; flex-direction: column; overflow: hidden;
         }
-        #crop-canvas { max-width: 100%; max-height: 60vh; border: 2px solid white; cursor: crosshair; }
-        .crop-controls { margin-top: 20px; display: flex; gap: 10px; width: 100%; }
+        
+        /* La zone où l'image bouge */
+        #crop-container {
+            flex: 1; width: 100%; position: relative; display: flex; align-items: center; justify-content: center;
+            overflow: hidden; cursor: grab;
+        }
+        
+        /* L'image elle-même, gérée en JS */
+        #crop-image {
+            max-width: none; max-height: none;
+            position: absolute;
+            transform-origin: center center; /* Important pour le zoom */
+            will-change: transform; /* Optimisation hardware */
+        }
+        
+        /* Le masque fixe (rectangle au centre) */
+        #crop-mask {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; /* Laisse passer le toucher */
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7); /* Assombrit l'extérieur */
+            border: 2px solid #fff; /* Le rectangle de recadrage */
+            box-sizing: content-box; /* Pour que la bordure soit extérieure */
+        }
+        
+        .crop-controls {
+            height: 80px; background: rgba(0,0,0,0.8); display: flex; gap: 10px; padding: 10px 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
 
-        #toast { visibility: hidden; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--primary-deep); color: #fff; padding: 12px 20px; border-radius: 10px; z-index: 3000; }
+        #toast { visibility: hidden; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--primary-deep); color: #fff; padding: 12px 20px; border-radius: 10px; z-index: 3000; font-weight: bold;}
         #toast.show { visibility: visible; }
     </style>
 </head>
 <body>
 
-<div id="crop-modal">
-    <h3 style="color:white; margin-bottom:10px;">Recadrer la photo</h3>
-    <p style="color:#ccc; font-size:0.8rem; margin-bottom:10px;">Faites glisser pour définir la zone</p>
-    <canvas id="crop-canvas"></canvas>
+<div id="crop-screen">
+    <div id="crop-container">
+        <img id="crop-image" alt="Image à recadrer">
+        <div id="crop-mask"></div> </div>
     <div class="crop-controls">
-        <button class="btn-action bg-red" onclick="closeCrop()">Annuler</button>
-        <button class="btn-action bg-green" onclick="confirmCrop()">Valider le recadrage</button>
+        <button class="btn-action bg-red" onclick="closeCrop()"><i class="fa-solid fa-xmark"></i> Annuler</button>
+        <button class="btn-action bg-green" onclick="confirmCrop()"><i class="fa-solid fa-check"></i> Valider</button>
     </div>
 </div>
 
@@ -77,28 +104,32 @@
     <div class="app-header">
         <div class="header-top">
             <span class="header-title">Bonsai Do</span>
-            <span id="bonsai-count" style="font-size:0.8rem;">0 arbres</span>
+            <span id="bonsai-count" style="font-size:0.8rem; background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:10px;">0 arbres</span>
         </div>
     </div>
     <div class="main-container">
-        <button class="btn-action bg-blue" onclick="openEditor(null)" style="margin-bottom:15px;"><i class="fa-solid fa-plus"></i> Ajouter un arbre</button>
+        <button class="btn-action bg-blue" onclick="openEditor(null)" style="margin-bottom:15px; border-radius:12px; box-shadow: 0 4px 10px rgba(46,95,120,0.2);"><i class="fa-solid fa-plus"></i> Ajouter un sujet</button>
         <div id="list-container">Chargement...</div>
     </div>
 </div>
 
 <div id="screen-edit" class="screen">
     <div class="app-header">
-        <button onclick="nav('list')" style="background:none;border:none;color:white;"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="header-top">
+            <button onclick="nav('list')" style="background:none;border:none;color:white;font-size:1.2rem;"><i class="fa-solid fa-chevron-left"></i> Retour</button>
+            <span style="font-family:var(--font-serif); font-weight:600;">Éditeur</span>
+            <div style="width:50px;"></div>
+        </div>
     </div>
     <div class="main-container">
         <div class="card">
             <label>Photo</label>
-            <input type="file" accept="image/*" id="file-input" onchange="startCrop(this)">
-            <div id="edit-photo-preview" style="width:100%; height:180px; background:#eee; margin-top:10px; border-radius:10px; background-size:contain; background-repeat:no-repeat; background-position:center; display:none;"></div>
+            <input type="file" accept="image/*" id="file-input" onchange="startCrop(this)" style="font-size:0.8rem;">
+            <div id="edit-photo-preview" style="width:100%; height:180px; background:#eee; margin-top:10px; border-radius:10px; background-size:contain; background-repeat:no-repeat; background-position:center; display:none; border: 1px solid rgba(0,0,0,0.1);"></div>
         </div>
         <div class="card">
-            <div class="form-group"><label>Surnom</label><input type="text" id="edit-name"></div>
-            <div class="form-group"><label>Espèce</label><input type="text" id="edit-species"></div>
+            <div class="form-group"><label>Surnom / ID</label><input type="text" id="edit-name" placeholder="Ex: Grand Orme"></div>
+            <div class="form-group"><label>Espèce</label><input type="text" id="edit-species" placeholder="Ex: Ulmus Parvifolia"></div>
             <div class="form-group">
                 <label>Origine</label>
                 <select id="edit-origin">
@@ -107,141 +138,188 @@
                 </select>
             </div>
         </div>
-        <button class="btn-action bg-green" onclick="saveBonsai()">Enregistrer</button>
-        <button class="btn-action bg-red" id="btn-delete" style="display:none;" onclick="deleteBonsai()">Supprimer</button>
+        <button class="btn-action bg-green" onclick="saveBonsai()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
+        <button class="btn-action bg-red" id="btn-delete" style="display:none;" onclick="deleteBonsai()"><i class="fa-solid fa-trash"></i> Supprimer cet arbre</button>
     </div>
 </div>
 
 <div class="bottom-nav">
-    <button class="nav-btn active" onclick="nav('list')"><i class="fa-solid fa-tree"></i><span>Arbres</span></button>
-    <button class="nav-btn" onclick="showToast('Agenda bientôt prêt')"><i class="fa-solid fa-calendar"></i><span>Agenda</span></button>
+    <button class="nav-btn active" id="nav-list" onclick="nav('list')"><i class="fa-solid fa-tree"></i><span>Collection</span></button>
+    <button class="nav-btn" onclick="showToast('Section Agenda bientôt active')"><i class="fa-solid fa-calendar-day"></i><span>Agenda</span></button>
 </div>
 
 <div id="toast"></div>
 
 <script>
-const DB_NAME = 'BonsaiCropDB';
-const STORE_NAME = 'trees';
-let bonsais = [];
-let currentUid = null;
-let currentPhotoBase64 = null;
-
-// Gestion de la DB
+// --- DB CORE ---
+const DB_NAME = 'BonsaiProTactileDB'; const STORE_NAME = 'trees'; let bonsais = []; let currentUid = null; let currentPhotoBase64 = null;
 const dbApi = {
-    open: () => new Promise(res => {
-        const r = indexedDB.open(DB_NAME, 1);
-        r.onupgradeneeded = e => e.target.result.createObjectStore(STORE_NAME, { keyPath: 'uid' });
-        r.onsuccess = e => res(e.target.result);
-    }),
-    getAll: async () => {
-        const db = await dbApi.open();
-        return new Promise(res => {
-            const tx = db.transaction(STORE_NAME, 'readonly');
-            const req = tx.objectStore(STORE_NAME).getAll();
-            req.onsuccess = () => res(req.result);
-        });
-    },
-    put: async item => {
-        const db = await dbApi.open();
-        db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).put(item);
-    },
-    delete: async uid => {
-        const db = await dbApi.open();
-        db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).delete(uid);
-    }
+    open: () => new Promise(res => { const r = indexedDB.open(DB_NAME, 1); r.onupgradeneeded = e => e.target.result.createObjectStore(STORE_NAME, { keyPath: 'uid' }); r.onsuccess = e => res(e.target.result); }),
+    getAll: async () => { const db = await dbApi.open(); return new Promise(res => { const tx = db.transaction(STORE_NAME, 'readonly'); const req = tx.objectStore(STORE_NAME).getAll(); req.onsuccess = () => res(req.result); }); },
+    put: async item => { const db = await dbApi.open(); db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).put(item); },
+    delete: async uid => { const db = await dbApi.open(); db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).delete(uid); }
 };
 
-// --- LOGIQUE DE RECADRAGE ---
-let tempImg = new Image();
-let cropStart = null;
-let cropEnd = null;
-const canvas = document.getElementById('crop-canvas');
-const ctx = canvas.getContext('2d');
+// --- LOGIQUE RECADRAGE MOBILE TACTILE ---
+const imgEl = document.getElementById('crop-image');
+const maskEl = document.getElementById('crop-mask');
+const containerEl = document.getElementById('crop-container');
+
+// Variables d'état de la transformation (CSS)
+let state = { scale: 1, pX: 0, pY: 0 };
+// Variables temporaires pour le calcul du geste
+let gesture = { dragging: false, pinching: false, startX: 0, startY: 0, startDist: 0, startScale: 1, startPX: 0, startPY: 0 };
+
+// Taille cible du rectangle de recadrage (carré 1:1 pour l'exemple, s'adapte à l'écran)
+const CROP_W = 300; 
+const CROP_H = 300; 
 
 function startCrop(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = e => {
-            tempImg.onload = () => {
-                document.getElementById('crop-modal').style.display = 'flex';
-                // Redimensionnement canvas pour l'affichage
-                canvas.width = tempImg.width;
-                canvas.height = tempImg.height;
-                ctx.drawImage(tempImg, 0, 0);
+            imgEl.onload = () => {
+                document.getElementById('crop-screen').style.display = 'flex';
+                resetTransform();
+                setupMask();
+                updateTransform();
             };
-            tempImg.src = e.target.result;
+            imgEl.src = e.target.result;
         };
         reader.readAsDataURL(input.files[0]);
     }
 }
 
-canvas.onmousedown = (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    cropStart = { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+function resetTransform() {
+    state = { scale: 1, pX: 0, pY: 0 };
+    // Ajuster l'échelle initiale pour couvrir le masque
+    const containerRect = containerEl.getBoundingClientRect();
+    const sX = CROP_W / imgEl.naturalWidth;
+    const sY = CROP_H / imgEl.naturalHeight;
+    state.scale = Math.max(sX, sY, 0.5); // Échelle minimale pour couvrir le carré ou 0.5
+}
+
+function setupMask() {
+    // Centrer le masque fixe
+    maskEl.style.width = CROP_W + 'px';
+    maskEl.style.height = CROP_H + 'px';
+    maskEl.style.left = (window.innerWidth - CROP_W) / 2 + 'px';
+    maskEl.style.top = (containerEl.clientHeight - CROP_H) / 2 + 'px';
+}
+
+function updateTransform() {
+    // Appliquer translate3d pour la performance hardware
+    imgEl.style.transform = `translate3d(${state.pX}px, ${state.pY}px, 0) scale(${state.scale})`;
+}
+
+// --- GESTIONNAIRES TACTILES (Pointer Events) ---
+let evCache = []; // Cache pour gérer le multi-touch
+
+containerEl.onpointerdown = (e) => {
+    evCache.push(e);
+    gesture.startX = e.clientX;
+    gesture.startY = e.clientY;
+    gesture.startPX = state.pX;
+    gesture.startPY = state.pY;
+
+    if (evCache.length === 1) {
+        gesture.dragging = true;
+    } else if (evCache.length === 2) {
+        gesture.dragging = false;
+        gesture.pinching = true;
+        gesture.startDist = getDistance(evCache[0], evCache[1]);
+        gesture.startScale = state.scale;
+    }
+    containerEl.setPointerCapture(e.pointerId);
 };
 
-canvas.onmousemove = (e) => {
-    if (!cropStart) return;
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    cropEnd = { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
-    
-    // Redessiner
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(tempImg, 0, 0);
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 5;
-    ctx.strokeRect(cropStart.x, cropStart.y, cropEnd.x - cropStart.x, cropEnd.y - cropStart.y);
+containerEl.onpointermove = (e) => {
+    // Mettre à jour le cache des pointers
+    for (let i = 0; i < evCache.length; i++) { if (e.pointerId === evCache[i].pointerId) { evCache[i] = e; break; } }
+
+    if (gesture.dragging && evCache.length === 1) {
+        // Drag (1 doigt)
+        const dX = e.clientX - gesture.startX;
+        const dY = e.clientY - gesture.startY;
+        state.pX = gesture.startPX + dX;
+        state.pY = gesture.startPY + dY;
+        updateTransform();
+    } else if (gesture.pinching && evCache.length === 2) {
+        // Pinch Zoom (2 doigts)
+        const dist = getDistance(evCache[0], evCache[1]);
+        const scaleFactor = dist / gesture.startDist;
+        state.scale = gesture.startScale * scaleFactor;
+        
+        // Limites de zoom
+        if(state.scale < 0.2) state.scale = 0.2;
+        if(state.scale > 5) state.scale = 5;
+
+        updateTransform();
+    }
 };
 
-canvas.onmouseup = () => {
-    if (!cropEnd) return;
-    // Zone définie
+containerEl.onpointerup = containerEl.onpointercancel = (e) => {
+    gesture.dragging = false;
+    gesture.pinching = false;
+    // Retirer du cache
+    evCache = evCache.filter(ev => ev.pointerId !== e.pointerId);
+    containerEl.releasePointerCapture(e.pointerId);
 };
 
+// Fonction utilitaire distance entre deux points tactiles
+function getDistance(p1, p2) {
+    return Math.sqrt(Math.pow(p2.clientX - p1.clientX, 2) + Math.pow(p2.clientY - p1.clientY, 2));
+}
+
+// --- VALIDATION DU RECADRAGE ---
 function confirmCrop() {
-    if (!cropStart || !cropEnd) return alert("Veuillez sélectionner une zone");
-    
-    const w = Math.abs(cropEnd.x - cropStart.x);
-    const h = Math.abs(cropEnd.y - cropStart.y);
-    const x = Math.min(cropStart.x, cropEnd.x);
-    const y = Math.min(cropStart.y, cropEnd.y);
+    // Calculer les coordonnées réelles de l'image par rapport au masque fixe
+    const imgRect = imgEl.getBoundingClientRect();
+    const maskRect = maskEl.getBoundingClientRect();
 
+    // Ratio d'affichage vs taille réelle de l'image chargée
+    const ratio = imgEl.naturalWidth / imgRect.width;
+
+    // Coordonnées X,Y de départ dans l'image réelle
+    const cropX = (maskRect.left - imgRect.left) * ratio;
+    const cropY = (maskRect.top - imgRect.top) * ratio;
+    // Largeur/Hauteur à prendre dans l'image réelle
+    const cropW = CROP_W * ratio;
+    const cropH = CROP_H * ratio;
+
+    // Canvas final pour générer la base64
     const finalCanvas = document.createElement('canvas');
-    finalCanvas.width = 600; // Largeur standard pour l'app
-    finalCanvas.height = (h / w) * 600;
+    finalCanvas.width = 500; // Largeur standardisée pour l'app
+    finalCanvas.height = 500; // Carré
     
-    const fCtx = finalCanvas.getContext('2d');
-    fCtx.drawImage(tempImg, x, y, w, h, 0, 0, finalCanvas.width, finalCanvas.height);
+    const ctx = finalCanvas.getContext('2d');
     
-    currentPhotoBase64 = finalCanvas.toDataURL('image/jpeg', 0.8);
+    // Dessiner la partie recadrée sur le canvas final
+    ctx.drawImage(imgEl, cropX, cropY, cropW, cropH, 0, 0, 500, 500);
+    
+    currentPhotoBase64 = finalCanvas.toDataURL('image/jpeg', 0.85); // Bonne qualité
     document.getElementById('edit-photo-preview').style.backgroundImage = `url('${currentPhotoBase64}')`;
     document.getElementById('edit-photo-preview').style.display = 'block';
     closeCrop();
+    showToast('Photo recadrée');
 }
 
 function closeCrop() {
-    document.getElementById('crop-modal').style.display = 'none';
-    cropStart = null; cropEnd = null;
-    document.getElementById('file-input').value = "";
+    document.getElementById('crop-screen').style.display = 'none';
+    document.getElementById('file-input').value = ""; // Reset input file
 }
 
-// --- APP CORE ---
+// --- APP CORE FUNCTIONS ---
 async function refresh() {
     bonsais = await dbApi.getAll();
     const container = document.getElementById('list-container');
     container.innerHTML = '';
-    document.getElementById('bonsai-count').innerText = bonsais.length + ' arbres';
+    document.getElementById('bonsai-count').innerText = bonsais.length + ' sujet(s)';
     bonsais.forEach(b => {
-        const div = document.createElement('div');
-        div.className = 'bonsai-item';
-        div.onclick = () => openEditor(b.uid);
+        const div = document.createElement('div'); div.className = 'bonsai-item'; div.onclick = () => openEditor(b.uid);
         const photo = b.photo ? `style="background-image:url('${b.photo}')"` : '';
         div.innerHTML = `
-            <div class="thumb-icon" ${photo}>${b.photo ? '' : '<i class="fa-solid fa-tree"></i>'}</div>
+            <div class="thumb-icon" ${photo}>${b.photo ? '' : '<i class="fa-solid fa-tree" style="opacity:0.2;"></i>'}</div>
             <div class="bonsai-info">
                 <div class="bonsai-name">${b.name || 'Sans nom'}</div>
                 <div class="bonsai-origin-tag">${b.origin || 'Pépinière'}</div>
@@ -260,42 +338,34 @@ function openEditor(uid) {
         document.getElementById('edit-name').value = b.name;
         document.getElementById('edit-species').value = b.species || '';
         document.getElementById('edit-origin').value = b.origin || 'Pépinière';
-        if (b.photo) {
-            currentPhotoBase64 = b.photo;
-            document.getElementById('edit-photo-preview').style.backgroundImage = `url('${b.photo}')`;
-            document.getElementById('edit-photo-preview').style.display = 'block';
-        }
+        if (b.photo) { currentPhotoBase64 = b.photo; document.getElementById('edit-photo-preview').style.backgroundImage = `url('${b.photo}')`; document.getElementById('edit-photo-preview').style.display = 'block'; }
     }
     nav('edit');
 }
 
 async function saveBonsai() {
     const name = document.getElementById('edit-name').value;
-    if (!name) return showToast('Nom requis');
-    await dbApi.put({
-        uid: currentUid || Date.now(),
-        name: name,
-        species: document.getElementById('edit-species').value,
-        origin: document.getElementById('edit-origin').value,
-        photo: currentPhotoBase64
-    });
-    await refresh(); nav('list'); showToast('Sauvegardé');
+    if (!name) return showToast('Nom ou ID requis');
+    await dbApi.put({ uid: currentUid || Date.now(), name: name, species: document.getElementById('edit-species').value, origin: document.getElementById('edit-origin').value, photo: currentPhotoBase64 });
+    await refresh(); nav('list'); showToast('Arbre enregistré');
 }
 
 async function deleteBonsai() {
     await dbApi.delete(currentUid);
-    await refresh(); nav('list');
+    await refresh(); nav('list'); showToast('Supprimé de la collection');
 }
 
 function nav(s) {
     document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
     document.getElementById('screen-' + s).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if(s === 'list') document.getElementById('nav-list').classList.add('active');
 }
 
 function showToast(m) {
     const t = document.getElementById('toast');
     t.innerText = m; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2000);
+    setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 window.onload = refresh;
