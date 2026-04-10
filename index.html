@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bonsai Do - Pro Tactile V3</title>
+    <title>BONSAI DO - PRO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
@@ -21,7 +21,17 @@
 
         .app-header { background: linear-gradient(135deg, var(--primary-deep), var(--primary-dark)); color: #fff; padding: 14px 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 3px 16px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; }
-        .header-title { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600; }
+        .header-title { 
+            font-family: var(--font-serif); 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            text-transform: uppercase; /* TITRE EN MAJUSCULES */
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-title i { color: #FFD580; } /* Couleur dorée pour la porte */
 
         .main-container { padding: 14px; max-width: 800px; margin: 0 auto; }
         #list-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; }
@@ -50,36 +60,34 @@
         .bg-green { background: var(--success); }
         .bg-red { background: var(--danger); }
 
-        /* --- NOUVEAU CROP UI V3 (Masque Mobile) --- */
+        /* --- CROP UI V3 (Masque Mobile Agrandi X2) --- */
         #crop-screen {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 2000; flex-direction: column;
         }
         
-        /* Zone de l'image (statique, zoomable nativement) */
         #crop-viewport {
-            flex: 1; width: 100%; position: relative; overflow: auto; /* Permet le scroll/zoom natif */
+            flex: 1; width: 100%; position: relative; overflow: auto;
             display: flex; align-items: center; justify-content: center;
-            -webkit-overflow-scrolling: touch; /* Scroll fluide iOS */
+            -webkit-overflow-scrolling: touch;
         }
         
         #crop-image {
-            max-width: 100%; max-height: 100%; /* S'adapte initialement */
+            max-width: 100%; max-height: 100%;
             display: block;
             will-change: transform;
         }
         
-        /* Le Masque Mobile (Carré qui bouge au doigt) */
         #crop-mask-movable {
             position: absolute;
-            width: 250px; /* Taille du carré de recadrage */
-            height: 250px;
-            border: 3px solid #fff;
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); /* Fond assombri */
+            width: 500px; /* TAILLE AGRANDIE X2 */
+            height: 500px; /* TAILLE AGRANDIE X2 */
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
             cursor: move;
             z-index: 2010;
-            left: 50px; top: 50px; /* Position initiale */
-            touch-action: none; /* Désactive le scroll quand on touche le masque */
+            left: 10px; top: 10px;
+            touch-action: none;
         }
         
         .crop-controls {
@@ -96,7 +104,8 @@
 <div id="crop-screen">
     <div id="crop-viewport">
         <img id="crop-image" alt="Image à recadrer">
-        <div id="crop-mask-movable"></div> </div>
+        <div id="crop-mask-movable"></div>
+    </div>
     <div class="crop-controls">
         <button class="btn-action bg-red" onclick="closeCrop()"><i class="fa-solid fa-xmark"></i> Annuler</button>
         <button class="btn-action bg-green" onclick="confirmCrop()"><i class="fa-solid fa-check"></i> Valider</button>
@@ -106,7 +115,9 @@
 <div id="screen-list" class="screen active">
     <div class="app-header">
         <div class="header-top">
-            <span class="header-title">Bonsai Do</span>
+            <span class="header-title">
+                <i class="fa-solid fa-torii-gate"></i> BONSAI DO
+            </span>
             <span id="bonsai-count" style="font-size:0.8rem; background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:10px;">0 arbres</span>
         </div>
     </div>
@@ -120,7 +131,7 @@
     <div class="app-header">
         <div class="header-top">
             <button onclick="nav('list')" style="background:none;border:none;color:white;font-size:1.2rem;"><i class="fa-solid fa-chevron-left"></i> Retour</button>
-            <span style="font-family:var(--font-serif); font-weight:600;">Éditeur</span>
+            <span style="font-family:var(--font-serif); font-weight:600;">ÉDITEUR</span>
             <div style="width:50px;"></div>
         </div>
     </div>
@@ -154,8 +165,8 @@
 <div id="toast"></div>
 
 <script>
-// --- DB CORE (Simplifié pour l'exemple) ---
-const DB_NAME = 'BonsaiProV3DB'; const STORE_NAME = 'trees'; let bonsais = []; let currentUid = null; let currentPhotoBase64 = null;
+// --- DB CORE ---
+const DB_NAME = 'BonsaiProV4DB'; const STORE_NAME = 'trees'; let bonsais = []; let currentUid = null; let currentPhotoBase64 = null;
 const dbApi = {
     open: () => new Promise(res => { const r = indexedDB.open(DB_NAME, 1); r.onupgradeneeded = e => e.target.result.createObjectStore(STORE_NAME, { keyPath: 'uid' }); r.onsuccess = e => res(e.target.result); }),
     getAll: async () => { const db = await dbApi.open(); return new Promise(res => { const tx = db.transaction(STORE_NAME, 'readonly'); const req = tx.objectStore(STORE_NAME).getAll(); req.onsuccess = () => res(req.result); }); },
@@ -163,18 +174,15 @@ const dbApi = {
     delete: async uid => { const db = await dbApi.open(); db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).delete(uid); }
 };
 
-// --- LOGIQUE RECADRAGE MOBILE V3 (Masque Mobile) ---
+// --- LOGIQUE RECADRAGE MOBILE ---
 const imgEl = document.getElementById('crop-image');
 const maskEl = document.getElementById('crop-mask-movable');
 const viewportEl = document.getElementById('crop-viewport');
+const CROP_SIZE = 500; // TAILLE 500px
 
-// Taille du carré de recadrage (fixe)
-const CROP_SIZE = 250; 
-
-// Variables pour le déplacement du masque
 let isDraggingMask = false;
 let maskStartPos = { x: 0, y: 0 };
-let maskCurrentPos = { x: 50, y: 50 }; // Position initiale CSS
+let maskCurrentPos = { x: 20, y: 20 };
 
 function startCrop(input) {
     if (input.files && input.files[0]) {
@@ -182,7 +190,6 @@ function startCrop(input) {
         reader.onload = e => {
             imgEl.onload = () => {
                 document.getElementById('crop-screen').style.display = 'flex';
-                // Centrer le masque initialement
                 maskCurrentPos.x = (viewportEl.clientWidth - CROP_SIZE) / 2;
                 maskCurrentPos.y = (viewportEl.clientHeight - CROP_SIZE) / 2;
                 updateMaskPosition();
@@ -198,28 +205,18 @@ function updateMaskPosition() {
     maskEl.style.top = maskCurrentPos.y + 'px';
 }
 
-// --- GESTION TACTILE DU MASQUE (Pointer Events) ---
-
 maskEl.onpointerdown = (e) => {
     isDraggingMask = true;
     maskStartPos.x = e.clientX - maskCurrentPos.x;
     maskStartPos.y = e.clientY - maskCurrentPos.y;
     maskEl.setPointerCapture(e.pointerId);
-    e.stopPropagation(); // Empêche le viewport de scroller
+    e.stopPropagation();
 };
 
 maskEl.onpointermove = (e) => {
     if (!isDraggingMask) return;
-    
     maskCurrentPos.x = e.clientX - maskStartPos.x;
     maskCurrentPos.y = e.clientY - maskStartPos.y;
-    
-    // Limites (ne pas sortir du viewport)
-    if(maskCurrentPos.x < 0) maskCurrentPos.x = 0;
-    if(maskCurrentPos.y < 0) maskCurrentPos.y = 0;
-    if(maskCurrentPos.x > viewportEl.clientWidth - CROP_SIZE) maskCurrentPos.x = viewportEl.clientWidth - CROP_SIZE;
-    if(maskCurrentPos.y > viewportEl.clientHeight - CROP_SIZE) maskCurrentPos.y = viewportEl.clientHeight - CROP_SIZE;
-    
     updateMaskPosition();
     e.stopPropagation();
 };
@@ -229,34 +226,20 @@ maskEl.onpointerup = (e) => {
     maskEl.releasePointerCapture(e.pointerId);
 };
 
-// --- VALIDATION DU RECADRAGE V3 ---
 function confirmCrop() {
-    // Canvas pour le calcul final
     const finalCanvas = document.createElement('canvas');
-    finalCanvas.width = 500; // Taille standardisée
-    finalCanvas.height = 500;
+    finalCanvas.width = 600;
+    finalCanvas.height = 600;
     const ctx = finalCanvas.getContext('2d');
-
-    // Récupérer les positions exactes
     const imgRect = imgEl.getBoundingClientRect();
     const maskRect = maskEl.getBoundingClientRect();
-
-    // Calculer les ratios d'affichage
-    // Note: On utilise naturalWidth car imgRect peut être zoomé nativement
     const ratioX = imgEl.naturalWidth / imgRect.width;
     const ratioY = imgEl.naturalHeight / imgRect.height;
-
-    // Coordonnées de départ dans l'image RÉELLE
     const sx = (maskRect.left - imgRect.left) * ratioX;
     const sy = (maskRect.top - imgRect.top) * ratioY;
-    
-    // Largeur/Hauteur à prendre dans l'image RÉELLE
     const sw = CROP_SIZE * ratioX;
     const sh = CROP_SIZE * ratioY;
-
-    // Dessiner sur le canvas final
-    ctx.drawImage(imgEl, sx, sy, sw, sh, 0, 0, 500, 500);
-    
+    ctx.drawImage(imgEl, sx, sy, sw, sh, 0, 0, 600, 600);
     currentPhotoBase64 = finalCanvas.toDataURL('image/jpeg', 0.85);
     document.getElementById('edit-photo-preview').style.backgroundImage = `url('${currentPhotoBase64}')`;
     document.getElementById('edit-photo-preview').style.display = 'block';
@@ -269,7 +252,7 @@ function closeCrop() {
     document.getElementById('file-input').value = "";
 }
 
-// --- APP CORE FUNCTIONS ---
+// --- APP FUNCTIONS ---
 async function refresh() {
     bonsais = await dbApi.getAll();
     const container = document.getElementById('list-container');
@@ -281,8 +264,8 @@ async function refresh() {
         div.innerHTML = `
             <div class="thumb-icon" ${photo}>${b.photo ? '' : '<i class="fa-solid fa-tree" style="opacity:0.2;"></i>'}</div>
             <div class="bonsai-info">
-                <div class="bonsai-name">${b.name || 'Sans nom'}</div>
-                <div class="bonsai-origin-tag">${b.origin || 'Pépinière'}</div>
+                <div class="bonsai-name">${b.name || 'SANS NOM'}</div>
+                <div class="bonsai-origin-tag">${b.origin || 'PÉPINIÈRE'}</div>
             </div>`;
         container.appendChild(div);
     });
@@ -312,7 +295,7 @@ async function saveBonsai() {
 
 async function deleteBonsai() {
     await dbApi.delete(currentUid);
-    await refresh(); nav('list'); showToast('Supprimé de la collection');
+    await refresh(); nav('list'); showToast('Supprimé');
 }
 
 function nav(s) {
