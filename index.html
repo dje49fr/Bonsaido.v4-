@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bonsai Do - Gestionnaire Pro</title>
-    <link rel="icon" type="image/jpeg" href="icon.jpg">
-    <link rel="apple-touch-icon" href="icon.jpg">
-    <meta name="theme-color" content="#B0D3E5">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
@@ -18,21 +13,13 @@
             --primary-dark: #507A92;
             --primary-deep: #2E5F78;
             --bg: #D5D1C0;
-            --bg2: #C8C4B2;
-            --card-bg: #F5F2E8;
             --card-bg2: #FDFBF4;
             --text: #2C2A23;
             --secondary-text: #6E6C62;
             --danger: #C0392B;
             --success: #27AE60;
-            --warn: #E67E22;
-            --brown-btn: #7D5A4F;
             --radius: 14px;
-            --shadow-card: 0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-btn: 0 4px 12px rgba(0,0,0,0.12);
-            --spec-cold: #6FA3C0;
-            --spec-warm: #C4924A;
-            --spec-type: #6A8F58;
+            --shadow-card: 0 2px 12px rgba(0,0,0,0.08);
             --font-serif: 'Noto Serif JP', serif;
             --font-sans: 'DM Sans', sans-serif;
         }
@@ -44,89 +31,93 @@
             background: var(--bg);
             padding-bottom: 80px;
             color: var(--text);
-            -webkit-tap-highlight-color: transparent;
-            font-size: 16px;
             min-height: 100vh;
         }
 
-        /* HEADER & NAVIGATION */
         .app-header {
-            background: linear-gradient(135deg, var(--primary-deep) 0%, var(--primary-dark) 60%, #6A9FBA 100%);
+            background: linear-gradient(135deg, var(--primary-deep), var(--primary-dark));
             color: #fff;
-            padding: 14px 16px 12px;
+            padding: 14px 16px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 3px 16px rgba(46,95,120,0.25);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .header-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .header-title { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 600; display: flex; align-items: center; gap: 10px; color: #fff; letter-spacing: 0.5px; }
-        .header-title i { color: #FFD580; }
-        .bonsai-count { font-size: 0.72rem; background: rgba(255,255,255,0.2); color: #fff; padding: 3px 10px; border-radius: 20px; font-weight: 600; border: 1px solid rgba(255,255,255,0.3); }
-        .sort-bar { width: 100%; margin-top: 10px; display: flex; gap: 8px; }
-        .sort-select { flex: 1; padding: 8px 10px; border-radius: 8px; border: none; font-size: 0.85rem; background: rgba(255,255,255,0.18); color: #fff; font-weight: 600; outline: none; backdrop-filter: blur(4px); }
-        .sort-select option { color: var(--text); background: var(--card-bg); }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg2); height: 72px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(0,0,0,0.08); z-index: 900; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); }
-        .nav-btn { color: #B0ADA0; background: none; border: none; display: flex; flex-direction: column; align-items: center; padding: 6px 12px; gap: 3px; border-radius: 12px; transition: all 0.2s; cursor: pointer; }
-        .nav-btn i { font-size: 1.5rem; line-height: 1; }
-        .nav-btn span { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.3px; }
-        .nav-btn.active { color: var(--primary-deep); background: rgba(176,211,229,0.2); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; }
+        .header-title { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 600; }
 
-        /* CONTAINERS & CARDS */
         .main-container { padding: 14px; max-width: 800px; margin: 0 auto; }
-        .card { background: var(--card-bg2); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; box-shadow: var(--shadow-card); border: 1px solid rgba(0,0,0,0.06); }
-        .card h3 { border-bottom: 1px solid rgba(0,0,0,0.07); padding-bottom: 10px; margin-bottom: 14px; font-size: 0.9rem; font-weight: 700; color: var(--primary-deep); display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* LIST & ITEMS */
-        #list-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; padding-bottom: 10px; }
-        .bonsai-item { display: flex; flex-direction: column; background: var(--card-bg2); border-radius: 14px; box-shadow: var(--shadow-card); border: 1px solid rgba(0,0,0,0.06); overflow: hidden; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; position: relative; }
-        .bonsai-item:active { transform: scale(0.97); }
+        /* LISTE ET PHOTOS ENTIÈRES */
+        #list-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
         
-        /* ALERTES SUPPRIMÉES */
-        .alert-badge { display: none !important; }
-        .urgency-bar { display: none !important; }
+        .bonsai-item { 
+            background: var(--card-bg2); 
+            border-radius: var(--radius); 
+            overflow: hidden; 
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
 
-        .thumb-icon { width: 100%; height: 140px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; background: linear-gradient(135deg, #E8E4D8 0%, #D8D4C4 100%); background-size: cover; background-position: center; color: var(--primary-dark); }
-        .bonsai-info { padding: 10px 12px 12px; }
-        .bonsai-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .bonsai-species { font-size: 0.75rem; color: var(--secondary-text); margin-bottom: 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic; }
-        .bonsai-specs { font-size: 0.72rem; color: var(--secondary-text); display: flex; gap: 8px; }
+        .thumb-icon { 
+            width: 100%; 
+            height: 180px; 
+            background-color: #E8E4D8;
+            background-size: contain; /* Photo affichée entièrement */
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
 
-        .add-bonsai-btn-float { width: 100%; padding: 14px; margin-bottom: 16px; text-align: center; font-size: 1rem; font-weight: 700; background: linear-gradient(135deg, var(--primary-deep), var(--primary-dark)); color: #fff; border: none; border-radius: var(--radius); cursor: pointer; box-shadow: var(--shadow-btn); display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font-sans); letter-spacing: 0.3px; }
+        .bonsai-info { padding: 12px; }
+        .bonsai-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
+        .bonsai-species { font-size: 0.8rem; color: var(--secondary-text); font-style: italic; }
+        
+        .badge-origin {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .origin-pepiniere { background: #E8F4FD; color: #2E5F78; }
+        .origin-prelevement { background: #E8F5E9; color: #2E7D32; }
 
+        /* NAVIGATION BAS */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg2); height: 70px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(0,0,0,0.1); z-index: 100; }
+        .nav-btn { background: none; border: none; color: #B0ADA0; display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
+        .nav-btn.active { color: var(--primary-deep); }
+        .nav-btn i { font-size: 1.4rem; margin-bottom: 2px; }
+
+        /* ECRANS ET FORMULAIRES */
         .screen { display: none; }
-        .screen.active { display: block; animation: fadeIn 0.25s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .screen.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* FORMS */
-        .leaf-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 190px; margin-bottom: 16px; border-radius: var(--radius); background: linear-gradient(135deg, #EFECE1, #E2DFCF); border: 2px dashed #C5C2B0; position: relative; overflow: hidden; cursor: pointer; }
-        .leaf-preview img { width: 100%; height: 190px; object-fit: cover; position: absolute; top: 0; left: 0; }
-        .placeholder-content { display: flex; flex-direction: column; align-items: center; z-index: 2; gap: 8px; }
-        .icon-container { width: 64px; height: 64px; border-radius: 50%; border: 3px solid var(--primary-dark); display: flex; align-items: center; justify-content: center; background: var(--card-bg2); font-size: 2rem; color: var(--primary-dark); }
-        .photo-hint { font-size: 0.82rem; color: var(--secondary-text); font-weight: 600; }
-        .form-group { margin-bottom: 14px; }
-        label { display: block; color: var(--secondary-text); font-weight: 700; font-size: 0.8rem; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px; }
-        input, select, textarea { width: 100%; padding: 11px 13px; border: 1.5px solid #D5D2C0; border-radius: 9px; font-size: 15px; background: #fff; color: var(--text); outline: none; font-family: var(--font-sans); }
+        .card { background: var(--card-bg2); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow-card); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 6px; color: var(--secondary-text); text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #D5D2C0; border-radius: 8px; font-family: var(--font-sans); font-size: 1rem; outline: none; }
+        input:focus { border-color: var(--primary-dark); }
 
-        .specs-row { display: flex; justify-content: space-between; margin-top: 14px; text-align: center; }
-        .spec-box { display: flex; flex-direction: column; align-items: center; width: 30%; }
-        .icon-square { width: 40px; height: 40px; border-radius: 10px; border: 2px solid; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; background: var(--card-bg2); font-size: 1rem; }
-        .spec-text { font-size: 0.72rem; font-weight: 700; }
-        .c-blue { color: var(--spec-cold); border-color: var(--spec-cold); }
-        .c-orange { color: var(--spec-warm); border-color: var(--spec-warm); }
-        .c-green { color: var(--spec-type); border-color: var(--spec-type); }
+        .btn-action { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: 700; color: white; margin-top: 10px; cursor: pointer; font-size: 1rem; }
+        .bg-green { background: var(--success); }
+        .bg-red { background: var(--danger); }
+        .add-btn { background: var(--primary-deep); color: #fff; padding: 14px; width: 100%; border-radius: 12px; border: none; font-weight: 700; margin-bottom: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(46,95,120,0.2); }
 
-        .btn-action { display: block; width: 100%; padding: 14px; margin-top: 12px; border: none; border-radius: 10px; font-weight: 700; color: white; cursor: pointer; box-shadow: var(--shadow-btn); font-family: var(--font-sans); font-size: 0.95rem; }
-        .bg-blue { background: linear-gradient(135deg, var(--primary-deep), var(--primary-dark)); }
-        .bg-green { background: linear-gradient(135deg, #1e8449, var(--success)); }
-        .bg-red { background: linear-gradient(135deg, #922b21, var(--danger)); }
-        .bg-brown { background: linear-gradient(135deg, #5D3A32, var(--brown-btn)); }
-
-        #toast { visibility: hidden; min-width: 220px; margin-left: -110px; background-color: var(--success); color: #fff; text-align: center; border-radius: 10px; padding: 14px 18px; position: fixed; z-index: 2000; left: 50%; bottom: 90px; font-size: 0.9rem; font-weight: 600; }
-        #toast.show { visibility: visible; animation: toastin 0.4s, toastout 0.4s 2.6s; }
-        @keyframes toastin { from { bottom: 70px; opacity: 0; } to { bottom: 90px; opacity: 1; } }
-        @keyframes toastout { from { bottom: 90px; opacity: 1; } to { bottom: 70px; opacity: 0; } }
+        #toast { visibility: hidden; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        #toast.show { visibility: visible; }
     </style>
 </head>
 <body>
@@ -134,224 +125,186 @@
 <div id="screen-list" class="screen active">
     <div class="app-header">
         <div class="header-top">
-            <span class="header-title"><i class="fa-solid fa-torii-gate"></i> Bonsai Do</span>
-            <span id="bonsai-count" class="bonsai-count">0 arbres</span>
-        </div>
-        <div class="sort-bar">
-            <select class="sort-select" id="sort-filter" onchange="renderList()">
-                <option value="name_asc">🔤 Nom (A-Z)</option>
-                <option value="date_desc">📅 Ajout Récent</option>
-                <option value="urgency">⚠️ Urgence</option>
-            </select>
+            <span class="header-title">Bonsai Do</span>
+            <span id="bonsai-count" style="font-size: 0.75rem; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 10px;">0 arbres</span>
         </div>
     </div>
     <div class="main-container">
-        <button class="add-bonsai-btn-float" onclick="openEditor(null)">
-            <i class="fa-solid fa-plus"></i> Ajouter un arbre
-        </button>
-        <div id="list-container">Chargement...</div>
-    </div>
-</div>
-
-<div id="screen-calendar" class="screen">
-    <div class="app-header"><div class="header-top" style="justify-content:center;"><span class="header-title">Calendrier</span></div></div>
-    <div class="main-container"><div class="card"><h3>Travaux à venir</h3><div id="cal-soon">Prochainement disponible.</div></div></div>
-</div>
-
-<div id="screen-settings" class="screen">
-    <div class="app-header"><div class="header-top" style="justify-content:center;"><span class="header-title">Réglages</span></div></div>
-    <div class="main-container">
-        <div class="card">
-            <h3>Données</h3>
-            <button class="btn-action bg-blue" onclick="downloadBackup()">Exporter JSON</button>
-            <button class="btn-action bg-red" onclick="resetApp()">Réinitialiser l'application</button>
-        </div>
+        <button class="add-btn" onclick="openEditor(null)"><i class="fa-solid fa-plus"></i> Ajouter un sujet</button>
+        <div id="list-container"></div>
     </div>
 </div>
 
 <div id="screen-edit" class="screen">
     <div class="app-header">
         <div class="header-top">
-            <button class="header-btn" onclick="nav('list')" style="background:none; border:none; color:#fff; font-size:1.2rem;"><i class="fa-solid fa-arrow-left"></i></button>
-            <span id="editor-title" style="color:#fff;">Modifier</span>
-            <div style="width:40px;"></div>
+            <button onclick="nav('list')" style="background:none; border:none; color:white; font-size: 1rem; cursor: pointer;"><i class="fa-solid fa-chevron-left"></i> Retour</button>
+            <span id="edit-title" style="font-weight: 600;">Édition</span>
+            <div style="width:50px;"></div>
         </div>
     </div>
     <div class="main-container">
         <div class="card">
-            <div class="leaf-preview" id="leaf-preview" onclick="document.getElementById('photo-upload').click()">
-                <img id="preview-image-tag" style="display:none;" />
-                <div class="placeholder-content" id="placeholder-content">
-                    <div class="icon-container"><i class="fa-solid fa-camera"></i></div>
-                </div>
-                <input type="file" id="photo-upload" accept="image/*" style="display:none;" onchange="handlePhotoUpload(this)">
+            <div class="form-group">
+                <label>Photo de l'arbre</label>
+                <input type="file" accept="image/*" onchange="handlePhoto(this)" style="font-size: 0.8rem;">
+            </div>
+            <div class="form-group">
+                <label>Nom / Surnom</label>
+                <input type="text" id="edit-name" placeholder="Ex: Grand Orme">
             </div>
             <div class="form-group">
                 <label>Espèce</label>
-                <input list="species-list" id="edit-species-input" oninput="updateSpecsFromInput()">
-                <datalist id="species-list"></datalist>
+                <input type="text" id="edit-species" placeholder="Ex: Ulmus Parvifolia">
             </div>
-            <div class="specs-row">
-                <div class="spec-box"><div class="icon-square c-blue"><i class="fa-solid fa-snowflake"></i></div><span class="spec-text c-blue" id="v-usda">–</span></div>
-                <div class="spec-box"><div class="icon-square c-orange"><i class="fa-solid fa-sun"></i></div><span class="spec-text c-orange" id="v-expo">–</span></div>
-                <div class="spec-box"><div class="icon-square c-green"><i class="fa-solid fa-leaf"></i></div><span class="spec-text c-green" id="v-type">–</span></div>
+            <div class="form-group">
+                <label>Origine du sujet</label>
+                <select id="edit-origin">
+                    <option value="Pépinière">Pépinière 🪴</option>
+                    <option value="Prélèvement">Prélèvement (Yamadori) 🌲</option>
+                </select>
             </div>
         </div>
-        <div class="card">
-            <label>Surnom</label>
-            <input type="text" id="edit-name">
-        </div>
-        <button class="btn-action bg-green" onclick="saveBonsai()">Enregistrer</button>
-        <button class="btn-action bg-red" id="btn-delete" style="display:none;" onclick="deleteBonsai()">Supprimer</button>
+        <button class="btn-action bg-green" onclick="saveBonsai()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
+        <button class="btn-action bg-red" id="btn-delete" style="display:none;" onclick="deleteBonsai()"><i class="fa-solid fa-trash"></i> Supprimer</button>
     </div>
 </div>
 
 <div class="bottom-nav">
-    <button class="nav-btn active" id="nav-list" onclick="nav('list')"><i class="fa-solid fa-seedling"></i><span>Arbres</span></button>
-    <button class="nav-btn" id="nav-calendar" onclick="nav('calendar')"><i class="fa-solid fa-calendar"></i><span>Agenda</span></button>
-    <button class="nav-btn" id="nav-settings" onclick="nav('settings')"><i class="fa-solid fa-gear"></i><span>Réglages</span></button>
+    <button class="nav-btn active" id="nav-list" onclick="nav('list')"><i class="fa-solid fa-tree"></i><span>Ma Collection</span></button>
+    <button class="nav-btn" onclick="showToast('Section Agenda bientôt active')"><i class="fa-solid fa-calendar-day"></i><span>Agenda</span></button>
+    <button class="nav-btn" onclick="nav('list')"><i class="fa-solid fa-gear"></i><span>Réglages</span></button>
 </div>
-<div id="toast"></div>
+
+<div id="toast">Message</div>
 
 <script>
-const DB_NAME = 'BonsaiDoDB';
-const STORE_NAME = 'trees';
+    const DB_NAME = 'BonsaiMasterDB';
+    const STORE_NAME = 'trees';
+    let bonsais = [];
+    let currentUid = null;
+    let currentPhoto = null;
 
-const dbApi = {
-    open: () => new Promise((res) => {
-        const r = indexedDB.open(DB_NAME, 1);
-        r.onupgradeneeded = e => e.target.result.createObjectStore(STORE_NAME, { keyPath: 'uid' });
-        r.onsuccess = e => res(e.target.result);
-    }),
-    getAll: async () => {
-        const db = await dbApi.open();
-        return new Promise(res => {
-            const tx = db.transaction(STORE_NAME, 'readonly');
-            const req = tx.objectStore(STORE_NAME).getAll();
-            req.onsuccess = () => res(req.result);
+    const dbApi = {
+        open: () => new Promise(res => {
+            const r = indexedDB.open(DB_NAME, 1);
+            r.onupgradeneeded = e => e.target.result.createObjectStore(STORE_NAME, { keyPath: 'uid' });
+            r.onsuccess = e => res(e.target.result);
+        }),
+        getAll: async () => {
+            const db = await dbApi.open();
+            return new Promise(res => {
+                const tx = db.transaction(STORE_NAME, 'readonly');
+                const req = tx.objectStore(STORE_NAME).getAll();
+                req.onsuccess = () => res(req.result);
+            });
+        },
+        put: async item => {
+            const db = await dbApi.open();
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            tx.objectStore(STORE_NAME).put(item);
+        },
+        delete: async uid => {
+            const db = await dbApi.open();
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            tx.objectStore(STORE_NAME).delete(uid);
+        }
+    };
+
+    window.onload = async () => { await refresh(); };
+
+    async function refresh() {
+        bonsais = await dbApi.getAll();
+        const container = document.getElementById('list-container');
+        container.innerHTML = '';
+        document.getElementById('bonsai-count').innerText = bonsais.length + ' arbre(s)';
+
+        bonsais.forEach(b => {
+            const div = document.createElement('div');
+            div.className = 'bonsai-item';
+            div.onclick = () => openEditor(b.uid);
+            
+            const imgStyle = b.photo ? `style="background-image:url('${b.photo}')"` : '';
+            const originClass = b.origin === 'Prélèvement' ? 'origin-prelevement' : 'origin-pepiniere';
+            
+            div.innerHTML = `
+                <div class="thumb-icon" ${imgStyle}>${b.photo ? '' : '<i class="fa-solid fa-tree" style="opacity:0.3"></i>'}</div>
+                <div class="bonsai-info">
+                    <div class="bonsai-name">${b.name || 'Sans nom'}</div>
+                    <div class="bonsai-species">${b.species || 'Espèce inconnue'}</div>
+                    <span class="badge-origin ${originClass}">${b.origin || 'Pépinière'}</span>
+                </div>
+            `;
+            container.appendChild(div);
         });
-    },
-    put: async item => {
-        const db = await dbApi.open();
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-        tx.objectStore(STORE_NAME).put(item);
-    },
-    delete: async uid => {
-        const db = await dbApi.open();
-        db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).delete(uid);
-    },
-    clear: async () => {
-        const db = await dbApi.open();
-        db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).clear();
-    }
-};
-
-let bonsais = [];
-let currentUid = null;
-let currentPhotoBase64 = null;
-
-window.onload = async () => { await refreshData(); renderList(); };
-
-async function refreshData() { try { bonsais = await dbApi.getAll(); } catch(e) { bonsais = []; } }
-
-function renderList() {
-    const container = document.getElementById('list-container');
-    container.innerHTML = '';
-    const count = bonsais.length;
-    document.getElementById('bonsai-count').innerText = count + ' arbre' + (count > 1 ? 's' : '');
-
-    if (count === 0) {
-        container.innerHTML = `<div class="empty-state">Aucun arbre.</div>`;
-        return;
     }
 
-    bonsais.forEach(b => {
-        const div = document.createElement('div');
-        div.className = 'bonsai-item';
-        div.onclick = () => openEditor(b.uid);
-        const img = b.photo ? `<div class="thumb-icon" style="background-image:url('${b.photo}')"></div>` : `<div class="thumb-icon"><i class="fa-solid fa-tree"></i></div>`;
-        div.innerHTML = `${img}<div class="bonsai-info"><div class="bonsai-name">${b.nom || b.customName}</div><div class="bonsai-species">${b.customName}</div></div>`;
-        container.appendChild(div);
-    });
-}
+    function openEditor(uid) {
+        currentUid = uid;
+        currentPhoto = null;
+        document.getElementById('edit-name').value = '';
+        document.getElementById('edit-species').value = '';
+        document.getElementById('edit-origin').value = 'Pépinière';
+        document.getElementById('btn-delete').style.display = uid ? 'block' : 'none';
+        document.getElementById('edit-title').innerText = uid ? 'Modifier' : 'Nouveau sujet';
 
-function openEditor(uid) {
-    currentUid = uid;
-    currentPhotoBase64 = null;
-    document.querySelectorAll('input').forEach(i => i.value = '');
-    document.getElementById('btn-delete').style.display = uid ? 'block' : 'none';
-    if (uid) {
-        const b = bonsais.find(x => x.uid === uid);
-        if (b) {
-            document.getElementById('edit-species-input').value = b.customName;
-            document.getElementById('edit-name').value = b.nom;
-            currentPhotoBase64 = b.photo;
+        if (uid) {
+            const b = bonsais.find(x => x.uid === uid);
+            document.getElementById('edit-name').value = b.name;
+            document.getElementById('edit-species').value = b.species;
+            document.getElementById('edit-origin').value = b.origin || 'Pépinière';
+            currentPhoto = b.photo;
+        }
+        nav('edit');
+    }
+
+    async function saveBonsai() {
+        const name = document.getElementById('edit-name').value;
+        if (!name) { showToast('Le nom est obligatoire'); return; }
+        
+        await dbApi.put({
+            uid: currentUid || Date.now(),
+            name: name,
+            species: document.getElementById('edit-species').value,
+            origin: document.getElementById('edit-origin').value,
+            photo: currentPhoto
+        });
+        await refresh();
+        nav('list');
+        showToast('Arbre enregistré avec succès');
+    }
+
+    async function deleteBonsai() {
+        // Suppression immédiate sans confirmation système
+        await dbApi.delete(currentUid);
+        await refresh();
+        nav('list');
+        showToast('Arbre supprimé de la collection');
+    }
+
+    function handlePhoto(input) {
+        if (input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                currentPhoto = e.target.result;
+                showToast('Image chargée');
+            };
+            reader.readAsDataURL(input.files[0]);
         }
     }
-    updateLeafPreview();
-    nav('edit');
-}
 
-async function saveBonsai() {
-    const species = document.getElementById('edit-species-input').value;
-    if (!species) return showToast('Espèce requise', true);
-    await dbApi.put({
-        uid: currentUid || Date.now(),
-        customName: species,
-        nom: document.getElementById('edit-name').value,
-        photo: currentPhotoBase64
-    });
-    await refreshData();
-    showToast('Sauvegardé');
-    nav('list');
-}
-
-async function deleteBonsai() {
-    await dbApi.delete(currentUid);
-    await refreshData();
-    showToast('Supprimé');
-    nav('list');
-}
-
-async function resetApp() {
-    await dbApi.clear();
-    location.reload();
-}
-
-function handlePhotoUpload(input) {
-    if (input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = e => { currentPhotoBase64 = e.target.result; updateLeafPreview(); };
-        reader.readAsDataURL(input.files[0]);
+    function nav(s) {
+        document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
+        document.getElementById('screen-' + s).classList.add('active');
+        window.scrollTo(0, 0);
     }
-}
 
-function updateLeafPreview() {
-    const img = document.getElementById('preview-image-tag');
-    const ph = document.getElementById('placeholder-content');
-    if (currentPhotoBase64) { img.src = currentPhotoBase64; img.style.display = 'block'; ph.style.display = 'none'; }
-    else { img.style.display = 'none'; ph.style.display = 'flex'; }
-}
-
-function nav(screen) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('screen-' + screen).classList.add('active');
-    const nb = document.getElementById('nav-' + screen);
-    if (nb) nb.classList.add('active');
-    if (screen === 'list') renderList();
-}
-
-function showToast(msg, err) {
-    const t = document.getElementById('toast');
-    t.innerText = msg;
-    t.style.background = err ? 'var(--danger)' : 'var(--success)';
-    t.className = 'show';
-    setTimeout(() => t.className = '', 2000);
-}
-
-function updateSpecsFromInput() { /* Optionnel: Logique simplifiée */ }
-async function downloadBackup() { /* Logique simplifiée */ }
+    function showToast(m) {
+        const t = document.getElementById('toast');
+        t.innerText = m;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+    }
 </script>
 </body>
 </html>
