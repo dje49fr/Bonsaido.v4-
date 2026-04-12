@@ -5,27 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>BONSAI DO - PRO</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-    --bg:          #2A3230;
-    --bg2:         #313C39;
-    --card:        #4A5A54;
-    --card2:       #526360;
-    --card-light:  #EDE8D5;
-    --green:       #3D7A4A;
-    --green-dark:  #2E5C38;
-    --green-text:  #7ABF50;
-    --cream:       #E8E0C8;
-    --border:      rgba(255,255,255,0.07);
-    --text:        #F0EDE6;
-    --text-sec:    #8A8F88;
-    --text-dim:    #555A54;
-    --blue:        #4A9BB5;
-    --red:         #C05040;
-    --amber:       #B07840;
-    --radius:      18px;
+    --bg:          #F0EDE6;
+    --bg2:         #FFFFFF;
+    --card:        #FFFFFF;
+    --card2:       #F5F2EC;
+    --card-info:   #F5F2EC;
+    --green:       #4A7A56;
+    --green-light: #E8F0EA;
+    --green-text:  #4A7A56;
+    --btn-dark:    #5A5248;
+    --btn-darker:  #3E3830;
+    --border:      #E4E0D8;
+    --text:        #1E1C18;
+    --text-sec:    #6A6560;
+    --text-dim:    #A8A49E;
+    --blue:        #5B9BB5;
+    --red:         #B06050;
+    --amber:       #9A7840;
+    --radius:      16px;
     --radius-sm:   12px;
+    --shadow:      0 2px 12px rgba(0,0,0,0.07);
+    --shadow-sm:   0 1px 6px rgba(0,0,0,0.05);
     --font:        'Inter', sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -38,18 +41,19 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 #toast {
     visibility: hidden; position: fixed; bottom: 90px;
     left: 50%; transform: translateX(-50%);
-    background: var(--card2); color: var(--text); padding: 10px 22px;
+    background: var(--btn-dark); color: #fff; padding: 10px 22px;
     border-radius: 24px; z-index: 3000; font-size: 0.78rem; font-weight: 600;
-    white-space: nowrap; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 #toast.show { visibility: visible; }
 
 /* ── BOTTOM NAV ── */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
-    background: var(--bg2); height: 72px;
+    background: #fff; height: 72px;
     display: flex; justify-content: space-around; align-items: flex-start;
     padding-top: 10px; border-top: 1px solid var(--border); z-index: 900;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
 }
 .nav-btn {
     color: var(--text-dim); background: none; border: none;
@@ -57,148 +61,141 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
     gap: 4px; font-size: 0.56rem; font-weight: 500;
     font-family: var(--font); cursor: pointer; padding: 0 10px; position: relative;
 }
-.nav-btn i { font-size: 1.15rem; }
+.nav-btn i { font-size: 1.1rem; }
 .nav-btn.active { color: var(--text); }
 .nav-btn.active::after {
     content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-    width: 22px; height: 2.5px; background: var(--text); border-radius: 2px;
+    width: 20px; height: 2.5px; background: var(--text); border-radius: 2px;
 }
 .nav-btn input[type="file"] { display: none; }
-.nav-badge {
-    position: absolute; top: -3px; right: 4px;
-    background: var(--green); color: white; border-radius: 10px;
-    font-size: 0.5rem; font-weight: 700; padding: 1px 5px; min-width: 16px; text-align: center;
-}
+.nav-badge { position: absolute; top: -3px; right: 4px; background: var(--green); color: white; border-radius: 10px; font-size: 0.5rem; font-weight: 700; padding: 1px 5px; min-width: 16px; text-align: center; }
 
 /* ── CROP ── */
 #crop-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
 #crop-viewport { flex: 1; width: 100%; position: relative; overflow: auto; display: flex; align-items: center; justify-content: center; -webkit-overflow-scrolling: touch; }
 #crop-image { max-width: 100%; display: block; }
 #crop-mask { position: absolute; width: 450px; height: 450px; border: 2px solid #fff; box-shadow: 0 0 0 9999px rgba(0,0,0,0.6); cursor: move; z-index: 2010; touch-action: none; border-radius: 12px; }
-.crop-bar { height: 80px; display: flex; gap: 10px; padding: 14px 20px; background: var(--bg2); }
+.crop-bar { height: 80px; display: flex; gap: 10px; padding: 14px 20px; background: #1a1a1a; }
 .btn-crop { flex: 1; border: none; border-radius: var(--radius-sm); font-weight: 700; color: white; cursor: pointer; font-family: var(--font); font-size: 0.9rem; }
-.btn-crop-cancel { background: var(--card2); color: var(--text-sec); }
+.btn-crop-cancel { background: #444; }
 .btn-crop-ok { background: var(--green); }
 
 /* ── ACCUEIL ── */
 .home-header {
-    background: #4A6B58; padding: 14px 16px 12px;
-    position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);
+    background: #fff; padding: 16px 18px 14px;
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
+    box-shadow: var(--shadow-sm);
 }
-.home-logo { display: flex; align-items: center; gap: 8px; }
-.home-logo i { color: var(--green-text); font-size: 1rem; }
-.home-logo-text { font-size: 1rem; font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
-.home-logo-text span { color: var(--green-text); font-weight: 400; }
-.home-count { font-size: 0.62rem; font-weight: 600; color: var(--text-sec); background: var(--card2); padding: 4px 10px; border-radius: 20px; }
+.home-logo { display: flex; align-items: center; gap: 10px; }
+.home-logo-icon { font-size: 1.8rem; color: var(--green-text); }
+.home-logo-text { font-size: 1.5rem; font-weight: 800; color: var(--text); letter-spacing: 0.01em; text-transform: uppercase; }
+.home-count { font-size: 0.62rem; font-weight: 600; color: var(--text-sec); background: var(--card2); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); }
 
 .search-wrap { padding: 10px 14px 4px; }
-.search-bar { display: flex; align-items: center; background: var(--card); border-radius: 12px; padding: 11px 14px; gap: 10px; border: 1px solid var(--border); }
+.search-bar { display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 11px 14px; gap: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 .search-bar input { flex: 1; border: none; background: transparent; font-family: var(--font); font-size: 0.85rem; color: var(--text); outline: none; }
 .search-bar input::placeholder { color: var(--text-dim); }
 .search-bar i { color: var(--text-dim); font-size: 0.85rem; }
 
 .backup-bar { display: flex; gap: 8px; padding: 8px 14px 2px; }
-.btn-backup { flex: 1; padding: 10px; border: none; border-radius: var(--radius-sm); background: var(--card); color: var(--text-sec); font-family: var(--font); font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--border); }
+.btn-backup { flex: 1; padding: 10px; border: none; border-radius: var(--radius-sm); background: #fff; color: var(--text-sec); font-family: var(--font); font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 .btn-backup input[type="file"] { display: none; }
-.btn-import { color: var(--green-text); background: rgba(61,122,74,0.12); border-color: rgba(61,122,74,0.25); }
+.btn-import { color: var(--green-text); background: var(--green-light); border-color: rgba(74,122,86,0.25); }
 
+/* catégories */
 .category-section { padding: 0 14px; }
 .category-header { display: flex; align-items: center; gap: 10px; padding: 18px 0 10px; }
 .category-header-line { flex: 1; height: 1px; background: var(--border); }
-.category-label { display: flex; align-items: center; gap: 7px; font-size: 0.75rem; font-weight: 700; color: var(--text-sec); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.07em; }
-.category-label i { font-size: 0.78rem; }
-.category-label.conifers { color: #9ABF50; } .category-label.conifers i { color: #9ABF50; }
-.category-label.deciduous { color: #C9A84C; } .category-label.deciduous i { color: #C9A84C; }
-.category-label.others { color: #7AABCA; } .category-label.others i { color: #7AABCA; }
-.category-count { font-size: 0.58rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--card); color: var(--text-dim); }
+.category-label { display: flex; align-items: center; gap: 7px; font-size: 0.72rem; font-weight: 700; color: var(--text-sec); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.07em; }
+.category-label i { font-size: 0.75rem; }
+.category-label.conifers { color: #4A8A60; } .category-label.conifers i { color: #4A8A60; }
+.category-label.deciduous { color: #9A7030; } .category-label.deciduous i { color: #9A7030; }
+.category-label.others { color: #5A7A9A; } .category-label.others i { color: #5A7A9A; }
+.category-count { font-size: 0.58rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--card2); color: var(--text-dim); border: 1px solid var(--border); }
 .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 6px; }
 
-.bonsai-card { background: var(--card); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform 0.15s; border: 1px solid var(--border); }
-.bonsai-card:active { transform: scale(0.95); }
+/* cards */
+.bonsai-card { background: #fff; border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform 0.15s; box-shadow: var(--shadow); border: 1px solid var(--border); }
+.bonsai-card:active { transform: scale(0.96); }
 .card-photo { width: 100%; aspect-ratio: 1/1; background: var(--card2); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--text-dim); }
 .card-info { padding: 8px 10px 10px; }
-.card-name { font-weight: 700; font-size: 0.67rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; letter-spacing: 0.04em; }
+.card-name { font-weight: 700; font-size: 0.67rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; letter-spacing: 0.04em; color: var(--text); }
 .card-species { font-size: 0.58rem; color: var(--text-sec); font-style: italic; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-badge { display: inline-block; font-size: 0.55rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
-.badge-green  { background: rgba(61,122,74,0.25); color: #4A9B5A; }
-.badge-yellow { background: rgba(201,168,76,0.2); color: #C9A84C; }
-.badge-red    { background: rgba(192,80,64,0.2); color: #E06050; }
+.badge-green  { background: #DFF0E4; color: #2E7A48; }
+.badge-yellow { background: #FBF0D8; color: #8A6020; }
+.badge-red    { background: #FADDDA; color: #9A3828; }
 
-.card-add { background: transparent; border: 1.5px dashed rgba(255,255,255,0.1); border-radius: var(--radius); min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; cursor: pointer; transition: 0.15s; }
-.card-add:active { background: rgba(61,122,74,0.1); }
+.card-add { background: transparent; border: 1.5px dashed var(--border); border-radius: var(--radius); min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; cursor: pointer; transition: 0.15s; }
+.card-add:active { background: var(--green-light); }
 .card-add i { font-size: 1rem; color: var(--green-text); }
 .card-add span { font-size: 0.6rem; font-weight: 700; color: var(--green-text); text-align: center; text-transform: uppercase; line-height: 1.5; letter-spacing: 0.04em; }
 
 /* ── FICHE ARBRE ── */
-.edit-header { background: var(--bg2); padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
-.btn-back { background: var(--card); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-sec); cursor: pointer; font-size: 0.8rem; flex-shrink: 0; }
+.edit-header { background: #fff; padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.btn-back { background: var(--card2); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-sec); cursor: pointer; font-size: 0.8rem; flex-shrink: 0; }
 .edit-header-info { flex: 1; overflow: hidden; }
 .edit-header-title { font-size: 1rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .edit-header-sub { font-size: 0.65rem; color: var(--text-sec); margin-top: 2px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* photo héro — grand rectangle arrondi comme la référence */
-.hero-photo {
-    width: calc(100% - 28px); margin: 14px 14px 0;
-    height: 210px; border-radius: var(--radius);
-    background: var(--card2); background-size: cover; background-position: center;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 3.5rem; color: var(--text-dim);
-    position: relative; cursor: pointer; overflow: hidden;
-}
-.hero-photo-btn { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); color: white; padding: 6px 13px; border-radius: 20px; font-size: 0.68rem; font-weight: 600; display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.15); }
+/* hero photo */
+.hero-photo { width: 100%; height: 220px; background: var(--card2); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: var(--text-dim); position: relative; cursor: pointer; overflow: hidden; }
+.hero-photo-btn { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.4); backdrop-filter: blur(6px); color: white; padding: 6px 13px; border-radius: 20px; font-size: 0.68rem; font-weight: 600; display: flex; align-items: center; gap: 5px; }
 input[type="file"] { display: none; }
 
-/* nom + espèce sous photo — comme référence */
-.hero-meta { padding: 12px 16px 0; }
-.hero-name { font-size: 1.35rem; font-weight: 700; color: var(--text); line-height: 1.2; font-style: italic; }
+/* indicateur pagination (points) */
+.hero-dots { display: flex; justify-content: center; gap: 6px; padding: 10px 0 4px; }
+.hero-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim); }
+.hero-dot.active { background: var(--text); width: 18px; border-radius: 4px; }
+
+/* nom + espèce */
+.hero-meta { padding: 10px 16px 2px; }
+.hero-name { font-size: 1.25rem; font-weight: 700; color: var(--text); line-height: 1.2; font-style: italic; }
 .hero-species { font-size: 0.72rem; color: var(--text-sec); margin-top: 3px; }
 
-/* carte statut — fond crème clair comme référence */
-.status-card { margin: 12px 14px 0; background: var(--card-light); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
-.status-label { font-size: 0.62rem; font-weight: 600; color: #7A7060; text-transform: none; margin-bottom: 5px; }
-.status-value { font-size: 1.4rem; font-weight: 700; color: #1E2E1E; }
-.status-ring {
-    width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0;
-    background: conic-gradient(#3D7A4A 0% 0%, rgba(0,0,0,0.12) 0% 100%);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.68rem; font-weight: 700; color: #1E2E1E;
-    box-shadow: inset 0 0 0 7px var(--card-light);
-    transition: background 0.4s;
-}
+/* fiche identité card */
+.info-card { margin: 12px 14px 0; background: #fff; border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+.info-card-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.info-row { font-size: 0.82rem; color: var(--text); padding: 3px 0; }
+.info-row span { color: var(--text-sec); }
 
 /* section titre */
-.section-hd { padding: 16px 16px 8px; font-size: 0.9rem; font-weight: 700; color: var(--text); }
+.section-hd { padding: 16px 16px 8px; font-size: 1rem; font-weight: 700; color: var(--text); }
 
-/* lignes d'action — comme "Prochaines Actions" dans la référence */
+/* lignes d'action */
 .action-list { padding: 0 14px; display: flex; flex-direction: column; gap: 8px; }
-.action-row-item { background: var(--card); border-radius: var(--radius-sm); padding: 13px 14px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); position: relative; }
+.action-row-item { background: #fff; border-radius: var(--radius-sm); padding: 13px 14px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); position: relative; cursor: pointer; }
 .action-row-item i.arr { position: absolute; right: 14px; color: var(--text-dim); font-size: 0.75rem; }
-.action-icon { width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
-.action-icon.blue   { background: rgba(74,155,181,0.2); color: var(--blue); }
-.action-icon.red    { background: rgba(192,80,64,0.2); color: var(--red); }
-.action-icon.amber  { background: rgba(176,120,64,0.2); color: var(--amber); }
-.action-icon.green  { background: rgba(61,122,74,0.2); color: var(--green-text); }
-.action-title { font-size: 0.88rem; font-weight: 600; color: var(--text); }
-.action-sub { font-size: 0.68rem; color: var(--text-sec); margin-top: 2px; }
-.date-input-row { border: none; background: transparent; font-family: var(--font); font-size: 0.68rem; color: var(--text-sec); outline: none; padding: 0; width: 100%; }
-.date-input-row::-webkit-calendar-picker-indicator { filter: invert(0.5); }
+.action-icon { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+.action-icon.blue   { background: #DFF0F5; color: #3A7A9A; }
+.action-icon.red    { background: #F5E8E6; color: #9A5040; }
+.action-icon.amber  { background: #F5EED8; color: #7A5828; }
+.action-icon.green  { background: #DFF0E4; color: #2E7A48; }
+.action-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+.action-sub { font-size: 0.7rem; color: var(--text-sec); margin-top: 2px; }
+.date-input-row { border: none; background: transparent; font-family: var(--font); font-size: 0.7rem; color: var(--text-sec); outline: none; padding: 0; width: 100%; }
+
+/* deux boutons style référence */
+.cta-row { display: flex; gap: 10px; padding: 16px 14px 6px; }
+.btn-cta-primary { flex: 1; padding: 16px; border: none; border-radius: 50px; background: var(--btn-dark); color: #fff; font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+.btn-cta-secondary { flex: 1; padding: 16px; border: none; border-radius: 50px; background: var(--btn-darker); color: #fff; font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; }
 
 /* dossier */
-.dossier-band { background: var(--card); margin: 10px 14px 0; border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); }
-.dossier-icon { background: rgba(61,122,74,0.2); color: var(--green-text); width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.dossier-band { background: var(--card2); margin: 10px 14px 0; border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); }
+.dossier-icon { background: var(--green-light); color: var(--green-text); width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
 .dossier-name { font-size: 0.88rem; font-weight: 600; color: var(--text); }
 .dossier-sub { font-size: 0.65rem; color: var(--text-sec); margin-top: 1px; font-style: italic; }
 
 .section { padding: 12px 14px 4px; }
 .section-title { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
 .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.id-tile { background: var(--card); border-radius: var(--radius-sm); padding: 10px 12px; border: 1px solid var(--border); position: relative; }
+.id-tile { background: #fff; border-radius: var(--radius-sm); padding: 10px 12px; border: 1px solid var(--border); position: relative; box-shadow: var(--shadow-sm); }
 .id-tile.full { grid-column: span 2; }
 .id-tile > label { display: block; font-size: 0.58rem; font-weight: 700; color: var(--green-text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
 .id-tile input[type="text"], .id-tile input[type="date"], .id-tile select { width: 100%; border: none; background: transparent; font-family: var(--font); font-size: 0.85rem; color: var(--text); outline: none; padding: 0; }
-.id-tile select option { background: var(--card2); }
-.id-tile input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); }
+.id-tile select option { background: #fff; }
 .id-tile-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.78rem; pointer-events: none; }
 
 .species-trigger { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
@@ -206,58 +203,108 @@ input[type="file"] { display: none; }
 .species-trigger span.selected { color: var(--text); font-style: normal; }
 .species-trigger i { font-size: 0.7rem; color: var(--text-dim); flex-shrink: 0; margin-left: 6px; }
 
-.species-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; background: rgba(0,0,0,0.75); align-items: flex-end; }
+.species-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; background: rgba(0,0,0,0.4); align-items: flex-end; }
 .species-modal.open { display: flex; }
-.species-panel { background: var(--card2); border-radius: 24px 24px 0 0; width: 100%; max-height: 78vh; display: flex; flex-direction: column; border-top: 1px solid var(--border); }
+.species-panel { background: #fff; border-radius: 24px 24px 0 0; width: 100%; max-height: 78vh; display: flex; flex-direction: column; border-top: 1px solid var(--border); }
 .species-panel-header { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .species-panel-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
-.species-search-bar { display: flex; align-items: center; background: var(--bg); border-radius: 12px; padding: 9px 14px; gap: 8px; border: 1px solid var(--border); }
+.species-search-bar { display: flex; align-items: center; background: var(--card2); border-radius: 12px; padding: 9px 14px; gap: 8px; border: 1px solid var(--border); }
 .species-search-bar i { color: var(--text-dim); font-size: 0.85rem; }
 .species-search-bar input { flex: 1; border: none; background: transparent; font-family: var(--font); font-size: 0.88rem; color: var(--text); outline: none; }
 #species-list-container { overflow-y: auto; flex: 1; padding: 4px 0; }
-.species-group-header { padding: 8px 16px 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--green-text); background: var(--bg); position: sticky; top: 0; }
-.species-item { padding: 12px 18px; font-size: 0.85rem; color: var(--text-sec); cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.1s; }
-.species-item:active { background: rgba(61,122,74,0.12); color: var(--text); }
+.species-group-header { padding: 8px 16px 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--green-text); background: var(--card2); position: sticky; top: 0; }
+.species-item { padding: 12px 18px; font-size: 0.85rem; color: var(--text-sec); cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.1s; }
+.species-item:active { background: var(--green-light); color: var(--text); }
 .species-empty { padding: 24px; text-align: center; color: var(--text-dim); font-size: 0.85rem; font-style: italic; }
 
-.ai-block { margin: 10px 14px 4px; background: #1A2E1A; border-radius: var(--radius); padding: 14px 16px; border: 1px solid rgba(61,122,74,0.3); }
+.ai-block { margin: 10px 14px 4px; background: var(--green-light); border-radius: var(--radius); padding: 14px 16px; border: 1px solid rgba(74,122,86,0.2); }
 .ai-top { display: flex; align-items: center; justify-content: space-between; }
-.ai-top span { color: #9ABF50; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; gap: 7px; }
+.ai-top span { color: var(--green-text); font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; gap: 7px; }
 .btn-ai { background: var(--green); border: none; color: white; padding: 7px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; cursor: pointer; font-family: var(--font); }
-#ai-output { background: rgba(0,0,0,0.25); color: rgba(255,255,255,0.75); font-size: 0.78rem; line-height: 1.7; border-radius: 8px; padding: 10px 12px; white-space: pre-wrap; display: none; margin-top: 10px; }
+#ai-output { background: rgba(255,255,255,0.7); color: var(--text-sec); font-size: 0.78rem; line-height: 1.7; border-radius: 8px; padding: 10px 12px; white-space: pre-wrap; display: none; margin-top: 10px; }
 
-.notes-block { margin: 10px 14px 4px; background: var(--card); border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); }
+.notes-block { margin: 10px 14px 4px; background: #fff; border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 .notes-block > label { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; color: var(--green-text); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; letter-spacing: 0.05em; }
-.notes-block textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 0.85rem; color: var(--text); outline: none; padding: 10px; resize: none; background: var(--bg); line-height: 1.6; }
+.notes-block textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 0.85rem; color: var(--text); outline: none; padding: 10px; resize: none; background: var(--card2); line-height: 1.6; }
 .notes-block textarea::placeholder { color: var(--text-dim); }
 
-/* boutons style référence — vert plein + crème */
 .save-row { display: flex; gap: 10px; padding: 14px 14px 6px; }
-.btn-save { flex: 1; padding: 16px; border: none; border-radius: var(--radius-sm); background: var(--green); color: white; font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; letter-spacing: 0.01em; }
-.btn-delete { padding: 16px 18px; border: none; border-radius: var(--radius-sm); background: rgba(192,80,64,0.15); color: var(--red); font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; display: none; border: 1px solid rgba(192,80,64,0.25); }
+.btn-save { flex: 1; padding: 16px; border: none; border-radius: 50px; background: var(--btn-dark); color: white; font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+.btn-delete { padding: 16px 18px; border: none; border-radius: 50px; background: #FADDDA; color: #9A3828; font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; display: none; }
 
-.gallery-block { margin: 10px 14px 4px; background: var(--card); border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); }
+.gallery-block { margin: 10px 14px 4px; background: #fff; border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 .gallery-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .gallery-title { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: var(--green-text); display: flex; align-items: center; gap: 6px; letter-spacing: 0.05em; }
-.btn-add-gallery-photo { background: rgba(61,122,74,0.2); border: none; border-radius: 20px; padding: 6px 12px; font-family: var(--font); font-size: 0.7rem; font-weight: 700; color: var(--green-text); cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.btn-add-gallery-photo { background: var(--green-light); border: none; border-radius: 20px; padding: 6px 12px; font-family: var(--font); font-size: 0.7rem; font-weight: 700; color: var(--green-text); cursor: pointer; display: flex; align-items: center; gap: 5px; }
 .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.gallery-thumb { aspect-ratio: 1/1; border-radius: 9px; overflow: hidden; position: relative; cursor: pointer; background: var(--bg); }
+.gallery-thumb { aspect-ratio: 1/1; border-radius: 9px; overflow: hidden; position: relative; cursor: pointer; background: var(--card2); }
 .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.gallery-thumb-date { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: #fff; font-size: 0.5rem; font-weight: 700; padding: 10px 5px 4px; text-align: center; }
-.gallery-thumb-del { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.55); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s; }
+.gallery-thumb-date { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.6)); color: #fff; font-size: 0.5rem; font-weight: 700; padding: 10px 5px 4px; text-align: center; }
+.gallery-thumb-del { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.4); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s; }
 .gallery-thumb:hover .gallery-thumb-del, .gallery-thumb:active .gallery-thumb-del { opacity: 1; }
 .gallery-empty { grid-column: span 3; text-align: center; color: var(--text-dim); font-size: 0.78rem; padding: 18px 0; font-style: italic; }
 
-#gallery-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.94); z-index: 4000; flex-direction: column; align-items: center; justify-content: center; }
+#gallery-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 4000; flex-direction: column; align-items: center; justify-content: center; }
 #gallery-viewer.open { display: flex; }
-#viewer-img { max-width: 96vw; max-height: 75vh; border-radius: 12px; object-fit: contain; box-shadow: 0 4px 40px rgba(0,0,0,0.6); }
+#viewer-img { max-width: 96vw; max-height: 75vh; border-radius: 12px; object-fit: contain; box-shadow: 0 4px 40px rgba(0,0,0,0.5); }
 .viewer-meta { margin-top: 14px; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.78rem; }
 .viewer-meta strong { color: #fff; font-size: 0.9rem; display: block; margin-bottom: 3px; }
 .viewer-nav { display: flex; gap: 12px; margin-top: 14px; }
-.btn-viewer { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 16px; border-radius: 22px; font-family: var(--font); font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.btn-viewer { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 10px 16px; border-radius: 22px; font-family: var(--font); font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
 .btn-viewer-close { background: rgba(255,255,255,0.06); }
-.btn-viewer-del { background: rgba(192,80,64,0.3); border-color: rgba(192,80,64,0.4); }
+.btn-viewer-del { background: rgba(180,60,50,0.35); border-color: rgba(180,60,50,0.5); }
 .viewer-counter { color: rgba(255,255,255,0.35); font-size: 0.7rem; margin-top: 8px; }
+
+/* ── CALENDRIER ── */
+.cal-header { background: #fff; padding: 14px 16px 12px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between; }
+.cal-header-title { font-size: 1.5rem; font-weight: 800; color: var(--text); }
+.btn-add-task { background: var(--green); border: none; border-radius: 50px; padding: 8px 16px; color: #fff; font-family: var(--font); font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+
+.cal-month-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 8px; }
+.cal-month-label { font-size: 1rem; font-weight: 700; color: var(--text); text-transform: capitalize; }
+.btn-month { background: var(--card2); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-sec); font-size: 0.8rem; }
+
+.cal-grid-wrap { padding: 0 14px 10px; }
+.cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); margin-bottom: 6px; }
+.cal-weekday { text-align: center; font-size: 0.62rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; padding: 4px 0; }
+.cal-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+.cal-day { aspect-ratio: 1/1; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; font-size: 0.82rem; font-weight: 500; color: var(--text); background: transparent; border: none; font-family: var(--font); }
+.cal-day:active { background: var(--card2); }
+.cal-day.other-month { color: var(--text-dim); }
+.cal-day.today { background: var(--text); color: #fff; font-weight: 700; }
+.cal-day.selected { background: var(--green); color: #fff; font-weight: 700; }
+.cal-day.has-task::after { content: ''; position: absolute; bottom: 3px; width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+.cal-day.today.has-task::after, .cal-day.selected.has-task::after { background: rgba(255,255,255,0.8); }
+
+.cal-tasks-section { padding: 0 14px 80px; }
+.cal-tasks-date { font-size: 0.88rem; font-weight: 700; color: var(--text); margin: 14px 0 10px; }
+.cal-task-item { background: #fff; border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 8px; position: relative; }
+.cal-task-color { width: 5px; height: 40px; border-radius: 3px; flex-shrink: 0; }
+.cal-task-info { flex: 1; }
+.cal-task-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+.cal-task-sub { font-size: 0.7rem; color: var(--text-sec); margin-top: 2px; }
+.cal-task-del { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.85rem; padding: 4px; }
+.cal-empty { text-align: center; color: var(--text-dim); font-size: 0.82rem; padding: 24px 0; font-style: italic; }
+
+/* Modal ajout tâche */
+.task-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; background: rgba(0,0,0,0.4); align-items: flex-end; }
+.task-modal.open { display: flex; }
+.task-panel { background: #fff; border-radius: 24px 24px 0 0; width: 100%; padding: 20px 18px 32px; border-top: 1px solid var(--border); }
+.task-panel-title { font-size: 1.1rem; font-weight: 800; color: var(--text); margin-bottom: 16px; }
+.task-field { margin-bottom: 12px; }
+.task-field label { display: block; font-size: 0.6rem; font-weight: 700; color: var(--green-text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+.task-field input, .task-field select { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; font-family: var(--font); font-size: 0.88rem; color: var(--text); background: var(--card2); outline: none; }
+.task-type-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.task-type-btn { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 6px; background: var(--card2); font-family: var(--font); font-size: 0.7rem; font-weight: 600; color: var(--text-sec); cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.task-type-btn i { font-size: 1.1rem; }
+.task-type-btn.selected { border-color: var(--green); background: var(--green-light); color: var(--green-text); }
+.task-type-btn.t-blue.selected { border-color: #3A7A9A; background: #DFF0F5; color: #3A7A9A; }
+.task-type-btn.t-red.selected { border-color: #9A5040; background: #F5E8E6; color: #9A5040; }
+.task-type-btn.t-amber.selected { border-color: #7A5828; background: #F5EED8; color: #7A5828; }
+.task-type-btn.t-green.selected { border-color: #2E7A48; background: #DFF0E4; color: #2E7A48; }
+.task-type-btn.t-purple.selected { border-color: #6A4A9A; background: #EEE8F8; color: #6A4A9A; }
+.task-type-btn.t-gray.selected { border-color: #5A5A6A; background: #EEEEF2; color: #5A5A6A; }
+.btn-save-task { width: 100%; padding: 15px; border: none; border-radius: 50px; background: var(--btn-dark); color: #fff; font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -296,10 +343,10 @@ input[type="file"] { display: none; }
 <div id="screen-list" class="screen active">
     <div class="home-header">
         <div class="home-logo">
-            <i class="fa-solid fa-torii-gate" style="color:#fff;font-size:1.3rem;"></i>
-            <div class="home-logo-text" style="color:#fff;">BONSAI<span style="color:rgba(255,255,255,0.7);font-weight:400;"> MASTER</span></div>
+            <span class="home-logo-icon" style="color:#C0392B;"><i class="fa-solid fa-torii-gate"></i></span>
+            <div class="home-logo-text">BONSAI-EN</div>
         </div>
-        <span class="home-count" id="bonsai-count" style="background:rgba(0,0,0,0.2);color:rgba(255,255,255,0.8);">0 arbres</span>
+        <span class="home-count" id="bonsai-count">0 arbres</span>
     </div>
     <div class="search-wrap">
         <div class="search-bar">
@@ -330,25 +377,28 @@ input[type="file"] { display: none; }
     </div>
     <input type="file" id="file-input" accept="image/*" onchange="startCrop(this)">
 
-    <div class="hero-meta">
-        <div class="hero-name" id="hero-display-name">Nouvel arbre</div>
-        <div class="hero-species" id="hero-display-species">— espèce non définie</div>
+    <!-- Points de pagination comme la référence -->
+    <div class="hero-dots">
+        <div class="hero-dot active"></div>
+        <div class="hero-dot"></div>
+        <div class="hero-dot"></div>
     </div>
 
-    <div class="status-card">
-        <div>
-            <div class="status-label">Statut Général</div>
-            <div class="status-value" id="status-value">Non suivi</div>
-        </div>
-        <div class="status-ring" id="status-ring">—</div>
+    <!-- Fiche identité style référence -->
+    <div class="info-card">
+        <div class="info-card-title">Fiche du Bonsaï</div>
+        <div class="info-row"><span>Nom: </span><span id="info-name">—</span></div>
+        <div class="info-row"><span>Espèce: </span><span id="info-species">—</span></div>
+        <div class="info-row"><span>Origine: </span><span id="info-origin">—</span></div>
+        <div class="info-row"><span>Style: </span><span id="info-style">—</span></div>
     </div>
 
     <div class="section-hd">Prochaines Actions</div>
     <div class="action-list">
         <div class="action-row-item">
-            <div class="action-icon blue"><i class="fa-solid fa-bucket"></i></div>
+            <div class="action-icon blue"><i class="fa-solid fa-droplet"></i></div>
             <div style="flex:1">
-                <div class="action-title">Rempotage</div>
+                <div class="action-title">Arrosage / Rempotage</div>
                 <div class="action-sub"><input type="date" id="edit-last-pot" class="date-input-row"></div>
             </div>
             <i class="fa-solid fa-chevron-right arr"></i>
@@ -379,13 +429,19 @@ input[type="file"] { display: none; }
         </div>
     </div>
 
+    <!-- Boutons style référence -->
+    <div class="cta-row">
+        <button class="btn-cta-primary" onclick="saveBonsai()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
+        <button class="btn-cta-secondary" id="btn-delete" onclick="deleteBonsai()" style="display:none"><i class="fa-solid fa-trash"></i> Supprimer</button>
+    </div>
+
     <div class="dossier-band">
         <div class="dossier-icon"><i class="fa-solid fa-folder-open"></i></div>
         <div><div class="dossier-name" id="dossier-name">Dossier Global</div><div class="dossier-sub" id="dossier-sub">—</div></div>
     </div>
 
     <div class="section">
-        <div class="section-title">Fiche d'Identité</div>
+        <div class="section-title">Fiche d'Identité Complète</div>
         <div class="id-grid">
             <div class="id-tile full">
                 <label>Espèce</label>
@@ -406,7 +462,7 @@ input[type="file"] { display: none; }
 
     <div class="ai-block">
         <div class="ai-top">
-            <span><i class="fa-solid fa-leaf"></i> Conseils IA Expertise</span>
+            <span><i class="fa-solid fa-leaf"></i> Conseils IA</span>
             <button class="btn-ai" onclick="askAI()"><i class="fa-solid fa-sparkles"></i> Demander</button>
         </div>
         <div id="ai-output"></div>
@@ -423,53 +479,103 @@ input[type="file"] { display: none; }
             <button class="btn-add-gallery-photo" onclick="document.getElementById('gallery-file-input').click()"><i class="fa-solid fa-plus"></i> Ajouter</button>
         </div>
         <input type="file" id="gallery-file-input" accept="image/*" onchange="startGalleryCrop(this)">
-        <div class="gallery-grid" id="gallery-grid"><div class="gallery-empty">Aucune photo — ajoutez des clichés pour suivre l'évolution.</div></div>
+        <div class="gallery-grid" id="gallery-grid"><div class="gallery-empty">Aucune photo ajoutée.</div></div>
     </div>
 
-    <div class="save-row">
-        <button class="btn-save" onclick="saveBonsai()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
-        <button class="btn-delete" id="btn-delete" onclick="deleteBonsai()"><i class="fa-solid fa-trash"></i></button>
-    </div>
+    <div style="height:16px"></div>
 </div>
 
-<!-- NAV — fidèle à la référence (5 items) -->
+<!-- NAV 5 onglets style référence -->
 <div class="bottom-nav">
     <button class="nav-btn active" id="nav-collection" onclick="nav('list')">
         <i class="fa-solid fa-house"></i><span>Accueil</span>
     </button>
-    <button class="nav-btn" onclick="nav('list')" style="position:relative">
-        <i class="fa-solid fa-tree"></i>
+    <button class="nav-btn" id="nav-ma-collection" onclick="nav('list')" style="position:relative">
+        <i class="fa-regular fa-folder"></i>
         <span id="nav-badge" class="nav-badge" style="display:none">0</span>
         <span>Ma Collection</span>
     </button>
-    <button class="nav-btn" onclick="showToast('Données — bientôt')">
-        <i class="fa-regular fa-book-open"></i><span>Données</span>
-    </button>
-    <button class="nav-btn" onclick="showToast('Calendrier — bientôt')">
+    <button class="nav-btn" id="nav-calendar" onclick="nav('calendar')">
         <i class="fa-regular fa-calendar"></i><span>Calendrier</span>
     </button>
-    <button class="nav-btn" onclick="showToast('Profil — bientôt')">
-        <i class="fa-regular fa-user"></i><span>Profil</span>
+    <button class="nav-btn" onclick="showToast('Conseils — bientôt')">
+        <i class="fa-regular fa-lightbulb"></i><span>Conseils</span>
     </button>
+    <button class="nav-btn" onclick="showToast('Profil — bientôt')">
+        <i class="fa-regular fa-user"></i><span>Mon Profil</span>
+    </button>
+</div>
+
+<!-- ÉCRAN CALENDRIER -->
+<div id="screen-calendar" class="screen">
+    <div class="cal-header">
+        <div class="cal-header-title">⛩ Calendrier</div>
+        <button class="btn-add-task" onclick="openTaskModal()"><i class="fa-solid fa-plus"></i> Ajouter</button>
+    </div>
+    <div class="cal-month-nav">
+        <button class="btn-month" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="cal-month-label" id="cal-month-label"></div>
+        <button class="btn-month" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+    <div class="cal-grid-wrap">
+        <div class="cal-weekdays">
+            <div class="cal-weekday">Lun</div><div class="cal-weekday">Mar</div><div class="cal-weekday">Mer</div>
+            <div class="cal-weekday">Jeu</div><div class="cal-weekday">Ven</div>
+            <div class="cal-weekday" style="color:#C0392B">Sam</div><div class="cal-weekday" style="color:#C0392B">Dim</div>
+        </div>
+        <div class="cal-days" id="cal-days"></div>
+    </div>
+    <div class="cal-tasks-section">
+        <div class="cal-tasks-date" id="cal-tasks-date"></div>
+        <div id="cal-tasks-list"></div>
+    </div>
+</div>
+
+<!-- MODAL AJOUT TÂCHE -->
+<div id="task-modal" class="task-modal" onclick="closeTaskModal()">
+    <div class="task-panel" onclick="event.stopPropagation()">
+        <div class="task-panel-title">Nouvelle tâche</div>
+        <div class="task-field">
+            <label>Type de tâche</label>
+            <div class="task-type-grid">
+                <button class="task-type-btn t-blue selected" data-type="arrosage" data-color="#3A7A9A" onclick="selectTaskType(this)"><i class="fa-solid fa-droplet"></i>Arrosage</button>
+                <button class="task-type-btn t-red" data-type="taille" data-color="#9A5040" onclick="selectTaskType(this)"><i class="fa-solid fa-scissors"></i>Taille</button>
+                <button class="task-type-btn t-amber" data-type="fertilisation" data-color="#7A5828" onclick="selectTaskType(this)"><i class="fa-solid fa-seedling"></i>Fertilisation</button>
+                <button class="task-type-btn t-green" data-type="rempotage" data-color="#2E7A48" onclick="selectTaskType(this)"><i class="fa-solid fa-bucket"></i>Rempotage</button>
+                <button class="task-type-btn t-purple" data-type="ligature" data-color="#6A4A9A" onclick="selectTaskType(this)"><i class="fa-solid fa-circle-notch"></i>Ligature</button>
+                <button class="task-type-btn t-gray" data-type="autre" data-color="#5A5A6A" onclick="selectTaskType(this)"><i class="fa-solid fa-pen"></i>Autre</button>
+            </div>
+        </div>
+        <div class="task-field">
+            <label>Description (optionnel)</label>
+            <input type="text" id="task-desc" placeholder="Ex: Vérifier substrat, tailler apex…">
+        </div>
+        <div class="task-field">
+            <label>Arbre concerné (optionnel)</label>
+            <select id="task-tree"><option value="">— Tous les arbres —</option></select>
+        </div>
+        <div class="task-field">
+            <label>Date</label>
+            <input type="date" id="task-date">
+        </div>
+        <button class="btn-save-task" onclick="saveTask()">✓ Enregistrer la tâche</button>
+    </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
 const SPECIES_DB = {
-    "🍁 Acer palmatum — Hybrides": ["Acer palmatum 'Atropurpureum'","Acer palmatum 'Bloodgood'","Acer palmatum 'Deshojo'","Acer palmatum 'Beni Maiko'","Acer palmatum 'Seigen'","Acer palmatum 'Shindeshojo'","Acer palmatum 'Chishio'","Acer palmatum 'Dissectum'","Acer palmatum 'Crimson Queen'","Acer palmatum 'Garnet'","Acer palmatum 'Inaba Shidare'","Acer palmatum 'Tamukeyama'","Acer palmatum 'Viridis'","Acer palmatum 'Seiryu'","Acer palmatum 'Osakazuki'","Acer palmatum 'Katsura'","Acer palmatum 'Sango Kaku'","Acer palmatum 'Shishigashira'","Acer palmatum 'Kotohime'","Acer palmatum 'Ryusen'"],
-    "🍁 Acer — Autres érables": ["Acer buergerianum (Érable trident)","Acer campestre (Érable champêtre)","Acer ginnala","Acer japonicum","Acer monspessulanum","Acer pseudoplatanus","Acer shirasawanum 'Aureum'","Acer truncatum"],
+    "🍁 Acer palmatum — Hybrides": ["Acer palmatum 'Atropurpureum'","Acer palmatum 'Bloodgood'","Acer palmatum 'Deshojo'","Acer palmatum 'Beni Maiko'","Acer palmatum 'Seigen'","Acer palmatum 'Shindeshojo'","Acer palmatum 'Dissectum'","Acer palmatum 'Crimson Queen'","Acer palmatum 'Garnet'","Acer palmatum 'Inaba Shidare'","Acer palmatum 'Viridis'","Acer palmatum 'Seiryu'","Acer palmatum 'Osakazuki'","Acer palmatum 'Katsura'","Acer palmatum 'Sango Kaku'","Acer palmatum 'Shishigashira'","Acer palmatum 'Kotohime'"],
+    "🍁 Acer — Autres érables": ["Acer buergerianum (Érable trident)","Acer campestre","Acer ginnala","Acer japonicum","Acer monspessulanum","Acer pseudoplatanus","Acer shirasawanum 'Aureum'","Acer truncatum"],
     "🌸 Azalea & Rhododendron": ["Azalea satsuki","Azalea kurume","Azalea indica","Rhododendron indicum","Rhododendron obtusum","Rhododendron simsii"],
     "🌲 Conifères — Pins": ["Pinus thunbergii (Pin noir du Japon)","Pinus parviflora (Pin blanc du Japon)","Pinus sylvestris (Pin sylvestre)","Pinus mugo (Pin des montagnes)","Pinus densiflora","Pinus pentaphylla","Pinus halepensis","Pinus nigra","Pinus strobus","Pinus pinea"],
     "🌲 Conifères — Genévriers": ["Juniperus chinensis 'Itoigawa'","Juniperus chinensis 'Shimpaku'","Juniperus rigida","Juniperus procumbens","Juniperus sabina","Juniperus communis","Juniperus horizontalis","Juniperus virginiana"],
-    "🌲 Conifères — Autres": ["Cedrus libani","Cedrus atlantica","Cedrus deodara","Chamaecyparis obtusa (Hinoki)","Cryptomeria japonica","Cupressus sempervirens","Larix decidua","Larix kaempferi","Picea abies","Taxus baccata","Taxus cuspidata","Thuja occidentalis","Tsuga canadensis"],
-    "🌳 Feuillus — Charmes & Bouleaux": ["Betula pendula","Carpinus betulus","Carpinus japonica","Carpinus turczaninowii"],
-    "🌳 Feuillus — Chênes": ["Quercus robur","Quercus suber","Quercus ilex","Quercus pubescens","Quercus serrata"],
-    "🌳 Feuillus — Hêtres & Ormes": ["Fagus sylvatica","Fagus sylvatica 'Purpurea'","Fagus crenata","Ulmus parvifolia (Orme de Chine)","Ulmus pumila","Zelkova serrata","Zelkova nire"],
-    "🌳 Feuillus — Divers": ["Buxus sempervirens","Cotoneaster horizontalis","Cotoneaster microphyllus","Crataegus monogyna","Ginkgo biloba","Ilex crenata","Ilex serrata","Lagerstroemia indica","Lonicera nitida","Salix babylonica","Serissa foetida"],
+    "🌲 Conifères — Autres": ["Cedrus libani","Cedrus atlantica","Cedrus deodara","Chamaecyparis obtusa (Hinoki)","Cryptomeria japonica","Cupressus sempervirens","Larix decidua","Larix kaempferi","Picea abies","Taxus baccata","Thuja occidentalis","Tsuga canadensis"],
+    "🌳 Feuillus": ["Betula pendula","Carpinus betulus","Carpinus japonica","Fagus sylvatica","Fagus crenata","Ulmus parvifolia","Ulmus pumila","Zelkova serrata","Buxus sempervirens","Cotoneaster horizontalis","Crataegus monogyna","Ginkgo biloba","Ilex crenata","Lonicera nitida","Salix babylonica","Quercus robur","Quercus ilex"],
     "🍑 Prunus & Fruitiers": ["Prunus mume","Prunus serrulata","Prunus spinosa","Malus floribunda","Malus sylvestris","Punica granatum (Grenadier)","Pyracantha angustifolia","Pyracantha coccinea","Sorbus aucuparia","Morus alba","Olea europaea (Olivier)","Ficus carica (Figuier)"],
     "🌴 Tropicaux & Intérieur": ["Ficus microcarpa","Ficus benjamina","Ficus ginseng","Bougainvillea glabra","Carmona retusa","Crassula ovata","Portulacaria afra","Sageretia theezans","Schefflera arboricola"],
-    "🌿 Divers & Spéciaux": ["Wisteria sinensis","Wisteria floribunda","Camellia japonica","Camellia sinensis","Forsythia suspensa","Nandina domestica","Rosa chinensis","Spiraea japonica","Tamarix ramosissima"],
+    "🌿 Divers": ["Wisteria sinensis","Wisteria floribunda","Camellia japonica","Camellia sinensis","Forsythia suspensa","Nandina domestica","Rosa chinensis","Spiraea japonica","Tamarix ramosissima"],
 };
 const DB_NAME='BonsaiMasterPro', STORE_NAME='trees';
 let bonsais=[], currentUid=null, currentPhotoBase64=null;
@@ -491,11 +597,11 @@ function renderSpeciesList(query){
 function selectSpecies(sp){document.getElementById('edit-species').value=sp;const txt=document.getElementById('species-display-text');txt.textContent=sp;txt.classList.add('selected');closeSpeciesModal();updateDossier();}
 function getBadge(b){
     const a=[b.lastPot,b.lastCut,b.lastFertil,b.lastWire].filter(Boolean);
-    if(!a.length)return{label:'Non suivi',cls:'badge-yellow',pct:0,status:'Non suivi'};
+    if(!a.length)return{label:'Non suivi',cls:'badge-yellow'};
     const days=Math.floor((Date.now()-Math.max(...a.map(d=>new Date(d))))/86400000);
-    if(days<=30)return{label:'En Santé',cls:'badge-green',pct:Math.max(70,100-days),status:'En Santé'};
-    if(days<=90)return{label:'Attention',cls:'badge-yellow',pct:Math.max(35,70-Math.floor(days/3)),status:'Attention'};
-    return{label:'Urgent',cls:'badge-red',pct:15,status:'Soins Urgents'};
+    if(days<=30)return{label:'En Santé',cls:'badge-green'};
+    if(days<=90)return{label:'Attention',cls:'badge-yellow'};
+    return{label:'Urgent',cls:'badge-red'};
 }
 const CONIFER_GROUPS=['🌲 Conifères — Pins','🌲 Conifères — Genévriers','🌲 Conifères — Autres'];
 const CONIFER_KW=['pinus','pin ','juniperus','genévrier','cedrus','cèdre','cedar','chamaecyparis','cryptomeria','cupressus','cyprès','larix','mélèze','picea','épicéa','taxodium','taxus','if ','thuja','tsuga','abies','sapin'];
@@ -506,13 +612,13 @@ function makeCard(b){
     return card;
 }
 function makeAddBtn(cat){const btn=document.createElement('div');btn.className='card-add';btn.onclick=()=>openEditor(null,cat);btn.innerHTML=`<i class="fa-solid fa-plus"></i><span>Ajouter<br>un arbre</span>`;return btn;}
-async function refresh(){bonsais=await dbApi.getAll();renderList(bonsais);const badge=document.getElementById('nav-badge');if(bonsais.length){badge.style.display='block';badge.textContent=bonsais.length;}else{badge.style.display='none';}}
+async function refresh(){bonsais=await dbApi.getAll();renderList(bonsais);const badge=document.getElementById('nav-badge');if(bonsais.length){badge.style.display='block';badge.textContent=bonsais.length;}else badge.style.display='none';}
 function renderList(list){
     const c=document.getElementById('list-container');c.innerHTML='';
     document.getElementById('bonsai-count').textContent=bonsais.length+' arbre'+(bonsais.length>1?'s':'');
-    const DEC_KW=['acer','érable','azalea','rhododendron','betula','bouleau','carpinus','charme','quercus','chêne','fagus','hêtre','ulmus','orme','zelkova','buxus','buis','cotoneaster','crataegus','ficus','malus','morus','olea','olivier','prunus','pyracantha','punica','salix','sorbus','wisteria','camellia','forsythia','rosa','nandina','spiraea','bougainvillea','carmona','crassula','portulacaria','sageretia'];
+    const DEC_KW=['acer','érable','azalea','rhododendron','betula','bouleau','carpinus','charme','quercus','chêne','fagus','hêtre','ulmus','orme','zelkova','buxus','cotoneaster','crataegus','ficus','malus','morus','olea','olivier','prunus','pyracantha','punica','salix','sorbus','wisteria','camellia','forsythia','rosa','nandina','spiraea','bougainvillea','carmona','crassula','portulacaria','sageretia'];
     function isDec(sp){if(!sp)return false;const s=sp.toLowerCase();for(const g of Object.keys(SPECIES_DB).filter(g=>!g.includes('Conifères')))if(SPECIES_DB[g]?.some(x=>x===sp))return true;return DEC_KW.some(k=>s.includes(k));}
-    function getCat(b){if(b.category&&b.category!=='auto')return b.category;if(isConifer(b.species))return 'conifer';if(isDec(b.species))return 'deciduous';return 'other';}
+    function getCat(b){if(b.category&&b.category!=='auto')return b.category;if(isConifer(b.species))return'conifer';if(isDec(b.species))return'deciduous';return'other';}
     const conifers=list.filter(b=>getCat(b)==='conifer'),dec=list.filter(b=>getCat(b)==='deciduous'),others=list.filter(b=>getCat(b)==='other');
     function buildSection(items,label,icon,css,cat){
         const sec=document.createElement('div');sec.className='category-section';
@@ -524,14 +630,11 @@ function renderList(list){
     buildSection(others,'Autres Bonsaïs','fa-solid fa-seedling','others','other');
 }
 function filterBonsais(){const q=document.getElementById('search-input').value.toLowerCase();renderList(bonsais.filter(b=>(b.name||'').toLowerCase().includes(q)||(b.species||'').toLowerCase().includes(q)||(b.origin||'').toLowerCase().includes(q)));}
-function updateStatusCard(b){
-    const badge=b?getBadge(b):{status:'Non suivi',pct:0,cls:'badge-yellow'};
-    document.getElementById('status-value').textContent=badge.status||badge.label;
-    const ring=document.getElementById('status-ring');
-    const pct=badge.pct||0;
-    const color=badge.cls==='badge-green'?'#3D7A4A':badge.cls==='badge-yellow'?'#C9A84C':'#C05040';
-    ring.style.background=`conic-gradient(${color} 0% ${pct}%, rgba(0,0,0,0.12) ${pct}% 100%)`;
-    ring.textContent=pct?pct+'%':'—';
+function updateInfoCard(){
+    document.getElementById('info-name').textContent=document.getElementById('edit-name').value||'—';
+    document.getElementById('info-species').textContent=document.getElementById('edit-species').value||'—';
+    document.getElementById('info-origin').textContent=document.getElementById('edit-origin').value||'—';
+    document.getElementById('info-style').textContent=document.getElementById('edit-style').value||'—';
 }
 function resetEditor(){
     ['edit-name','edit-date','edit-substrat','edit-notes'].forEach(id=>document.getElementById(id).value='');
@@ -540,20 +643,18 @@ function resetEditor(){
     const txt=document.getElementById('species-display-text');txt.textContent='Tapez ou sélectionnez…';txt.classList.remove('selected');
     document.getElementById('hero-photo').style.backgroundImage='';document.getElementById('hero-icon').style.display='block';
     document.getElementById('ai-output').style.display='none';document.getElementById('ai-output').textContent='';
-    currentGallery=[];renderGallery();
-    document.getElementById('hero-display-name').textContent='Nouvel arbre';document.getElementById('hero-display-species').textContent='— espèce non définie';
-    updateStatusCard(null);
+    currentGallery=[];renderGallery();updateInfoCard();
 }
 function openEditor(uid,cat){
     currentUid=uid;currentPhotoBase64=null;resetEditor();
-    document.getElementById('btn-delete').style.display=uid?'block':'none';
+    document.getElementById('btn-delete').style.display=uid?'flex':'none';
     if(uid){
         const b=bonsais.find(x=>x.uid===uid);
         document.getElementById('edit-name').value=b.name||'';document.getElementById('edit-date').value=b.date||'';document.getElementById('edit-substrat').value=b.substrat||'';document.getElementById('edit-notes').value=b.notes||'';document.getElementById('edit-origin').value=b.origin||'Pépinière';document.getElementById('edit-style').value=b.style||'';document.getElementById('edit-category').value=b.category||'auto';
         ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire'].forEach((id,i)=>{document.getElementById(id).value=[b.lastPot,b.lastCut,b.lastFertil,b.lastWire][i]||'';});
         if(b.species){document.getElementById('edit-species').value=b.species;const txt=document.getElementById('species-display-text');txt.textContent=b.species;txt.classList.add('selected');}
         if(b.photo){currentPhotoBase64=b.photo;document.getElementById('hero-photo').style.backgroundImage=`url(${b.photo})`;document.getElementById('hero-icon').style.display='none';}
-        currentGallery=b.gallery||[];renderGallery();updateDossier();updateStatusCard(b);
+        currentGallery=b.gallery||[];renderGallery();updateDossier();
     }
     nav('edit');
 }
@@ -561,7 +662,7 @@ function updateDossier(){
     const name=document.getElementById('edit-name').value;const sp=document.getElementById('edit-species').value;
     document.getElementById('edit-header-title').textContent=name||'Nouvel arbre';document.getElementById('edit-header-sub').textContent=sp||'Ma Collection';
     document.getElementById('dossier-name').textContent=name?`Dossier — ${name}`:'Dossier Global';document.getElementById('dossier-sub').textContent=sp||'—';
-    document.getElementById('hero-display-name').textContent=name||'Nouvel arbre';document.getElementById('hero-display-species').textContent=sp||'— espèce non définie';
+    updateInfoCard();
 }
 async function saveBonsai(){
     const name=document.getElementById('edit-name').value.trim();if(!name)return showToast('⚠ Surnom requis');
@@ -572,12 +673,11 @@ async function deleteBonsai(){if(!confirm('Supprimer cet arbre ?'))return;await 
 function askAI(){
     const sp=document.getElementById('edit-species').value.toLowerCase();const out=document.getElementById('ai-output');out.style.display='block';out.textContent='⏳ Analyse en cours…';
     setTimeout(()=>{
-        if(sp.includes('pinus')||sp.includes('pin'))out.textContent="🌲 CONSEIL PIN\n\n• Plein soleil obligatoire toute l'année.\n• Arrosage : laisser sécher en surface entre deux arrosages.\n• Fertilisation organique au printemps et en automne.\n• Pincer les chandelles à mi-hauteur en mai.";
-        else if(sp.includes('acer')||sp.includes('érable'))out.textContent="🍁 CONSEIL ÉRABLE\n\n• Mi-ombre en été pour éviter les brûlures foliaires.\n• Rempotage tous les 2 ans au printemps.\n• Pincer les jeunes pousses à deux paires de feuilles.";
+        if(sp.includes('pinus')||sp.includes('pin'))out.textContent="🌲 CONSEIL PIN\n\n• Plein soleil obligatoire toute l'année.\n• Arrosage : laisser sécher en surface.\n• Fertilisation organique printemps et automne.\n• Pincer les chandelles à mi-hauteur en mai.";
+        else if(sp.includes('acer')||sp.includes('érable'))out.textContent="🍁 CONSEIL ÉRABLE\n\n• Mi-ombre en été pour éviter les brûlures.\n• Rempotage tous les 2 ans au printemps.\n• Pincer les jeunes pousses à deux paires de feuilles.";
         else if(sp.includes('juniperus')||sp.includes('genévrier'))out.textContent="🌿 CONSEIL GENÉVRIER\n\n• Plein soleil, extérieur toute l'année.\n• Tailler après la pousse principale en été.\n• Arrosage modéré.";
         else if(sp.includes('ficus'))out.textContent="🪴 CONSEIL FICUS\n\n• Intérieur lumineux ou extérieur en été.\n• Arrosage régulier, brumiser les feuilles.\n• Rempotage tous les 2-3 ans.";
         else if(sp.includes('olea')||sp.includes('olivier'))out.textContent="🫒 CONSEIL OLIVIER\n\n• Plein soleil, rentrer en hiver si gel.\n• Substrat très drainant. Tailler après floraison.";
-        else if(sp.includes('azalea')||sp.includes('rhododendron'))out.textContent="🌸 CONSEIL AZALÉE\n\n• Mi-ombre en été, protéger du gel.\n• Arrosage eau de pluie. Substrat acide.";
         else if(document.getElementById('edit-species').value)out.textContent="🌱 CONSEIL GÉNÉRAL\n\n• Observez quotidiennement feuilles et substrat.\n• Adaptez l'arrosage à la saison.\n• Fertilisez au printemps et en automne.";
         else out.textContent="⚠ Renseignez d'abord l'espèce.";
     },800);
@@ -588,14 +688,21 @@ function startCrop(input){if(!input.files[0])return;galleryMode=false;const r=ne
 function applyMask(){cropMask.style.left=maskPos.x+'px';cropMask.style.top=maskPos.y+'px';}
 cropMask.addEventListener('pointerdown',e=>{cropMask.setPointerCapture(e.pointerId);const ox=e.clientX-maskPos.x,oy=e.clientY-maskPos.y;cropMask.onpointermove=ev=>{maskPos.x=ev.clientX-ox;maskPos.y=ev.clientY-oy;applyMask();};cropMask.onpointerup=()=>cropMask.onpointermove=null;});
 function closeCrop(){document.getElementById('crop-screen').style.display='none';galleryMode=false;}
-function nav(screen){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+screen).classList.add('active');document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));if(screen==='list')document.getElementById('nav-collection').classList.add('active');window.scrollTo(0,0);}
+function nav(screen){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('screen-'+screen).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    if(screen==='list'){ document.getElementById('nav-collection').classList.add('active'); }
+    if(screen==='calendar'){ document.getElementById('nav-calendar').classList.add('active'); renderCalendar(); }
+    window.scrollTo(0,0);
+}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
-async function exportData(){const data=await dbApi.getAll();if(!data.length)return showToast('⚠ Aucun arbre à exporter');const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='bonsai-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);showToast('✓ Exporté !');}
+async function exportData(){const data=await dbApi.getAll();if(!data.length)return showToast('⚠ Aucun arbre');const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='bonsai-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);showToast('✓ Exporté !');}
 async function importData(input){if(!input.files[0])return;const r=new FileReader();r.onload=async e=>{try{const data=JSON.parse(e.target.result);if(!Array.isArray(data))throw 0;if(!confirm(`Importer ${data.length} arbre(s) ?`))return;const ex=await dbApi.getAll();for(const b of ex)await dbApi.delete(b.uid);for(const b of data)await dbApi.put(b);await refresh();showToast('✓ '+data.length+' importé(s) !');}catch{showToast('⚠ Fichier invalide');}};r.readAsText(input.files[0]);input.value='';}
 let currentGallery=[],viewerIndex=0,galleryMode=false;
 function startGalleryCrop(input){if(!input.files[0])return;galleryMode=true;const r=new FileReader();r.onload=e=>{cropImg.onload=()=>{document.getElementById('crop-screen').style.display='flex';maskPos={x:(cropView.clientWidth-450)/2,y:80};applyMask();};cropImg.src=e.target.result;};r.readAsDataURL(input.files[0]);input.value='';}
 function confirmCrop(){const canvas=document.createElement('canvas');canvas.width=600;canvas.height=600;const ctx=canvas.getContext('2d'),ir=cropImg.getBoundingClientRect(),mr=cropMask.getBoundingClientRect(),rx=cropImg.naturalWidth/ir.width,ry=cropImg.naturalHeight/ir.height;ctx.drawImage(cropImg,(mr.left-ir.left)*rx,(mr.top-ir.top)*ry,450*rx,450*ry,0,0,600,600);const b64=canvas.toDataURL('image/jpeg',0.8);if(galleryMode){currentGallery.push({base64:b64,date:new Date().toISOString().slice(0,10)});renderGallery();galleryMode=false;}else{currentPhotoBase64=b64;document.getElementById('hero-photo').style.backgroundImage=`url(${b64})`;document.getElementById('hero-icon').style.display='none';}closeCrop();}
-function renderGallery(){const grid=document.getElementById('gallery-grid');grid.innerHTML='';if(!currentGallery.length){grid.innerHTML='<div class="gallery-empty">Aucune photo — ajoutez des clichés pour suivre l\'évolution.</div>';return;}currentGallery.forEach((item,idx)=>{const thumb=document.createElement('div');thumb.className='gallery-thumb';thumb.innerHTML=`<img src="${item.base64}" loading="lazy"><div class="gallery-thumb-date">${formatDate(item.date)}</div><button class="gallery-thumb-del" onclick="event.stopPropagation();deleteGalleryPhoto(${idx})"><i class="fa-solid fa-xmark"></i></button>`;thumb.addEventListener('click',()=>openViewer(idx));grid.appendChild(thumb);});}
+function renderGallery(){const grid=document.getElementById('gallery-grid');grid.innerHTML='';if(!currentGallery.length){grid.innerHTML='<div class="gallery-empty">Aucune photo ajoutée.</div>';return;}currentGallery.forEach((item,idx)=>{const thumb=document.createElement('div');thumb.className='gallery-thumb';thumb.innerHTML=`<img src="${item.base64}" loading="lazy"><div class="gallery-thumb-date">${formatDate(item.date)}</div><button class="gallery-thumb-del" onclick="event.stopPropagation();deleteGalleryPhoto(${idx})"><i class="fa-solid fa-xmark"></i></button>`;thumb.addEventListener('click',()=>openViewer(idx));grid.appendChild(thumb);});}
 function formatDate(d){if(!d)return'';const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'2-digit'});}
 function deleteGalleryPhoto(idx){if(!confirm('Supprimer ?'))return;currentGallery.splice(idx,1);renderGallery();}
 function openViewer(idx){viewerIndex=idx;refreshViewer();document.getElementById('gallery-viewer').classList.add('open');}
@@ -603,7 +710,116 @@ function closeViewer(){document.getElementById('gallery-viewer').classList.remov
 function refreshViewer(){const item=currentGallery[viewerIndex];document.getElementById('viewer-img').src=item.base64;document.getElementById('viewer-tree-name').textContent=document.getElementById('edit-name').value||'Arbre';document.getElementById('viewer-date').textContent=formatDate(item.date);document.getElementById('viewer-counter').textContent=`${viewerIndex+1} / ${currentGallery.length}`;document.getElementById('btn-viewer-prev').style.opacity=viewerIndex>0?'1':'0.3';document.getElementById('btn-viewer-next').style.opacity=viewerIndex<currentGallery.length-1?'1':'0.3';}
 function viewerNav(dir){const n=viewerIndex+dir;if(n<0||n>=currentGallery.length)return;viewerIndex=n;refreshViewer();}
 function viewerDelete(){if(!confirm('Supprimer ?'))return;currentGallery.splice(viewerIndex,1);renderGallery();if(!currentGallery.length){closeViewer();return;}viewerIndex=Math.min(viewerIndex,currentGallery.length-1);refreshViewer();}
-window.onload=()=>refresh();
+// ── CALENDRIER ──────────────────────────
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let calSelectedDate = new Date().toISOString().slice(0,10);
+let tasks = JSON.parse(localStorage.getItem('bonsai-tasks') || '[]');
+
+function saveTasks() { localStorage.setItem('bonsai-tasks', JSON.stringify(tasks)); }
+
+function changeMonth(dir) { calMonth += dir; if(calMonth > 11){calMonth=0;calYear++;} if(calMonth < 0){calMonth=11;calYear--;} renderCalendar(); }
+
+function renderCalendar() {
+    const today = new Date().toISOString().slice(0,10);
+    const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+    document.getElementById('cal-month-label').textContent = months[calMonth] + ' ' + calYear;
+    const firstDay = new Date(calYear, calMonth, 1);
+    const lastDay  = new Date(calYear, calMonth+1, 0);
+    let startDow = firstDay.getDay(); // 0=Sun
+    startDow = startDow === 0 ? 6 : startDow - 1; // convert to Mon-start
+    const daysEl = document.getElementById('cal-days');
+    daysEl.innerHTML = '';
+    // days from prev month
+    const prevLast = new Date(calYear, calMonth, 0).getDate();
+    for(let i = startDow-1; i >= 0; i--) {
+        const d = document.createElement('button');
+        d.className = 'cal-day other-month';
+        d.textContent = prevLast - i;
+        daysEl.appendChild(d);
+    }
+    // days of current month
+    for(let d = 1; d <= lastDay.getDate(); d++) {
+        const dateStr = calYear + '-' + String(calMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+        const btn = document.createElement('button');
+        btn.className = 'cal-day';
+        btn.textContent = d;
+        if(dateStr === today) btn.classList.add('today');
+        if(dateStr === calSelectedDate) btn.classList.add('selected');
+        if(tasks.some(t => t.date === dateStr)) btn.classList.add('has-task');
+        btn.onclick = () => { calSelectedDate = dateStr; renderCalendar(); renderTasksForDate(dateStr); };
+        daysEl.appendChild(btn);
+    }
+    // fill remaining cells
+    const total = startDow + lastDay.getDate();
+    const remaining = total % 7 === 0 ? 0 : 7 - (total % 7);
+    for(let d = 1; d <= remaining; d++) {
+        const btn = document.createElement('button');
+        btn.className = 'cal-day other-month';
+        btn.textContent = d;
+        daysEl.appendChild(btn);
+    }
+    renderTasksForDate(calSelectedDate);
+}
+
+function renderTasksForDate(dateStr) {
+    const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+    const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+    const d = new Date(dateStr + 'T00:00:00');
+    document.getElementById('cal-tasks-date').textContent = days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    const list = document.getElementById('cal-tasks-list');
+    const dayTasks = tasks.filter(t => t.date === dateStr);
+    list.innerHTML = '';
+    if(!dayTasks.length) { list.innerHTML = '<div class="cal-empty">Aucune tâche ce jour.<br>Appuyez sur + pour en ajouter.</div>'; return; }
+    dayTasks.forEach((t, idx) => {
+        const icons = {arrosage:'fa-droplet',taille:'fa-scissors',fertilisation:'fa-seedling',rempotage:'fa-bucket',ligature:'fa-circle-notch',autre:'fa-pen'};
+        const item = document.createElement('div'); item.className = 'cal-task-item';
+        item.innerHTML = `<div class="cal-task-color" style="background:${t.color}"></div>
+            <div class="cal-task-info">
+                <div class="cal-task-title"><i class="fa-solid ${icons[t.type]||'fa-pen'}" style="color:${t.color};margin-right:7px"></i>${capitalize(t.type)}${t.tree ? ' — ' + t.tree : ''}</div>
+                ${t.desc ? `<div class="cal-task-sub">${t.desc}</div>` : ''}
+            </div>
+            <button class="cal-task-del" onclick="deleteTask(${tasks.indexOf(t)})"><i class="fa-solid fa-xmark"></i></button>`;
+        list.appendChild(item);
+    });
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function deleteTask(idx) {
+    if(!confirm('Supprimer cette tâche ?')) return;
+    tasks.splice(idx, 1); saveTasks(); renderCalendar();
+}
+
+let selectedTaskType = 'arrosage';
+let selectedTaskColor = '#3A7A9A';
+
+function selectTaskType(btn) {
+    document.querySelectorAll('.task-type-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedTaskType = btn.dataset.type;
+    selectedTaskColor = btn.dataset.color;
+}
+
+function openTaskModal() {
+    // populate tree select
+    const sel = document.getElementById('task-tree');
+    sel.innerHTML = '<option value="">— Tous les arbres —</option>';
+    bonsais.forEach(b => { const o = document.createElement('option'); o.value = b.name; o.textContent = b.name + (b.species ? ' ('+b.species.split(' ')[0]+' '+b.species.split(' ')[1]+')' : ''); sel.appendChild(o); });
+    document.getElementById('task-date').value = calSelectedDate;
+    document.getElementById('task-desc').value = '';
+    document.getElementById('task-modal').classList.add('open');
+}
+function closeTaskModal() { document.getElementById('task-modal').classList.remove('open'); }
+
+function saveTask() {
+    const date = document.getElementById('task-date').value;
+    if(!date) return showToast('⚠ Choisissez une date');
+    tasks.push({ type: selectedTaskType, color: selectedTaskColor, desc: document.getElementById('task-desc').value, tree: document.getElementById('task-tree').value, date });
+    saveTasks(); closeTaskModal(); renderCalendar(); showToast('✓ Tâche ajoutée !');
+}
+
+window.onload=()=>{ refresh(); renderCalendar(); };
 </script>
 </body>
 </html>
