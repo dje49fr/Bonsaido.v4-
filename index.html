@@ -8,14 +8,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-    --bg:          #161A16;
-    --bg2:         #1E231E;
-    --card:        #252A25;
-    --card2:       #2C322C;
+    --bg:          #2A3230;
+    --bg2:         #313C39;
+    --card:        #4A5A54;
+    --card2:       #526360;
     --card-light:  #EDE8D5;
     --green:       #3D7A4A;
     --green-dark:  #2E5C38;
-    --green-text:  #4A9B5A;
+    --green-text:  #7ABF50;
     --cream:       #E8E0C8;
     --border:      rgba(255,255,255,0.07);
     --text:        #F0EDE6;
@@ -82,8 +82,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 
 /* ── ACCUEIL ── */
 .home-header {
-    background: var(--bg2); padding: 14px 16px 12px;
-    position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border);
+    background: #4A6B58; padding: 14px 16px 12px;
+    position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);
     display: flex; align-items: center; justify-content: space-between;
 }
 .home-logo { display: flex; align-items: center; gap: 8px; }
@@ -108,7 +108,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .category-header-line { flex: 1; height: 1px; background: var(--border); }
 .category-label { display: flex; align-items: center; gap: 7px; font-size: 0.75rem; font-weight: 700; color: var(--text-sec); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.07em; }
 .category-label i { font-size: 0.78rem; }
-.category-label.conifers { color: #6ABF80; } .category-label.conifers i { color: #6ABF80; }
+.category-label.conifers { color: #9ABF50; } .category-label.conifers i { color: #9ABF50; }
 .category-label.deciduous { color: #C9A84C; } .category-label.deciduous i { color: #C9A84C; }
 .category-label.others { color: #7AABCA; } .category-label.others i { color: #7AABCA; }
 .category-count { font-size: 0.58rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--card); color: var(--text-dim); }
@@ -121,7 +121,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .card-name { font-weight: 700; font-size: 0.67rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; letter-spacing: 0.04em; }
 .card-species { font-size: 0.58rem; color: var(--text-sec); font-style: italic; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-badge { display: inline-block; font-size: 0.55rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
-.badge-green  { background: rgba(61,122,74,0.25); color: #5DBF75; }
+.badge-green  { background: rgba(61,122,74,0.25); color: #4A9B5A; }
 .badge-yellow { background: rgba(201,168,76,0.2); color: #C9A84C; }
 .badge-red    { background: rgba(192,80,64,0.2); color: #E06050; }
 
@@ -217,12 +217,12 @@ input[type="file"] { display: none; }
 #species-list-container { overflow-y: auto; flex: 1; padding: 4px 0; }
 .species-group-header { padding: 8px 16px 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--green-text); background: var(--bg); position: sticky; top: 0; }
 .species-item { padding: 12px 18px; font-size: 0.85rem; color: var(--text-sec); cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.1s; }
-.species-item:active { background: rgba(61,122,74,0.15); color: var(--text); }
+.species-item:active { background: rgba(61,122,74,0.12); color: var(--text); }
 .species-empty { padding: 24px; text-align: center; color: var(--text-dim); font-size: 0.85rem; font-style: italic; }
 
 .ai-block { margin: 10px 14px 4px; background: #1A2E1A; border-radius: var(--radius); padding: 14px 16px; border: 1px solid rgba(61,122,74,0.3); }
 .ai-top { display: flex; align-items: center; justify-content: space-between; }
-.ai-top span { color: #7ACF90; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; gap: 7px; }
+.ai-top span { color: #9ABF50; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; gap: 7px; }
 .btn-ai { background: var(--green); border: none; color: white; padding: 7px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; cursor: pointer; font-family: var(--font); }
 #ai-output { background: rgba(0,0,0,0.25); color: rgba(255,255,255,0.75); font-size: 0.78rem; line-height: 1.7; border-radius: 8px; padding: 10px 12px; white-space: pre-wrap; display: none; margin-top: 10px; }
 
@@ -296,10 +296,10 @@ input[type="file"] { display: none; }
 <div id="screen-list" class="screen active">
     <div class="home-header">
         <div class="home-logo">
-            <i class="fa-solid fa-seedling"></i>
-            <div class="home-logo-text">BONSAI<span> MASTER</span></div>
+            <i class="fa-solid fa-torii-gate" style="color:#fff;font-size:1.3rem;"></i>
+            <div class="home-logo-text" style="color:#fff;">BONSAI<span style="color:rgba(255,255,255,0.7);font-weight:400;"> MASTER</span></div>
         </div>
-        <span class="home-count" id="bonsai-count">0 arbres</span>
+        <span class="home-count" id="bonsai-count" style="background:rgba(0,0,0,0.2);color:rgba(255,255,255,0.8);">0 arbres</span>
     </div>
     <div class="search-wrap">
         <div class="search-bar">
