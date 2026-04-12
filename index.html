@@ -192,6 +192,40 @@ body { font-family: var(--font-sans); background: var(--bg); color: var(--text);
     text-align: center; text-transform: uppercase; line-height: 1.4;
 }
 
+/* Séparateur de catégorie */
+.category-section { padding: 0 14px; }
+.category-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 0 8px;
+}
+.category-header-line {
+    flex: 1; height: 1.5px;
+    background: linear-gradient(to right, rgba(0,0,0,0.12), transparent);
+}
+.category-label {
+    display: flex; align-items: center; gap: 7px;
+    font-family: var(--font-serif); font-size: 0.88rem;
+    font-weight: 600; color: var(--text);
+    white-space: nowrap;
+}
+.category-label i { font-size: 1rem; }
+.category-label.conifers { color: #2E6B3E; }
+.category-label.conifers i { color: #3A8A52; }
+.category-label.deciduous { color: #7A4A1A; }
+.category-label.deciduous i { color: #B06020; }
+.category-label.others { color: #4A4A6A; }
+.category-label.others i { color: #6A6A9A; }
+.category-count {
+    font-size: 0.62rem; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px;
+    background: rgba(0,0,0,0.07); color: var(--text-sec);
+}
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; padding-bottom: 4px;
+}
+
 /* ═══════════════════════════════════════
    ÉCRAN FICHE ARBRE
 ═══════════════════════════════════════ */
@@ -475,7 +509,7 @@ input[type="file"] { display: none; }
             </div>
         </div>
     </div>
-    <div class="collection-grid" id="list-container"></div>
+    <div id="list-container"></div>
 </div>
 
 <!-- ÉCRAN FICHE ARBRE -->
@@ -950,32 +984,108 @@ async function refresh() {
     bonsais = await dbApi.getAll();
     renderList(bonsais);
 }
+// Groupes conifères dans SPECIES_DB
+const CONIFER_GROUPS = [
+    '🌲 Conifères — Pins',
+    '🌲 Conifères — Genévriers',
+    '🌲 Conifères — Autres',
+];
+// Mots-clés de secours si espèce saisie manuellement
+const CONIFER_KEYWORDS = [
+    'pinus','pin ','juniperus','genévrier','cedrus','cèdre','cedar',
+    'chamaecyparis','cryptomeria','cupressus','cyprès','larix','mélèze',
+    'picea','épicéa','podocarpus','pseudolarix','taxodium','taxus','if ',
+    'thuja','tsuga','abies','sapin','araucaria','sequoia',
+];
+function isConifer(species) {
+    if (!species) return false;
+    const sp = species.toLowerCase();
+    // Vérifier si l'espèce appartient à un groupe conifère dans SPECIES_DB
+    for (const group of CONIFER_GROUPS) {
+        if (SPECIES_DB[group] && SPECIES_DB[group].some(s => s === species)) return true;
+    }
+    // Sinon, heuristique par mots-clés
+    return CONIFER_KEYWORDS.some(k => sp.includes(k));
+}
+
+function makeCard(b) {
+    const badge = getBadge(b);
+    const card = document.createElement('div');
+    card.className = 'bonsai-card';
+    card.onclick = () => openEditor(b.uid);
+    card.innerHTML = `
+        <div class="card-photo" style="background-image:url(${b.photo || ''})">
+            ${b.photo ? '' : '<i class="fa-solid fa-tree"></i>'}
+        </div>
+        <div class="card-info">
+            <div class="card-name">${b.name || 'SANS NOM'}</div>
+            <div class="card-species">${b.species || '—'}</div>
+            <span class="card-badge ${badge.cls}">${badge.label}</span>
+        </div>`;
+    return card;
+}
+
+function makeAddBtn(category) {
+    const btn = document.createElement('div');
+    btn.className = 'card-add';
+    btn.onclick = () => openEditor(null, category);
+    btn.innerHTML = `<i class="fa-solid fa-plus"></i><span>Ajouter<br>un arbre</span>`;
+    return btn;
+}
+
 function renderList(list) {
     const container = document.getElementById('list-container');
     container.innerHTML = '';
     document.getElementById('bonsai-count').textContent =
         bonsais.length + ' arbre' + (bonsais.length > 1 ? 's' : '');
-    list.forEach(b => {
-        const badge = getBadge(b);
-        const card = document.createElement('div');
-        card.className = 'bonsai-card';
-        card.onclick = () => openEditor(b.uid);
-        card.innerHTML = `
-            <div class="card-photo" style="background-image:url(${b.photo || ''})">
-                ${b.photo ? '' : '<i class="fa-solid fa-tree"></i>'}
-            </div>
-            <div class="card-info">
-                <div class="card-name">${b.name || 'SANS NOM'}</div>
-                <div class="card-species">${b.species || '—'}</div>
-                <span class="card-badge ${badge.cls}">${badge.label}</span>
-            </div>`;
-        container.appendChild(card);
-    });
-    const addBtn = document.createElement('div');
-    addBtn.className = 'card-add';
-    addBtn.onclick = () => openEditor(null);
-    addBtn.innerHTML = `<i class="fa-solid fa-plus"></i><span>Ajouter<br>un arbre</span>`;
-    container.appendChild(addBtn);
+
+    const DECIDUOUS_GROUPS = [
+        '🍁 Acer palmatum — Hybrides', '🍁 Acer — Autres érables',
+        '🌸 Azalea & Rhododendron',
+        '🌳 Feuillus — Charmes & Bouleaux', '🌳 Feuillus — Chênes',
+        '🌳 Feuillus — Hêtres & Ormes', '🌳 Feuillus — Divers',
+        '🍒 Fruitiers & Fleurs', '🌿 Divers & Spéciaux',
+    ];
+    const DECIDUOUS_KEYWORDS = [
+        'acer','érable','azalea','rhododendron','betula','bouleau',
+        'carpinus','charme','quercus','chêne','fagus','hêtre','ulmus','orme',
+        'zelkova','buxus','buis','celtis','cornus','cotoneaster','crataegus',
+        'ficus','lagerstroemia','malus','morus','olea','olivier',
+        'prunus','pyracantha','punica','salix','sorbus','wisteria','glycine',
+        'camellia','forsythia','rosa','tamarix','nandina','spiraea','stewartia',
+        'bougainvillea','carmona','crassula','jacaranda','portulacaria','sageretia',
+    ];
+    function isDeciduous(species) {
+        if (!species) return false;
+        const sp = species.toLowerCase();
+        for (const group of DECIDUOUS_GROUPS) {
+            if (SPECIES_DB[group] && SPECIES_DB[group].some(s => s === species)) return true;
+        }
+        return DECIDUOUS_KEYWORDS.some(k => sp.includes(k));
+    }
+
+    const conifers  = list.filter(b =>  isConifer(b.species));
+    const deciduous = list.filter(b => !isConifer(b.species) && isDeciduous(b.species));
+    const others    = list.filter(b => !isConifer(b.species) && !isDeciduous(b.species));
+
+    function buildSection(items, label, iconClass, cssClass, category) {
+        const section = document.createElement('div');
+        section.className = 'category-section';
+        const header = document.createElement('div');
+        header.className = 'category-header';
+        header.innerHTML = '<div class="category-label ' + cssClass + '"><i class="' + iconClass + '"></i>' + label + '</div><span class="category-count">' + items.length + '</span><div class="category-header-line"></div>';
+        section.appendChild(header);
+        const grid = document.createElement('div');
+        grid.className = 'category-grid';
+        items.forEach(b => grid.appendChild(makeCard(b)));
+        grid.appendChild(makeAddBtn(category));
+        section.appendChild(grid);
+        container.appendChild(section);
+    }
+
+    buildSection(conifers,  'Conifères',      'fa-solid fa-tree',     'conifers',  'conifer');
+    buildSection(deciduous, 'Feuillus',       'fa-solid fa-leaf',     'deciduous', 'deciduous');
+    buildSection(others,    'Autres Bonsaïs', 'fa-solid fa-seedling', 'others',    'other');
 }
 function filterBonsais() {
     const q = document.getElementById('search-input').value.toLowerCase();
@@ -1003,7 +1113,7 @@ function resetEditor() {
     document.getElementById('ai-output').style.display = 'none';
     document.getElementById('ai-output').textContent   = '';
 }
-function openEditor(uid) {
+function openEditor(uid, category) {
     currentUid = uid;
     currentPhotoBase64 = null;
     resetEditor();
