@@ -464,9 +464,118 @@ input[type="file"] { display: none; }
     font-family: var(--font-sans); font-size: 0.85rem;
     font-weight: 700; cursor: pointer; display: none;
 }
+
+/* ═══════════════════════════════════════
+   GALERIE PHOTOS
+═══════════════════════════════════════ */
+.gallery-block {
+    margin: 12px 16px 4px;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 14px;
+    box-shadow: var(--shadow);
+}
+.gallery-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+}
+.gallery-title {
+    font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+    color: var(--primary-deep); display: flex; align-items: center;
+    gap: 6px; letter-spacing: 0.04em;
+}
+.btn-add-gallery-photo {
+    background: var(--primary); border: none; border-radius: 20px;
+    padding: 6px 12px; font-family: var(--font-sans); font-size: 0.72rem;
+    font-weight: 700; color: var(--primary-deep); cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+}
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+.gallery-thumb {
+    aspect-ratio: 1/1; border-radius: 8px; overflow: hidden;
+    position: relative; cursor: pointer; background: #E8E4D8;
+}
+.gallery-thumb img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.gallery-thumb-date {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+    color: #fff; font-size: 0.52rem; font-weight: 700;
+    padding: 10px 5px 4px; text-align: center;
+}
+.gallery-thumb-del {
+    position: absolute; top: 4px; right: 4px;
+    background: rgba(0,0,0,0.5); color: #fff;
+    border: none; border-radius: 50%; width: 22px; height: 22px;
+    font-size: 0.65rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.15s;
+}
+.gallery-thumb:hover .gallery-thumb-del,
+.gallery-thumb:active .gallery-thumb-del { opacity: 1; }
+.gallery-empty {
+    grid-column: span 3; text-align: center;
+    color: var(--text-sec); font-size: 0.78rem; padding: 18px 0;
+    font-style: italic;
+}
+
+/* Visionneuse plein écran */
+#gallery-viewer {
+    display: none; position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%; background: rgba(0,0,0,0.92);
+    z-index: 4000; flex-direction: column;
+    align-items: center; justify-content: center;
+}
+#gallery-viewer.open { display: flex; }
+#viewer-img {
+    max-width: 96vw; max-height: 75vh;
+    border-radius: 10px; object-fit: contain;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+}
+.viewer-meta {
+    margin-top: 14px; text-align: center;
+    color: rgba(255,255,255,0.75); font-size: 0.78rem;
+}
+.viewer-meta strong { color: #fff; font-size: 0.88rem; display: block; margin-bottom: 3px; }
+.viewer-nav {
+    display: flex; gap: 16px; margin-top: 16px;
+}
+.btn-viewer {
+    background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25);
+    color: #fff; padding: 10px 18px; border-radius: 22px;
+    font-family: var(--font-sans); font-size: 0.78rem;
+    font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+}
+.btn-viewer-close { background: rgba(255,255,255,0.08); }
+.btn-viewer-del { background: rgba(231,76,60,0.35); border-color: rgba(231,76,60,0.5); }
+.viewer-counter {
+    color: rgba(255,255,255,0.5); font-size: 0.72rem; margin-top: 8px;
+}
 </style>
 </head>
 <body>
+
+<!-- VISIONNEUSE GALERIE -->
+<div id="gallery-viewer">
+    <img id="viewer-img" src="" alt="">
+    <div class="viewer-meta">
+        <strong id="viewer-tree-name"></strong>
+        <span id="viewer-date"></span>
+    </div>
+    <div class="viewer-counter" id="viewer-counter"></div>
+    <div class="viewer-nav">
+        <button class="btn-viewer" id="btn-viewer-prev" onclick="viewerNav(-1)"><i class="fa-solid fa-chevron-left"></i> Préc.</button>
+        <button class="btn-viewer btn-viewer-del" onclick="viewerDelete()"><i class="fa-solid fa-trash"></i> Suppr.</button>
+        <button class="btn-viewer" id="btn-viewer-next" onclick="viewerNav(1)">Suiv. <i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+    <button class="btn-viewer btn-viewer-close" style="margin-top:10px" onclick="closeViewer()"><i class="fa-solid fa-xmark"></i> Fermer</button>
+</div>
 
 <!-- CROP -->
 <div id="crop-screen">
@@ -652,6 +761,19 @@ input[type="file"] { display: none; }
     <div class="notes-block">
         <label><i class="fa-solid fa-pen-to-square"></i> Observations</label>
         <textarea id="edit-notes" rows="3" placeholder="Notes libres sur cet arbre…"></textarea>
+    </div>
+
+    <div class="gallery-block">
+        <div class="gallery-header">
+            <div class="gallery-title"><i class="fa-solid fa-images"></i> Galerie Photos</div>
+            <button class="btn-add-gallery-photo" onclick="document.getElementById('gallery-file-input').click()">
+                <i class="fa-solid fa-plus"></i> Ajouter
+            </button>
+        </div>
+        <input type="file" id="gallery-file-input" accept="image/*" onchange="startGalleryCrop(this)">
+        <div class="gallery-grid" id="gallery-grid">
+            <div class="gallery-empty">Aucune photo — ajoutez des clichés pour suivre l'évolution de votre arbre.</div>
+        </div>
     </div>
 
     <div class="action-row">
@@ -1130,6 +1252,8 @@ function resetEditor() {
     document.getElementById('hero-icon').style.display = 'block';
     document.getElementById('ai-output').style.display = 'none';
     document.getElementById('ai-output').textContent   = '';
+    currentGallery = [];
+    renderGallery();
 }
 function openEditor(uid, category) {
     currentUid = uid;
@@ -1160,6 +1284,8 @@ function openEditor(uid, category) {
             document.getElementById('hero-photo').style.backgroundImage = `url(${b.photo})`;
             document.getElementById('hero-icon').style.display = 'none';
         }
+        currentGallery = b.gallery || [];
+        renderGallery();
         updateDossier();
     } else {
         document.getElementById('edit-header-title').textContent = 'Nouvel arbre';
@@ -1195,6 +1321,7 @@ async function saveBonsai() {
         lastWire:   document.getElementById('edit-last-wire').value,
         notes:      document.getElementById('edit-notes').value,
         category:   document.getElementById('edit-category').value,
+        gallery:    currentGallery,
     });
     await refresh();
     nav('list');
@@ -1240,6 +1367,7 @@ let maskPos = { x: 20, y: 20 };
 
 function startCrop(input) {
     if (!input.files[0]) return;
+    galleryMode = false;
     const reader = new FileReader();
     reader.onload = e => {
         cropImg.onload = () => {
@@ -1265,24 +1393,9 @@ cropMask.addEventListener('pointerdown', e => {
     };
     cropMask.onpointerup = () => cropMask.onpointermove = null;
 });
-function confirmCrop() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 600; canvas.height = 600;
-    const ctx = canvas.getContext('2d');
-    const ir  = cropImg.getBoundingClientRect();
-    const mr  = cropMask.getBoundingClientRect();
-    const rx  = cropImg.naturalWidth  / ir.width;
-    const ry  = cropImg.naturalHeight / ir.height;
-    ctx.drawImage(cropImg,
-        (mr.left - ir.left) * rx, (mr.top - ir.top) * ry,
-        450 * rx, 450 * ry, 0, 0, 600, 600);
-    currentPhotoBase64 = canvas.toDataURL('image/jpeg', 0.8);
-    document.getElementById('hero-photo').style.backgroundImage = `url(${currentPhotoBase64})`;
-    document.getElementById('hero-icon').style.display = 'none';
-    closeCrop();
-}
 function closeCrop() {
     document.getElementById('crop-screen').style.display = 'none';
+    galleryMode = false;
 }
 
 function nav(screen) {
@@ -1332,6 +1445,122 @@ async function importData(input) {
     };
     reader.readAsText(input.files[0]);
     input.value = '';
+}
+
+// ═══════════════════════════════════════
+// GALERIE PHOTOS
+// ═══════════════════════════════════════
+let currentGallery = []; // [{base64, date}]
+let viewerIndex = 0;
+let galleryMode = false; // true = crop pour galerie, false = photo principale
+
+function startGalleryCrop(input) {
+    if (!input.files[0]) return;
+    galleryMode = true;
+    const reader = new FileReader();
+    reader.onload = e => {
+        cropImg.onload = () => {
+            document.getElementById('crop-screen').style.display = 'flex';
+            maskPos = { x: (cropView.clientWidth - 450) / 2, y: 80 };
+            applyMask();
+        };
+        cropImg.src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+    input.value = '';
+}
+
+function confirmCrop() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 600; canvas.height = 600;
+    const ctx = canvas.getContext('2d');
+    const ir  = cropImg.getBoundingClientRect();
+    const mr  = cropMask.getBoundingClientRect();
+    const rx  = cropImg.naturalWidth  / ir.width;
+    const ry  = cropImg.naturalHeight / ir.height;
+    ctx.drawImage(cropImg,
+        (mr.left - ir.left) * rx, (mr.top - ir.top) * ry,
+        450 * rx, 450 * ry, 0, 0, 600, 600);
+    const b64 = canvas.toDataURL('image/jpeg', 0.8);
+
+    if (galleryMode) {
+        const today = new Date().toISOString().slice(0, 10);
+        currentGallery.push({ base64: b64, date: today });
+        renderGallery();
+        galleryMode = false;
+    } else {
+        currentPhotoBase64 = b64;
+        document.getElementById('hero-photo').style.backgroundImage = `url(${b64})`;
+        document.getElementById('hero-icon').style.display = 'none';
+    }
+    closeCrop();
+}
+
+function renderGallery() {
+    const grid = document.getElementById('gallery-grid');
+    grid.innerHTML = '';
+    if (!currentGallery.length) {
+        grid.innerHTML = '<div class="gallery-empty">Aucune photo — ajoutez des clichés pour suivre l\'évolution de votre arbre.</div>';
+        return;
+    }
+    currentGallery.forEach((item, idx) => {
+        const thumb = document.createElement('div');
+        thumb.className = 'gallery-thumb';
+        thumb.innerHTML = `
+            <img src="${item.base64}" alt="Photo ${idx+1}" loading="lazy">
+            <div class="gallery-thumb-date">${formatDate(item.date)}</div>
+            <button class="gallery-thumb-del" onclick="event.stopPropagation(); deleteGalleryPhoto(${idx})">
+                <i class="fa-solid fa-xmark"></i>
+            </button>`;
+        thumb.addEventListener('click', () => openViewer(idx));
+        grid.appendChild(thumb);
+    });
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: '2-digit' });
+}
+
+function deleteGalleryPhoto(idx) {
+    if (!confirm('Supprimer cette photo ?')) return;
+    currentGallery.splice(idx, 1);
+    renderGallery();
+}
+
+function openViewer(idx) {
+    viewerIndex = idx;
+    refreshViewer();
+    document.getElementById('gallery-viewer').classList.add('open');
+}
+function closeViewer() {
+    document.getElementById('gallery-viewer').classList.remove('open');
+}
+function refreshViewer() {
+    const item = currentGallery[viewerIndex];
+    document.getElementById('viewer-img').src = item.base64;
+    document.getElementById('viewer-tree-name').textContent =
+        document.getElementById('edit-name').value || 'Arbre sans nom';
+    document.getElementById('viewer-date').textContent = formatDate(item.date);
+    document.getElementById('viewer-counter').textContent =
+        `${viewerIndex + 1} / ${currentGallery.length}`;
+    document.getElementById('btn-viewer-prev').style.opacity = viewerIndex > 0 ? '1' : '0.3';
+    document.getElementById('btn-viewer-next').style.opacity = viewerIndex < currentGallery.length - 1 ? '1' : '0.3';
+}
+function viewerNav(dir) {
+    const next = viewerIndex + dir;
+    if (next < 0 || next >= currentGallery.length) return;
+    viewerIndex = next;
+    refreshViewer();
+}
+function viewerDelete() {
+    if (!confirm('Supprimer cette photo ?')) return;
+    currentGallery.splice(viewerIndex, 1);
+    renderGallery();
+    if (!currentGallery.length) { closeViewer(); return; }
+    viewerIndex = Math.min(viewerIndex, currentGallery.length - 1);
+    refreshViewer();
 }
 
 window.onload = () => refresh();
