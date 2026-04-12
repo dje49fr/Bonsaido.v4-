@@ -5,625 +5,317 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>BONSAI DO - PRO</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════
-   VARIABLES & RESET
-═══════════════════════════════════════ */
 :root {
-    --primary:      #B0D3E5;
-    --primary-dark: #507A92;
-    --primary-deep: #2E5F78;
-    --bg:           #D5D1C0;
-    --card-bg:      #FDFBF4;
-    --text:         #2C2A23;
-    --text-sec:     #6E6C62;
-    --danger:       #E74C3C;
-    --success:      #27AE60;
-    --radius:       14px;
-    --shadow:       0 2px 12px rgba(0,0,0,0.08);
-    --font-serif:   'Noto Serif JP', serif;
-    --font-sans:    'DM Sans', sans-serif;
+    --bg:          #161A16;
+    --bg2:         #1E231E;
+    --card:        #252A25;
+    --card2:       #2C322C;
+    --card-light:  #EDE8D5;
+    --green:       #3D7A4A;
+    --green-dark:  #2E5C38;
+    --green-text:  #4A9B5A;
+    --cream:       #E8E0C8;
+    --border:      rgba(255,255,255,0.07);
+    --text:        #F0EDE6;
+    --text-sec:    #8A8F88;
+    --text-dim:    #555A54;
+    --blue:        #4A9BB5;
+    --red:         #C05040;
+    --amber:       #B07840;
+    --radius:      18px;
+    --radius-sm:   12px;
+    --font:        'Inter', sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: var(--font-sans); background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 76px; }
 ::-webkit-scrollbar { width: 0; height: 0; }
 
-/* ═══════════════════════════════════════
-   UTILITAIRES
-═══════════════════════════════════════ */
 .screen { display: none; }
 .screen.active { display: block; }
 
 #toast {
     visibility: hidden; position: fixed; bottom: 90px;
     left: 50%; transform: translateX(-50%);
-    background: #333; color: #fff; padding: 10px 22px;
-    border-radius: 20px; z-index: 3000; font-size: 0.8rem; font-weight: 600;
-    white-space: nowrap;
+    background: var(--card2); color: var(--text); padding: 10px 22px;
+    border-radius: 24px; z-index: 3000; font-size: 0.78rem; font-weight: 600;
+    white-space: nowrap; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.5);
 }
 #toast.show { visibility: visible; }
 
-/* ═══════════════════════════════════════
-   BOTTOM NAV
-═══════════════════════════════════════ */
+/* ── BOTTOM NAV ── */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
-    background: var(--card-bg); height: 72px;
-    display: flex; justify-content: space-around; align-items: center;
-    border-top: 1px solid rgba(0,0,0,0.08); z-index: 900;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    background: var(--bg2); height: 72px;
+    display: flex; justify-content: space-around; align-items: flex-start;
+    padding-top: 10px; border-top: 1px solid var(--border); z-index: 900;
 }
 .nav-btn {
-    color: #B0ADA0; background: none; border: none;
+    color: var(--text-dim); background: none; border: none;
     display: flex; flex-direction: column; align-items: center;
-    gap: 3px; font-size: 0.6rem; font-weight: 700;
-    font-family: var(--font-sans); cursor: pointer;
-    text-transform: uppercase; letter-spacing: 0.03em; padding: 6px 12px;
+    gap: 4px; font-size: 0.56rem; font-weight: 500;
+    font-family: var(--font); cursor: pointer; padding: 0 10px; position: relative;
 }
 .nav-btn i { font-size: 1.15rem; }
-.nav-btn.active { color: var(--primary-deep); }
+.nav-btn.active { color: var(--text); }
+.nav-btn.active::after {
+    content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+    width: 22px; height: 2.5px; background: var(--text); border-radius: 2px;
+}
+.nav-btn input[type="file"] { display: none; }
+.nav-badge {
+    position: absolute; top: -3px; right: 4px;
+    background: var(--green); color: white; border-radius: 10px;
+    font-size: 0.5rem; font-weight: 700; padding: 1px 5px; min-width: 16px; text-align: center;
+}
 
-/* ═══════════════════════════════════════
-   CROP
-═══════════════════════════════════════ */
-#crop-screen {
-    display: none; position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%; background: #000;
-    z-index: 2000; flex-direction: column;
-}
-#crop-viewport {
-    flex: 1; width: 100%; position: relative; overflow: auto;
-    display: flex; align-items: center; justify-content: center;
-    -webkit-overflow-scrolling: touch;
-}
+/* ── CROP ── */
+#crop-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
+#crop-viewport { flex: 1; width: 100%; position: relative; overflow: auto; display: flex; align-items: center; justify-content: center; -webkit-overflow-scrolling: touch; }
 #crop-image { max-width: 100%; display: block; }
-#crop-mask {
-    position: absolute; width: 450px; height: 450px;
-    border: 2px solid #fff; box-shadow: 0 0 0 9999px rgba(0,0,0,0.55);
-    cursor: move; z-index: 2010; touch-action: none;
-}
-.crop-bar { height: 80px; display: flex; gap: 10px; padding: 12px 20px; background: #111; }
-.btn-crop {
-    flex: 1; border: none; border-radius: 10px;
-    font-weight: 700; color: white; cursor: pointer;
-    font-family: var(--font-sans); font-size: 0.9rem;
-}
-.btn-crop-cancel { background: #555; }
-.btn-crop-ok { background: var(--primary-deep); }
+#crop-mask { position: absolute; width: 450px; height: 450px; border: 2px solid #fff; box-shadow: 0 0 0 9999px rgba(0,0,0,0.6); cursor: move; z-index: 2010; touch-action: none; border-radius: 12px; }
+.crop-bar { height: 80px; display: flex; gap: 10px; padding: 14px 20px; background: var(--bg2); }
+.btn-crop { flex: 1; border: none; border-radius: var(--radius-sm); font-weight: 700; color: white; cursor: pointer; font-family: var(--font); font-size: 0.9rem; }
+.btn-crop-cancel { background: var(--card2); color: var(--text-sec); }
+.btn-crop-ok { background: var(--green); }
 
-/* ═══════════════════════════════════════
-   ÉCRAN ACCUEIL
-═══════════════════════════════════════ */
-.home-header-wrapper {
-    background: #4A90A4;
-    padding: 10px 10px 10px 10px;
-    position: sticky; top: 0; z-index: 100;
-}
+/* ── ACCUEIL ── */
 .home-header {
-    background: linear-gradient(135deg, var(--primary-deep), var(--primary-dark));
-    padding: 20px 18px 14px;
-    border-radius: 24px;
+    background: var(--bg2); padding: 14px 16px 12px;
+    position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
 }
-.home-title {
-    font-family: var(--font-serif);
-    font-size: 1.5rem; font-weight: 600;
-    color: #fff; line-height: 1.3; margin-bottom: 14px;
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-}
-.home-title i { color: var(--danger); }
-.home-count { font-size: 0.72rem; opacity: 0.75; font-weight: 400; margin-left: auto; }
+.home-logo { display: flex; align-items: center; gap: 8px; }
+.home-logo i { color: var(--green-text); font-size: 1rem; }
+.home-logo-text { font-size: 1rem; font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
+.home-logo-text span { color: var(--green-text); font-weight: 400; }
+.home-count { font-size: 0.62rem; font-weight: 600; color: var(--text-sec); background: var(--card2); padding: 4px 10px; border-radius: 20px; }
 
-.search-bar {
-    display: flex; align-items: center;
-    background: rgba(255,255,255,0.18);
-    border-radius: 30px; padding: 10px 16px; gap: 10px;
-    border: 1.5px solid rgba(255,255,255,0.3);
-}
-.search-bar input {
-    flex: 1; border: none; background: transparent;
-    font-family: var(--font-sans); font-size: 0.85rem;
-    color: #fff; outline: none;
-}
-.search-bar input::placeholder { color: rgba(255,255,255,0.6); }
-.search-bar i { color: rgba(255,255,255,0.7); }
+.search-wrap { padding: 10px 14px 4px; }
+.search-bar { display: flex; align-items: center; background: var(--card); border-radius: 12px; padding: 11px 14px; gap: 10px; border: 1px solid var(--border); }
+.search-bar input { flex: 1; border: none; background: transparent; font-family: var(--font); font-size: 0.85rem; color: var(--text); outline: none; }
+.search-bar input::placeholder { color: var(--text-dim); }
+.search-bar i { color: var(--text-dim); font-size: 0.85rem; }
 
-/* Barre sauvegarde */
-.backup-bar {
-    display: flex; gap: 10px; padding: 10px 14px 4px;
-}
-.btn-backup {
-    flex: 1; padding: 10px; border: none; border-radius: 10px;
-    background: var(--primary); color: var(--primary-deep);
-    font-family: var(--font-sans); font-size: 0.78rem;
-    font-weight: 700; cursor: pointer; text-align: center;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-}
+.backup-bar { display: flex; gap: 8px; padding: 8px 14px 2px; }
+.btn-backup { flex: 1; padding: 10px; border: none; border-radius: var(--radius-sm); background: var(--card); color: var(--text-sec); font-family: var(--font); font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--border); }
 .btn-backup input[type="file"] { display: none; }
-.btn-import { background: #D4EDCF; color: #1A6B11; }
+.btn-import { color: var(--green-text); background: rgba(61,122,74,0.12); border-color: rgba(61,122,74,0.25); }
 
-/* Grille collection */
-.collection-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px; padding: 14px;
-}
-.bonsai-card {
-    background: var(--card-bg); border-radius: var(--radius);
-    overflow: hidden; box-shadow: var(--shadow);
-    cursor: pointer; transition: transform 0.15s;
-}
-.bonsai-card:active { transform: scale(0.95); }
-.card-photo {
-    width: 100%; aspect-ratio: 1/1;
-    background: #E8E4D8; background-size: cover; background-position: center;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2rem; color: var(--primary-dark);
-}
-.card-info { padding: 7px 8px 10px; }
-.card-name {
-    font-weight: 700; font-size: 0.72rem; text-transform: uppercase;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;
-}
-.card-species {
-    font-size: 0.62rem; color: var(--text-sec); font-style: italic;
-    margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.card-badge {
-    display: inline-block; font-size: 0.58rem; font-weight: 700;
-    padding: 2px 7px; border-radius: 20px;
-}
-.badge-green  { background: #D4EDCF; color: #1A6B11; }
-.badge-yellow { background: #FFF0B3; color: #7A5C00; }
-.badge-red    { background: #FFD9D9; color: #8B1A1A; }
-
-.card-add {
-    background: rgba(176,211,229,0.2);
-    border: 2px dashed var(--primary-dark);
-    border-radius: var(--radius); min-height: 130px;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 7px; cursor: pointer; transition: background 0.15s;
-}
-.card-add:active { background: rgba(176,211,229,0.4); }
-.card-add i { font-size: 1.3rem; color: var(--primary-deep); }
-.card-add span {
-    font-size: 0.62rem; font-weight: 700; color: var(--primary-deep);
-    text-align: center; text-transform: uppercase; line-height: 1.4;
-}
-
-/* Séparateur de catégorie */
 .category-section { padding: 0 14px; }
-.category-header {
-    display: flex; align-items: center; gap: 10px;
-    padding: 16px 0 8px;
-}
-.category-header-line {
-    flex: 1; height: 1.5px;
-    background: linear-gradient(to right, rgba(0,0,0,0.12), transparent);
-}
-.category-label {
-    display: flex; align-items: center; gap: 7px;
-    font-family: var(--font-serif); font-size: 0.88rem;
-    font-weight: 600; color: var(--text);
-    white-space: nowrap;
-}
-.category-label i { font-size: 1rem; }
-.category-label.conifers { color: #2E6B3E; }
-.category-label.conifers i { color: #3A8A52; }
-.category-label.deciduous { color: #7A4A1A; }
-.category-label.deciduous i { color: #B06020; }
-.category-label.others { color: #4A4A6A; }
-.category-label.others i { color: #6A6A9A; }
-.category-count {
-    font-size: 0.62rem; font-weight: 700;
-    padding: 2px 8px; border-radius: 20px;
-    background: rgba(0,0,0,0.07); color: var(--text-sec);
-}
-.category-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px; padding-bottom: 4px;
-}
+.category-header { display: flex; align-items: center; gap: 10px; padding: 18px 0 10px; }
+.category-header-line { flex: 1; height: 1px; background: var(--border); }
+.category-label { display: flex; align-items: center; gap: 7px; font-size: 0.75rem; font-weight: 700; color: var(--text-sec); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.07em; }
+.category-label i { font-size: 0.78rem; }
+.category-label.conifers { color: #6ABF80; } .category-label.conifers i { color: #6ABF80; }
+.category-label.deciduous { color: #C9A84C; } .category-label.deciduous i { color: #C9A84C; }
+.category-label.others { color: #7AABCA; } .category-label.others i { color: #7AABCA; }
+.category-count { font-size: 0.58rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--card); color: var(--text-dim); }
+.category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 6px; }
 
-/* ═══════════════════════════════════════
-   ÉCRAN FICHE ARBRE
-═══════════════════════════════════════ */
-.edit-header {
-    background: linear-gradient(135deg, var(--primary-deep), var(--primary-dark));
-    padding: 14px 16px;
-    display: flex; align-items: center; gap: 12px;
-    position: sticky; top: 0; z-index: 100;
-}
-.btn-back {
-    background: rgba(255,255,255,0.2); border: none;
-    width: 34px; height: 34px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; cursor: pointer; font-size: 0.85rem; flex-shrink: 0;
-}
+.bonsai-card { background: var(--card); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform 0.15s; border: 1px solid var(--border); }
+.bonsai-card:active { transform: scale(0.95); }
+.card-photo { width: 100%; aspect-ratio: 1/1; background: var(--card2); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--text-dim); }
+.card-info { padding: 8px 10px 10px; }
+.card-name { font-weight: 700; font-size: 0.67rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; letter-spacing: 0.04em; }
+.card-species { font-size: 0.58rem; color: var(--text-sec); font-style: italic; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-badge { display: inline-block; font-size: 0.55rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.badge-green  { background: rgba(61,122,74,0.25); color: #5DBF75; }
+.badge-yellow { background: rgba(201,168,76,0.2); color: #C9A84C; }
+.badge-red    { background: rgba(192,80,64,0.2); color: #E06050; }
+
+.card-add { background: transparent; border: 1.5px dashed rgba(255,255,255,0.1); border-radius: var(--radius); min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; cursor: pointer; transition: 0.15s; }
+.card-add:active { background: rgba(61,122,74,0.1); }
+.card-add i { font-size: 1rem; color: var(--green-text); }
+.card-add span { font-size: 0.6rem; font-weight: 700; color: var(--green-text); text-align: center; text-transform: uppercase; line-height: 1.5; letter-spacing: 0.04em; }
+
+/* ── FICHE ARBRE ── */
+.edit-header { background: var(--bg2); padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
+.btn-back { background: var(--card); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-sec); cursor: pointer; font-size: 0.8rem; flex-shrink: 0; }
 .edit-header-info { flex: 1; overflow: hidden; }
-.edit-header-title {
-    font-family: var(--font-serif); font-size: 1rem;
-    font-weight: 600; color: #fff;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.edit-header-sub {
-    font-size: 0.68rem; color: rgba(255,255,255,0.7);
-    margin-top: 1px; font-style: italic;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+.edit-header-title { font-size: 1rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.edit-header-sub { font-size: 0.65rem; color: var(--text-sec); margin-top: 2px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Grande photo */
+/* photo héro — grand rectangle arrondi comme la référence */
 .hero-photo {
-    width: 100%; height: 215px;
-    background: #E8E4D8; background-size: cover; background-position: center;
+    width: calc(100% - 28px); margin: 14px 14px 0;
+    height: 210px; border-radius: var(--radius);
+    background: var(--card2); background-size: cover; background-position: center;
     display: flex; align-items: center; justify-content: center;
-    font-size: 4rem; color: var(--primary-dark);
-    position: relative; cursor: pointer;
+    font-size: 3.5rem; color: var(--text-dim);
+    position: relative; cursor: pointer; overflow: hidden;
 }
-.hero-photo-btn {
-    position: absolute; bottom: 12px; right: 12px;
-    background: rgba(0,0,0,0.45); color: white;
-    padding: 6px 12px; border-radius: 20px;
-    font-size: 0.7rem; font-weight: 700;
-    display: flex; align-items: center; gap: 5px;
-}
+.hero-photo-btn { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); color: white; padding: 6px 13px; border-radius: 20px; font-size: 0.68rem; font-weight: 600; display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.15); }
 input[type="file"] { display: none; }
 
-/* Bandeau dossier */
-.dossier-band {
-    background: var(--primary); padding: 11px 16px;
-    display: flex; align-items: center; gap: 10px;
-}
-.dossier-icon {
-    background: var(--primary-deep); color: white;
-    width: 32px; height: 32px; border-radius: 8px;
+/* nom + espèce sous photo — comme référence */
+.hero-meta { padding: 12px 16px 0; }
+.hero-name { font-size: 1.35rem; font-weight: 700; color: var(--text); line-height: 1.2; font-style: italic; }
+.hero-species { font-size: 0.72rem; color: var(--text-sec); margin-top: 3px; }
+
+/* carte statut — fond crème clair comme référence */
+.status-card { margin: 12px 14px 0; background: var(--card-light); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+.status-label { font-size: 0.62rem; font-weight: 600; color: #7A7060; text-transform: none; margin-bottom: 5px; }
+.status-value { font-size: 1.4rem; font-weight: 700; color: #1E2E1E; }
+.status-ring {
+    width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0;
+    background: conic-gradient(#3D7A4A 0% 0%, rgba(0,0,0,0.12) 0% 100%);
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.9rem; flex-shrink: 0;
-}
-.dossier-name {
-    font-family: var(--font-serif); font-weight: 600;
-    font-size: 0.9rem; color: var(--text);
-}
-.dossier-sub { font-size: 0.67rem; color: var(--text-sec); margin-top: 1px; font-style: italic; }
-
-/* Sections */
-.section { padding: 16px 16px 4px; }
-.section-title {
-    font-family: var(--font-serif); font-size: 1rem;
-    font-weight: 600; color: var(--text); margin-bottom: 12px;
+    font-size: 0.68rem; font-weight: 700; color: #1E2E1E;
+    box-shadow: inset 0 0 0 7px var(--card-light);
+    transition: background 0.4s;
 }
 
-/* Tuiles identité */
+/* section titre */
+.section-hd { padding: 16px 16px 8px; font-size: 0.9rem; font-weight: 700; color: var(--text); }
+
+/* lignes d'action — comme "Prochaines Actions" dans la référence */
+.action-list { padding: 0 14px; display: flex; flex-direction: column; gap: 8px; }
+.action-row-item { background: var(--card); border-radius: var(--radius-sm); padding: 13px 14px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); position: relative; }
+.action-row-item i.arr { position: absolute; right: 14px; color: var(--text-dim); font-size: 0.75rem; }
+.action-icon { width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+.action-icon.blue   { background: rgba(74,155,181,0.2); color: var(--blue); }
+.action-icon.red    { background: rgba(192,80,64,0.2); color: var(--red); }
+.action-icon.amber  { background: rgba(176,120,64,0.2); color: var(--amber); }
+.action-icon.green  { background: rgba(61,122,74,0.2); color: var(--green-text); }
+.action-title { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+.action-sub { font-size: 0.68rem; color: var(--text-sec); margin-top: 2px; }
+.date-input-row { border: none; background: transparent; font-family: var(--font); font-size: 0.68rem; color: var(--text-sec); outline: none; padding: 0; width: 100%; }
+.date-input-row::-webkit-calendar-picker-indicator { filter: invert(0.5); }
+
+/* dossier */
+.dossier-band { background: var(--card); margin: 10px 14px 0; border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); }
+.dossier-icon { background: rgba(61,122,74,0.2); color: var(--green-text); width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.dossier-name { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+.dossier-sub { font-size: 0.65rem; color: var(--text-sec); margin-top: 1px; font-style: italic; }
+
+.section { padding: 12px 14px 4px; }
+.section-title { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
 .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.id-tile {
-    background: var(--card-bg); border-radius: 10px;
-    padding: 10px 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    position: relative;
-}
+.id-tile { background: var(--card); border-radius: var(--radius-sm); padding: 10px 12px; border: 1px solid var(--border); position: relative; }
 .id-tile.full { grid-column: span 2; }
-.id-tile > label {
-    display: block; font-size: 0.62rem; font-weight: 700;
-    color: var(--primary-deep); text-transform: uppercase;
-    letter-spacing: 0.04em; margin-bottom: 3px;
-}
-.id-tile input[type="text"],
-.id-tile input[type="date"],
-.id-tile select {
-    width: 100%; border: none; background: transparent;
-    font-family: var(--font-sans); font-size: 0.85rem;
-    color: var(--text); outline: none; padding: 0;
-}
-.id-tile select { cursor: pointer; }
-.id-tile-icon {
-    position: absolute; right: 10px; top: 50%;
-    transform: translateY(-50%);
-    color: var(--primary-dark); font-size: 0.85rem; pointer-events: none;
-}
+.id-tile > label { display: block; font-size: 0.58rem; font-weight: 700; color: var(--green-text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.id-tile input[type="text"], .id-tile input[type="date"], .id-tile select { width: 100%; border: none; background: transparent; font-family: var(--font); font-size: 0.85rem; color: var(--text); outline: none; padding: 0; }
+.id-tile select option { background: var(--card2); }
+.id-tile input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); }
+.id-tile-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.78rem; pointer-events: none; }
 
-/* Sélecteur espèce custom */
-.species-trigger {
-    display: flex; align-items: center;
-    justify-content: space-between; cursor: pointer;
-}
-.species-trigger span {
-    font-size: 0.85rem; color: var(--text-sec);
-    font-style: italic; flex: 1;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+.species-trigger { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+.species-trigger span { font-size: 0.85rem; color: var(--text-dim); font-style: italic; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .species-trigger span.selected { color: var(--text); font-style: normal; }
-.species-trigger i { font-size: 0.7rem; color: var(--primary-dark); flex-shrink: 0; margin-left: 6px; }
+.species-trigger i { font-size: 0.7rem; color: var(--text-dim); flex-shrink: 0; margin-left: 6px; }
 
-/* Modal espèces */
-.species-modal {
-    display: none; position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%; z-index: 5000;
-    background: rgba(0,0,0,0.45); align-items: flex-end;
-}
+.species-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; background: rgba(0,0,0,0.75); align-items: flex-end; }
 .species-modal.open { display: flex; }
-.species-panel {
-    background: var(--card-bg); border-radius: 20px 20px 0 0;
-    width: 100%; max-height: 78vh;
-    display: flex; flex-direction: column;
-}
-.species-panel-header {
-    padding: 14px 16px 10px;
-    border-bottom: 1px solid #E0DDD2; flex-shrink: 0;
-}
-.species-panel-title {
-    font-family: var(--font-serif); font-weight: 600;
-    font-size: 1rem; color: var(--text); margin-bottom: 10px;
-}
-.species-search-bar {
-    display: flex; align-items: center;
-    background: #F0EDE5; border-radius: 24px;
-    padding: 9px 14px; gap: 8px;
-}
-.species-search-bar i { color: var(--text-sec); font-size: 0.85rem; }
-.species-search-bar input {
-    flex: 1; border: none; background: transparent;
-    font-family: var(--font-sans); font-size: 0.88rem;
-    color: var(--text); outline: none;
-}
+.species-panel { background: var(--card2); border-radius: 24px 24px 0 0; width: 100%; max-height: 78vh; display: flex; flex-direction: column; border-top: 1px solid var(--border); }
+.species-panel-header { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.species-panel-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.species-search-bar { display: flex; align-items: center; background: var(--bg); border-radius: 12px; padding: 9px 14px; gap: 8px; border: 1px solid var(--border); }
+.species-search-bar i { color: var(--text-dim); font-size: 0.85rem; }
+.species-search-bar input { flex: 1; border: none; background: transparent; font-family: var(--font); font-size: 0.88rem; color: var(--text); outline: none; }
 #species-list-container { overflow-y: auto; flex: 1; padding: 4px 0; }
-.species-group-header {
-    padding: 8px 16px 4px;
-    font-size: 0.65rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.05em;
-    color: var(--primary-deep); background: var(--bg);
-    position: sticky; top: 0;
-}
-.species-item {
-    padding: 11px 18px; font-size: 0.85rem;
-    color: var(--text); cursor: pointer;
-    border-bottom: 1px solid rgba(0,0,0,0.04);
-    transition: background 0.1s;
-}
-.species-item:active { background: var(--primary); }
-.species-empty {
-    padding: 24px; text-align: center;
-    color: var(--text-sec); font-size: 0.85rem;
-}
+.species-group-header { padding: 8px 16px 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--green-text); background: var(--bg); position: sticky; top: 0; }
+.species-item { padding: 12px 18px; font-size: 0.85rem; color: var(--text-sec); cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.1s; }
+.species-item:active { background: rgba(61,122,74,0.15); color: var(--text); }
+.species-empty { padding: 24px; text-align: center; color: var(--text-dim); font-size: 0.85rem; font-style: italic; }
 
-/* Tuiles travaux */
-.travaux-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.travaux-tile {
-    background: var(--card-bg); border-radius: 10px;
-    padding: 10px 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    display: flex; align-items: center; gap: 9px;
-}
-.travaux-icon {
-    width: 30px; height: 30px; border-radius: 7px;
-    background: var(--primary);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.85rem; color: var(--primary-deep); flex-shrink: 0;
-}
-.travaux-tile > div > label {
-    font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
-    color: var(--text-sec); display: block; margin-bottom: 2px; letter-spacing: 0.03em;
-}
-.travaux-tile input[type="date"] {
-    border: none; background: transparent;
-    font-family: var(--font-sans); font-size: 0.78rem;
-    color: var(--text); outline: none; padding: 0; width: 100%;
-}
-
-/* Bloc IA */
-.ai-block {
-    margin: 12px 16px 4px;
-    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    border-radius: var(--radius); padding: 14px 16px;
-}
+.ai-block { margin: 10px 14px 4px; background: #1A2E1A; border-radius: var(--radius); padding: 14px 16px; border: 1px solid rgba(61,122,74,0.3); }
 .ai-top { display: flex; align-items: center; justify-content: space-between; }
-.ai-top span {
-    color: rgba(255,255,255,0.9); font-weight: 700; font-size: 0.82rem;
-    display: flex; align-items: center; gap: 7px;
-}
-.btn-ai {
-    background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.3);
-    color: white; padding: 7px 14px; border-radius: 20px;
-    font-size: 0.75rem; font-weight: 700; cursor: pointer;
-    font-family: var(--font-sans);
-}
-#ai-output {
-    background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.95);
-    font-size: 0.78rem; line-height: 1.65; border-radius: 8px;
-    padding: 10px 12px; white-space: pre-wrap;
-    display: none; margin-top: 10px;
-}
+.ai-top span { color: #7ACF90; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; gap: 7px; }
+.btn-ai { background: var(--green); border: none; color: white; padding: 7px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; cursor: pointer; font-family: var(--font); }
+#ai-output { background: rgba(0,0,0,0.25); color: rgba(255,255,255,0.75); font-size: 0.78rem; line-height: 1.7; border-radius: 8px; padding: 10px 12px; white-space: pre-wrap; display: none; margin-top: 10px; }
 
-/* Bloc notes */
-.notes-block {
-    margin: 12px 16px 4px; background: var(--card-bg);
-    border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow);
-}
-.notes-block > label {
-    font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
-    color: var(--primary-deep); display: flex; align-items: center;
-    gap: 6px; margin-bottom: 8px; letter-spacing: 0.04em;
-}
-.notes-block textarea {
-    width: 100%; border: 1.5px solid #E0DDD2; border-radius: 8px;
-    font-family: var(--font-sans); font-size: 0.85rem; color: var(--text);
-    outline: none; padding: 10px; resize: none;
-    background: #FEFCF6; line-height: 1.5;
-}
+.notes-block { margin: 10px 14px 4px; background: var(--card); border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); }
+.notes-block > label { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; color: var(--green-text); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; letter-spacing: 0.05em; }
+.notes-block textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 0.85rem; color: var(--text); outline: none; padding: 10px; resize: none; background: var(--bg); line-height: 1.6; }
+.notes-block textarea::placeholder { color: var(--text-dim); }
 
-/* Boutons action */
-.action-row { display: flex; gap: 10px; padding: 16px 16px 4px; }
-.btn-save {
-    flex: 1; padding: 14px; border: none; border-radius: 10px;
-    background: var(--primary-deep); color: white;
-    font-family: var(--font-sans); font-size: 0.85rem;
-    font-weight: 700; cursor: pointer;
-    text-transform: uppercase; letter-spacing: 0.04em;
-}
-.btn-delete {
-    padding: 14px 18px; border: none; border-radius: 10px;
-    background: #FFD9D9; color: var(--danger);
-    font-family: var(--font-sans); font-size: 0.85rem;
-    font-weight: 700; cursor: pointer; display: none;
-}
+/* boutons style référence — vert plein + crème */
+.save-row { display: flex; gap: 10px; padding: 14px 14px 6px; }
+.btn-save { flex: 1; padding: 16px; border: none; border-radius: var(--radius-sm); background: var(--green); color: white; font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; letter-spacing: 0.01em; }
+.btn-delete { padding: 16px 18px; border: none; border-radius: var(--radius-sm); background: rgba(192,80,64,0.15); color: var(--red); font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; display: none; border: 1px solid rgba(192,80,64,0.25); }
 
-/* ═══════════════════════════════════════
-   GALERIE PHOTOS
-═══════════════════════════════════════ */
-.gallery-block {
-    margin: 12px 16px 4px;
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    padding: 14px;
-    box-shadow: var(--shadow);
-}
-.gallery-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 12px;
-}
-.gallery-title {
-    font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
-    color: var(--primary-deep); display: flex; align-items: center;
-    gap: 6px; letter-spacing: 0.04em;
-}
-.btn-add-gallery-photo {
-    background: var(--primary); border: none; border-radius: 20px;
-    padding: 6px 12px; font-family: var(--font-sans); font-size: 0.72rem;
-    font-weight: 700; color: var(--primary-deep); cursor: pointer;
-    display: flex; align-items: center; gap: 5px;
-}
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-}
-.gallery-thumb {
-    aspect-ratio: 1/1; border-radius: 8px; overflow: hidden;
-    position: relative; cursor: pointer; background: #E8E4D8;
-}
-.gallery-thumb img {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-}
-.gallery-thumb-date {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(transparent, rgba(0,0,0,0.6));
-    color: #fff; font-size: 0.52rem; font-weight: 700;
-    padding: 10px 5px 4px; text-align: center;
-}
-.gallery-thumb-del {
-    position: absolute; top: 4px; right: 4px;
-    background: rgba(0,0,0,0.5); color: #fff;
-    border: none; border-radius: 50%; width: 22px; height: 22px;
-    font-size: 0.65rem; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; transition: opacity 0.15s;
-}
-.gallery-thumb:hover .gallery-thumb-del,
-.gallery-thumb:active .gallery-thumb-del { opacity: 1; }
-.gallery-empty {
-    grid-column: span 3; text-align: center;
-    color: var(--text-sec); font-size: 0.78rem; padding: 18px 0;
-    font-style: italic;
-}
+.gallery-block { margin: 10px 14px 4px; background: var(--card); border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); }
+.gallery-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.gallery-title { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: var(--green-text); display: flex; align-items: center; gap: 6px; letter-spacing: 0.05em; }
+.btn-add-gallery-photo { background: rgba(61,122,74,0.2); border: none; border-radius: 20px; padding: 6px 12px; font-family: var(--font); font-size: 0.7rem; font-weight: 700; color: var(--green-text); cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.gallery-thumb { aspect-ratio: 1/1; border-radius: 9px; overflow: hidden; position: relative; cursor: pointer; background: var(--bg); }
+.gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery-thumb-date { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: #fff; font-size: 0.5rem; font-weight: 700; padding: 10px 5px 4px; text-align: center; }
+.gallery-thumb-del { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.55); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s; }
+.gallery-thumb:hover .gallery-thumb-del, .gallery-thumb:active .gallery-thumb-del { opacity: 1; }
+.gallery-empty { grid-column: span 3; text-align: center; color: var(--text-dim); font-size: 0.78rem; padding: 18px 0; font-style: italic; }
 
-/* Visionneuse plein écran */
-#gallery-viewer {
-    display: none; position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%; background: rgba(0,0,0,0.92);
-    z-index: 4000; flex-direction: column;
-    align-items: center; justify-content: center;
-}
+#gallery-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.94); z-index: 4000; flex-direction: column; align-items: center; justify-content: center; }
 #gallery-viewer.open { display: flex; }
-#viewer-img {
-    max-width: 96vw; max-height: 75vh;
-    border-radius: 10px; object-fit: contain;
-    box-shadow: 0 4px 32px rgba(0,0,0,0.5);
-}
-.viewer-meta {
-    margin-top: 14px; text-align: center;
-    color: rgba(255,255,255,0.75); font-size: 0.78rem;
-}
-.viewer-meta strong { color: #fff; font-size: 0.88rem; display: block; margin-bottom: 3px; }
-.viewer-nav {
-    display: flex; gap: 16px; margin-top: 16px;
-}
-.btn-viewer {
-    background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25);
-    color: #fff; padding: 10px 18px; border-radius: 22px;
-    font-family: var(--font-sans); font-size: 0.78rem;
-    font-weight: 700; cursor: pointer;
-    display: flex; align-items: center; gap: 6px;
-}
-.btn-viewer-close { background: rgba(255,255,255,0.08); }
-.btn-viewer-del { background: rgba(231,76,60,0.35); border-color: rgba(231,76,60,0.5); }
-.viewer-counter {
-    color: rgba(255,255,255,0.5); font-size: 0.72rem; margin-top: 8px;
-}
+#viewer-img { max-width: 96vw; max-height: 75vh; border-radius: 12px; object-fit: contain; box-shadow: 0 4px 40px rgba(0,0,0,0.6); }
+.viewer-meta { margin-top: 14px; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.78rem; }
+.viewer-meta strong { color: #fff; font-size: 0.9rem; display: block; margin-bottom: 3px; }
+.viewer-nav { display: flex; gap: 12px; margin-top: 14px; }
+.btn-viewer { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 16px; border-radius: 22px; font-family: var(--font); font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.btn-viewer-close { background: rgba(255,255,255,0.06); }
+.btn-viewer-del { background: rgba(192,80,64,0.3); border-color: rgba(192,80,64,0.4); }
+.viewer-counter { color: rgba(255,255,255,0.35); font-size: 0.7rem; margin-top: 8px; }
 </style>
 </head>
 <body>
 
-<!-- VISIONNEUSE GALERIE -->
 <div id="gallery-viewer">
     <img id="viewer-img" src="" alt="">
-    <div class="viewer-meta">
-        <strong id="viewer-tree-name"></strong>
-        <span id="viewer-date"></span>
-    </div>
+    <div class="viewer-meta"><strong id="viewer-tree-name"></strong><span id="viewer-date"></span></div>
     <div class="viewer-counter" id="viewer-counter"></div>
     <div class="viewer-nav">
         <button class="btn-viewer" id="btn-viewer-prev" onclick="viewerNav(-1)"><i class="fa-solid fa-chevron-left"></i> Préc.</button>
-        <button class="btn-viewer btn-viewer-del" onclick="viewerDelete()"><i class="fa-solid fa-trash"></i> Suppr.</button>
+        <button class="btn-viewer btn-viewer-del" onclick="viewerDelete()"><i class="fa-solid fa-trash"></i></button>
         <button class="btn-viewer" id="btn-viewer-next" onclick="viewerNav(1)">Suiv. <i class="fa-solid fa-chevron-right"></i></button>
     </div>
     <button class="btn-viewer btn-viewer-close" style="margin-top:10px" onclick="closeViewer()"><i class="fa-solid fa-xmark"></i> Fermer</button>
 </div>
 
-<!-- CROP -->
 <div id="crop-screen">
-    <div id="crop-viewport">
-        <img id="crop-image">
-        <div id="crop-mask"></div>
-    </div>
+    <div id="crop-viewport"><img id="crop-image"><div id="crop-mask"></div></div>
     <div class="crop-bar">
         <button class="btn-crop btn-crop-cancel" onclick="closeCrop()">Annuler</button>
         <button class="btn-crop btn-crop-ok" onclick="confirmCrop()">✓ Valider</button>
     </div>
 </div>
 
-<!-- MODAL ESPÈCES -->
 <div id="species-modal" class="species-modal" onclick="closeSpeciesModal()">
     <div class="species-panel" onclick="event.stopPropagation()">
         <div class="species-panel-header">
             <div class="species-panel-title">Choisir une espèce</div>
-            <div class="species-search-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input id="species-search" type="text" placeholder="Rechercher…" oninput="filterSpecies()">
-            </div>
+            <div class="species-search-bar"><i class="fa-solid fa-magnifying-glass"></i><input id="species-search" type="text" placeholder="Rechercher…" oninput="filterSpecies()"></div>
         </div>
         <div id="species-list-container"></div>
     </div>
 </div>
 
-<!-- ÉCRAN ACCUEIL -->
+<!-- ACCUEIL -->
 <div id="screen-list" class="screen active">
-    <div class="home-header-wrapper">
-        <div class="home-header">
-            <div class="home-title">
-                <i class="fa-solid fa-torii-gate"></i>
-                BONSAI-EN
-                <span class="home-count" id="bonsai-count">0 arbres</span>
-            </div>
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="search-input" placeholder="Rechercher par espèce, nom, origine…" oninput="filterBonsais()">
-            </div>
+    <div class="home-header">
+        <div class="home-logo">
+            <i class="fa-solid fa-seedling"></i>
+            <div class="home-logo-text">BONSAI<span> MASTER</span></div>
         </div>
+        <span class="home-count" id="bonsai-count">0 arbres</span>
+    </div>
+    <div class="search-wrap">
+        <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search-input" placeholder="Rechercher espèce, nom, origine…" oninput="filterBonsais()">
+        </div>
+    </div>
+    <div class="backup-bar">
+        <button class="btn-backup" onclick="exportData()"><i class="fa-solid fa-download"></i> Exporter</button>
+        <label class="btn-backup btn-import"><i class="fa-solid fa-upload"></i> Importer<input type="file" accept=".json" onchange="importData(this)"></label>
     </div>
     <div id="list-container"></div>
 </div>
 
-<!-- ÉCRAN FICHE ARBRE -->
+<!-- FICHE -->
 <div id="screen-edit" class="screen">
-
     <div class="edit-header">
         <button class="btn-back" onclick="nav('list')"><i class="fa-solid fa-chevron-left"></i></button>
         <div class="edit-header-info">
@@ -634,22 +326,67 @@ input[type="file"] { display: none; }
 
     <div class="hero-photo" id="hero-photo" onclick="document.getElementById('file-input').click()">
         <i class="fa-solid fa-tree" id="hero-icon"></i>
-        <div class="hero-photo-btn"><i class="fa-solid fa-camera"></i> Modifier la photo</div>
+        <div class="hero-photo-btn"><i class="fa-solid fa-camera"></i> Modifier</div>
     </div>
     <input type="file" id="file-input" accept="image/*" onchange="startCrop(this)">
 
+    <div class="hero-meta">
+        <div class="hero-name" id="hero-display-name">Nouvel arbre</div>
+        <div class="hero-species" id="hero-display-species">— espèce non définie</div>
+    </div>
+
+    <div class="status-card">
+        <div>
+            <div class="status-label">Statut Général</div>
+            <div class="status-value" id="status-value">Non suivi</div>
+        </div>
+        <div class="status-ring" id="status-ring">—</div>
+    </div>
+
+    <div class="section-hd">Prochaines Actions</div>
+    <div class="action-list">
+        <div class="action-row-item">
+            <div class="action-icon blue"><i class="fa-solid fa-bucket"></i></div>
+            <div style="flex:1">
+                <div class="action-title">Rempotage</div>
+                <div class="action-sub"><input type="date" id="edit-last-pot" class="date-input-row"></div>
+            </div>
+            <i class="fa-solid fa-chevron-right arr"></i>
+        </div>
+        <div class="action-row-item">
+            <div class="action-icon red"><i class="fa-solid fa-scissors"></i></div>
+            <div style="flex:1">
+                <div class="action-title">Taille</div>
+                <div class="action-sub"><input type="date" id="edit-last-cut" class="date-input-row"></div>
+            </div>
+            <i class="fa-solid fa-chevron-right arr"></i>
+        </div>
+        <div class="action-row-item">
+            <div class="action-icon amber"><i class="fa-solid fa-seedling"></i></div>
+            <div style="flex:1">
+                <div class="action-title">Fertilisation</div>
+                <div class="action-sub"><input type="date" id="edit-last-fertil" class="date-input-row"></div>
+            </div>
+            <i class="fa-solid fa-chevron-right arr"></i>
+        </div>
+        <div class="action-row-item">
+            <div class="action-icon green"><i class="fa-solid fa-circle-notch"></i></div>
+            <div style="flex:1">
+                <div class="action-title">Ligature</div>
+                <div class="action-sub"><input type="date" id="edit-last-wire" class="date-input-row"></div>
+            </div>
+            <i class="fa-solid fa-chevron-right arr"></i>
+        </div>
+    </div>
+
     <div class="dossier-band">
         <div class="dossier-icon"><i class="fa-solid fa-folder-open"></i></div>
-        <div>
-            <div class="dossier-name" id="dossier-name">Dossier Global</div>
-            <div class="dossier-sub" id="dossier-sub">—</div>
-        </div>
+        <div><div class="dossier-name" id="dossier-name">Dossier Global</div><div class="dossier-sub" id="dossier-sub">—</div></div>
     </div>
 
     <div class="section">
         <div class="section-title">Fiche d'Identité</div>
         <div class="id-grid">
-
             <div class="id-tile full">
                 <label>Espèce</label>
                 <div class="species-trigger" onclick="openSpeciesModal()">
@@ -658,101 +395,18 @@ input[type="file"] { display: none; }
                 </div>
                 <input type="hidden" id="edit-species">
             </div>
-
-            <div class="id-tile">
-                <label>Surnom</label>
-                <input type="text" id="edit-name" placeholder="Ex: Seishin" oninput="updateDossier()">
-            </div>
-
-            <div class="id-tile">
-                <label>Catégorie</label>
-                <select id="edit-category">
-                    <option value="auto">🔄 Automatique</option>
-                    <option value="conifer">🌲 Conifère</option>
-                    <option value="deciduous">🍁 Feuillu</option>
-                    <option value="other">🌱 Autre Bonsaï</option>
-                </select>
-                <i class="fa-solid fa-tags id-tile-icon"></i>
-            </div>
-
-            <div class="id-tile">
-                <label>Acquisition</label>
-                <input type="date" id="edit-date">
-            </div>
-
-            <div class="id-tile">
-                <label>Origine</label>
-                <select id="edit-origin">
-                    <option value="Pépinière">Pépinière 🪴</option>
-                    <option value="Prélèvement">Prélèvement 🌲</option>
-                    <option value="Import">Import ✈️</option>
-                    <option value="Don">Don 🎁</option>
-                </select>
-                <i class="fa-solid fa-location-dot id-tile-icon"></i>
-            </div>
-
-            <div class="id-tile">
-                <label>Style</label>
-                <select id="edit-style">
-                    <option value="">—</option>
-                    <option>Chokkan (droit)</option>
-                    <option>Moyogi (courbé)</option>
-                    <option>Shakan (penché)</option>
-                    <option>Kengai (cascade)</option>
-                    <option>Han-kengai (semi-cascade)</option>
-                    <option>Fukinagashi (vent)</option>
-                    <option>Bunjin (littéraire)</option>
-                    <option>Hokidachi (balai)</option>
-                    <option>Yose-ue (forêt)</option>
-                    <option>Ishitsuki (roche)</option>
-                </select>
-            </div>
-
-            <div class="id-tile">
-                <label>Substrat</label>
-                <input type="text" id="edit-substrat" placeholder="Ex: Akadama">
-            </div>
-
-        </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title">Suivi des Travaux</div>
-        <div class="travaux-grid">
-            <div class="travaux-tile">
-                <div class="travaux-icon"><i class="fa-solid fa-bucket"></i></div>
-                <div style="flex:1">
-                    <label>Dernier Rempotage</label>
-                    <input type="date" id="edit-last-pot">
-                </div>
-            </div>
-            <div class="travaux-tile">
-                <div class="travaux-icon"><i class="fa-solid fa-scissors"></i></div>
-                <div style="flex:1">
-                    <label>Dernière Taille</label>
-                    <input type="date" id="edit-last-cut">
-                </div>
-            </div>
-            <div class="travaux-tile">
-                <div class="travaux-icon"><i class="fa-solid fa-seedling"></i></div>
-                <div style="flex:1">
-                    <label>Dernier Engrais</label>
-                    <input type="date" id="edit-last-fertil">
-                </div>
-            </div>
-            <div class="travaux-tile">
-                <div class="travaux-icon"><i class="fa-solid fa-circle-notch"></i></div>
-                <div style="flex:1">
-                    <label>Dernière Ligature</label>
-                    <input type="date" id="edit-last-wire">
-                </div>
-            </div>
+            <div class="id-tile"><label>Surnom</label><input type="text" id="edit-name" placeholder="Ex: Seishin" oninput="updateDossier()"></div>
+            <div class="id-tile"><label>Catégorie</label><select id="edit-category"><option value="auto">🔄 Auto</option><option value="conifer">🌲 Conifère</option><option value="deciduous">🍁 Feuillu</option><option value="other">🌱 Autre</option></select><i class="fa-solid fa-tags id-tile-icon"></i></div>
+            <div class="id-tile"><label>Acquisition</label><input type="date" id="edit-date"></div>
+            <div class="id-tile"><label>Origine</label><select id="edit-origin"><option value="Pépinière">Pépinière 🪴</option><option value="Prélèvement">Prélèvement 🌲</option><option value="Import">Import ✈️</option><option value="Don">Don 🎁</option></select><i class="fa-solid fa-location-dot id-tile-icon"></i></div>
+            <div class="id-tile"><label>Style</label><select id="edit-style"><option value="">—</option><option>Chokkan</option><option>Moyogi</option><option>Shakan</option><option>Kengai</option><option>Han-kengai</option><option>Fukinagashi</option><option>Bunjin</option><option>Hokidachi</option><option>Yose-ue</option><option>Ishitsuki</option></select></div>
+            <div class="id-tile"><label>Substrat</label><input type="text" id="edit-substrat" placeholder="Ex: Akadama"></div>
         </div>
     </div>
 
     <div class="ai-block">
         <div class="ai-top">
-            <span><i class="fa-solid fa-robot"></i> Conseils IA Expertise</span>
+            <span><i class="fa-solid fa-leaf"></i> Conseils IA Expertise</span>
             <button class="btn-ai" onclick="askAI()"><i class="fa-solid fa-sparkles"></i> Demander</button>
         </div>
         <div id="ai-output"></div>
@@ -766,37 +420,36 @@ input[type="file"] { display: none; }
     <div class="gallery-block">
         <div class="gallery-header">
             <div class="gallery-title"><i class="fa-solid fa-images"></i> Galerie Photos</div>
-            <button class="btn-add-gallery-photo" onclick="document.getElementById('gallery-file-input').click()">
-                <i class="fa-solid fa-plus"></i> Ajouter
-            </button>
+            <button class="btn-add-gallery-photo" onclick="document.getElementById('gallery-file-input').click()"><i class="fa-solid fa-plus"></i> Ajouter</button>
         </div>
         <input type="file" id="gallery-file-input" accept="image/*" onchange="startGalleryCrop(this)">
-        <div class="gallery-grid" id="gallery-grid">
-            <div class="gallery-empty">Aucune photo — ajoutez des clichés pour suivre l'évolution de votre arbre.</div>
-        </div>
+        <div class="gallery-grid" id="gallery-grid"><div class="gallery-empty">Aucune photo — ajoutez des clichés pour suivre l'évolution.</div></div>
     </div>
 
-    <div class="action-row">
+    <div class="save-row">
         <button class="btn-save" onclick="saveBonsai()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
         <button class="btn-delete" id="btn-delete" onclick="deleteBonsai()"><i class="fa-solid fa-trash"></i></button>
     </div>
-
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- NAV — fidèle à la référence (5 items) -->
 <div class="bottom-nav">
     <button class="nav-btn active" id="nav-collection" onclick="nav('list')">
-        <i class="fa-solid fa-tree"></i><span>Ma collection</span>
+        <i class="fa-solid fa-house"></i><span>Accueil</span>
     </button>
-    <button class="nav-btn" onclick="exportData()">
-        <i class="fa-solid fa-download"></i><span>Exporter</span>
+    <button class="nav-btn" onclick="nav('list')" style="position:relative">
+        <i class="fa-solid fa-tree"></i>
+        <span id="nav-badge" class="nav-badge" style="display:none">0</span>
+        <span>Ma Collection</span>
     </button>
-    <label class="nav-btn">
-        <i class="fa-solid fa-upload"></i><span>Importer</span>
-        <input type="file" accept=".json" onchange="importData(this)">
-    </label>
-    <button class="nav-btn" onclick="showToast('Journal — bientôt disponible')">
-        <i class="fa-solid fa-book"></i><span>Journal</span>
+    <button class="nav-btn" onclick="showToast('Données — bientôt')">
+        <i class="fa-regular fa-book-open"></i><span>Données</span>
+    </button>
+    <button class="nav-btn" onclick="showToast('Calendrier — bientôt')">
+        <i class="fa-regular fa-calendar"></i><span>Calendrier</span>
+    </button>
+    <button class="nav-btn" onclick="showToast('Profil — bientôt')">
+        <i class="fa-regular fa-user"></i><span>Profil</span>
     </button>
 </div>
 
@@ -804,766 +457,153 @@ input[type="file"] { display: none; }
 
 <script>
 const SPECIES_DB = {
-    "🍁 Acer palmatum — Hybrides": [
-        "Acer palmatum 'Atropurpureum' (feuillage rouge-pourpre)",
-        "Acer palmatum 'Bloodgood' (rouge intense, très populaire)",
-        "Acer palmatum 'Deshojo' (rouge vif au printemps)",
-        "Acer palmatum 'Beni Maiko' (rose-rouge éclatant)",
-        "Acer palmatum 'Seigen' (rouge-orangé printanier)",
-        "Acer palmatum 'Shindeshojo' (rouge carmin brillant)",
-        "Acer palmatum 'Chishio' (rouge lumineux au débourrement)",
-        "Acer palmatum 'Beni Schichihenge' (panaché rose et vert)",
-        "Acer palmatum 'Butterfly' (panaché blanc-rose-vert)",
-        "Acer palmatum 'Kagiri Nishiki' (panaché crème et rose)",
-        "Acer palmatum 'Ukigumo' (panaché blanc-vert nuageux)",
-        "Acer palmatum 'Dissectum' (feuilles très découpées, vert)",
-        "Acer palmatum 'Dissectum Atropurpureum' (découpé rouge-brun)",
-        "Acer palmatum 'Crimson Queen' (découpé rouge persistant)",
-        "Acer palmatum 'Garnet' (découpé rouge-grenat)",
-        "Acer palmatum 'Inaba Shidare' (découpé pourpre retombant)",
-        "Acer palmatum 'Tamukeyama' (découpé rouge-pourpre)",
-        "Acer palmatum 'Viridis' (découpé vert vif, automne doré)",
-        "Acer palmatum 'Seiryu' (découpé dressé, vert-rouge automne)",
-        "Acer palmatum 'Osakazuki' (vert été, rouge flamboyant automne)",
-        "Acer palmatum 'Katsura' (jaune-abricot au printemps)",
-        "Acer palmatum 'Orange Dream' (jaune-orangé au débourrement)",
-        "Acer palmatum 'Aureum' (doré lumineux)",
-        "Acer palmatum 'Sango Kaku' (écorce rouge-corail)",
-        "Acer palmatum 'Beni Kawa' (écorce rose-rouge)",
-        "Acer palmatum 'Arakawa' (écorce rugueuse et liégeuse)",
-        "Acer palmatum 'Hagoromo' (feuilles fines en plumes)",
-        "Acer palmatum 'Linearilobum' (feuilles à lobes étroits)",
-        "Acer palmatum 'Shishigashira' (nain, feuilles crispées)",
-        "Acer palmatum 'Coonara Pygmy' (nain compact, rose-vert)",
-        "Acer palmatum 'Little Princess' (nain, rouge automne)",
-        "Acer palmatum 'Mikawa Yatsubusa' (très nain, compact)",
-        "Acer palmatum 'Kotohime' (nain, petites feuilles délicates)",
-        "Acer palmatum 'Beni Hoshi' (rouge vif, forme étoilée)",
-        "Acer palmatum 'Tsuma Gaki' (bords rouge-orangé)",
-        "Acer palmatum 'Ryusen' (pleureur, retombant)",
-        "Acer palmatum 'Waterfall' (découpé retombant, vert)",
-    ],
-    "🍁 Acer — Autres érables": [
-        "Acer buergerianum (Érable trident)",
-        "Acer campestre (Érable champêtre)",
-        "Acer ginnala (Érable de l'Amour)",
-        "Acer japonicum (Érable du Japon grandes feuilles)",
-        "Acer japonicum 'Aconitifolium'",
-        "Acer japonicum 'Vitifolium'",
-        "Acer mono (Érable de Mongolie)",
-        "Acer monspessulanum (Érable de Montpellier)",
-        "Acer negundo (Érable à feuilles de frêne)",
-        "Acer pseudoplatanus (Érable sycomore)",
-        "Acer rufinerve (Érable à nervures rousses)",
-        "Acer shirasawanum 'Aureum' (Érable doré du Japon)",
-        "Acer truncatum (Érable de Chine)",
-    ],
-    "🌸 Azalea & Rhododendron": [
-        "Azalea satsuki (floraison tardive, bonsaï classique)",
-        "Azalea kurume (floraison précoce, compact)",
-        "Azalea indica (Azalée des Indes)",
-        "Azalea kirishima",
-        "Rhododendron indicum",
-        "Rhododendron obtusum",
-        "Rhododendron simsii",
-    ],
-    "🌲 Conifères — Pins": [
-        "Pinus thunbergii (Pin noir du Japon)",
-        "Pinus parviflora (Pin blanc du Japon)",
-        "Pinus sylvestris (Pin sylvestre)",
-        "Pinus mugo (Pin des montagnes)",
-        "Pinus densiflora (Pin rouge du Japon)",
-        "Pinus pentaphylla (Pin à cinq aiguilles)",
-        "Pinus halepensis (Pin d'Alep)",
-        "Pinus nigra (Pin noir d'Autriche)",
-        "Pinus strobus (Pin Weymouth)",
-        "Pinus pinea (Pin parasol)",
-        "Pinus palustris (Pin des marais)",
-        "Pinus radiata (Pin de Monterey)",
-    ],
-    "🌲 Conifères — Genévriers": [
-        "Juniperus chinensis 'Itoigawa'",
-        "Juniperus chinensis 'Shimpaku'",
-        "Juniperus rigida (Genévrier rigide)",
-        "Juniperus procumbens (Genévrier rampant)",
-        "Juniperus sabina (Genévrier sabine)",
-        "Juniperus squamata 'Blue Star'",
-        "Juniperus communis (Genévrier commun)",
-        "Juniperus horizontalis",
-        "Juniperus virginiana (Cèdre rouge de Virginie)",
-        "Juniperus sargentii",
-    ],
-    "🌲 Conifères — Autres": [
-        "Cedrus libani (Cèdre du Liban)",
-        "Cedrus atlantica (Cèdre de l'Atlas)",
-        "Cedrus deodara (Cèdre de l'Himalaya)",
-        "Chamaecyparis obtusa (Hinoki)",
-        "Chamaecyparis pisifera",
-        "Cryptomeria japonica",
-        "Cupressus sempervirens (Cyprès méditerranéen)",
-        "Larix decidua (Mélèze d'Europe)",
-        "Larix kaempferi (Mélèze du Japon)",
-        "Picea abies (Épicéa commun)",
-        "Picea glauca 'Conica'",
-        "Picea jezoensis",
-        "Podocarpus macrophyllus",
-        "Pseudolarix amabilis (Mélèze doré de Chine)",
-        "Taxodium distichum (Cyprès chauve)",
-        "Taxus baccata (If commun)",
-        "Taxus cuspidata (If du Japon)",
-        "Thuja occidentalis",
-        "Tsuga canadensis (Pruche du Canada)",
-        "Tsuga heterophylla",
-    ],
-    "🌳 Feuillus — Charmes & Bouleaux": [
-        "Betula pendula (Bouleau pleureur)",
-        "Betula pubescens (Bouleau pubescent)",
-        "Carpinus betulus (Charme commun)",
-        "Carpinus japonica (Charme du Japon)",
-        "Carpinus laxiflora",
-        "Carpinus turczaninowii (Charme de Chine)",
-        "Ostrya carpinifolia (Charme-houblon)",
-    ],
-    "🌳 Feuillus — Chênes": [
-        "Quercus robur (Chêne pédonculé)",
-        "Quercus suber (Chêne-liège)",
-        "Quercus ilex (Chêne vert)",
-        "Quercus pubescens (Chêne pubescent)",
-        "Quercus serrata (Chêne du Japon)",
-        "Quercus virginiana (Chêne de Virginie)",
-    ],
-    "🌳 Feuillus — Hêtres & Ormes": [
-        "Fagus sylvatica (Hêtre commun)",
-        "Fagus sylvatica 'Purpurea' (Hêtre pourpre)",
-        "Fagus crenata (Hêtre du Japon)",
-        "Ulmus parvifolia (Orme de Chine)",
-        "Ulmus pumila (Orme de Sibérie)",
-        "Ulmus glabra (Orme de montagne)",
-        "Ulmus minor (Orme champêtre)",
-        "Zelkova serrata (Zelkova du Japon)",
-        "Zelkova nire",
-    ],
-    "🌳 Feuillus — Divers": [
-        "Buxus sempervirens (Buis commun)",
-        "Celtis sinensis (Micocoulier de Chine)",
-        "Celtis occidentalis (Micocoulier occidental)",
-        "Cornus mas (Cornouiller mâle)",
-        "Cornus florida (Cornouiller de Floride)",
-        "Cotoneaster horizontalis",
-        "Cotoneaster microphyllus",
-        "Cotoneaster dammeri",
-        "Crataegus monogyna (Aubépine)",
-        "Crataegus laevigata",
-        "Crataegus cuneata (Aubépine de Chine)",
-        "Enkianthus campanulatus",
-        "Euonymus alatus (Fusain ailé)",
-        "Fraxinus excelsior (Frêne commun)",
-        "Ginkgo biloba",
-        "Hamamelis japonica (Hamamélis du Japon)",
-        "Ilex crenata (Houx créné)",
-        "Ilex serrata (Houx du Japon)",
-        "Ilex vomitoria",
-        "Lagerstroemia indica (Lilas des Indes)",
-        "Liquidambar styraciflua (Copalme d'Amérique)",
-        "Lonicera nitida (Chèvrefeuille luisant)",
-        "Nothofagus antarctica (Faux hêtre)",
-        "Parrotia persica (Parrotie de Perse)",
-        "Platanus orientalis (Platane d'Orient)",
-        "Populus tremula (Tremble)",
-        "Potentilla fruticosa",
-        "Salix babylonica (Saule pleureur)",
-        "Salix matsudana 'Tortuosa' (Saule tortueux)",
-        "Serissa foetida (Arbre des mille étoiles)",
-        "Styrax japonicus",
-        "Syringa vulgaris (Lilas commun)",
-        "Viburnum plicatum",
-        "Vitex agnus-castus (Gattilier)",
-    ],
-    "🍑 Prunus & Fruitiers": [
-        "Prunus mume (Abricotier du Japon)",
-        "Prunus serrulata (Cerisier du Japon)",
-        "Prunus spinosa (Prunellier)",
-        "Prunus incisa (Cerisier de Fuji)",
-        "Malus halliana (Pommier de Hall)",
-        "Malus floribunda (Pommier du Japon)",
-        "Malus sylvestris (Pommier sauvage)",
-        "Malus sieboldii",
-        "Punica granatum (Grenadier)",
-        "Pyracantha angustifolia (Buisson ardent)",
-        "Pyracantha coccinea",
-        "Sorbus aucuparia (Sorbier des oiseleurs)",
-        "Chaenomeles japonica (Cognassier du Japon)",
-        "Chaenomeles speciosa",
-    ],
-    "🪴 Tropicaux & Méditerranéens": [
-        "Ficus retusa (Ficus rétus)",
-        "Ficus benjamina (Ficus pleureur)",
-        "Ficus microcarpa",
-        "Ficus carica (Figuier commun)",
-        "Olea europaea (Olivier commun)",
-        "Bougainvillea glabra",
-        "Bougainvillea spectabilis",
-        "Carmona retusa (Thé de Fukien)",
-        "Crassula ovata (Arbre de jade)",
-        "Jacaranda mimosifolia",
-        "Portulacaria afra (Arbre éléphant)",
-        "Sageretia theezans",
-        "Schefflera arboricola",
-    ],
-    "🌿 Divers & Spéciaux": [
-        "Wisteria sinensis (Glycine de Chine)",
-        "Wisteria floribunda (Glycine du Japon)",
-        "Camellia japonica (Camélia du Japon)",
-        "Camellia sinensis (Théier)",
-        "Forsythia suspensa",
-        "Kerria japonica",
-        "Nandina domestica (Bambou sacré)",
-        "Paeonia suffruticosa (Pivoine en arbre)",
-        "Rhus typhina (Sumac vinaigrier)",
-        "Rosa chinensis (Rosier de Chine)",
-        "Spiraea japonica",
-        "Stewartia monadelpha",
-        "Stewartia pseudocamellia",
-        "Tamarix ramosissima (Tamaris)",
-    ],
+    "🍁 Acer palmatum — Hybrides": ["Acer palmatum 'Atropurpureum'","Acer palmatum 'Bloodgood'","Acer palmatum 'Deshojo'","Acer palmatum 'Beni Maiko'","Acer palmatum 'Seigen'","Acer palmatum 'Shindeshojo'","Acer palmatum 'Chishio'","Acer palmatum 'Dissectum'","Acer palmatum 'Crimson Queen'","Acer palmatum 'Garnet'","Acer palmatum 'Inaba Shidare'","Acer palmatum 'Tamukeyama'","Acer palmatum 'Viridis'","Acer palmatum 'Seiryu'","Acer palmatum 'Osakazuki'","Acer palmatum 'Katsura'","Acer palmatum 'Sango Kaku'","Acer palmatum 'Shishigashira'","Acer palmatum 'Kotohime'","Acer palmatum 'Ryusen'"],
+    "🍁 Acer — Autres érables": ["Acer buergerianum (Érable trident)","Acer campestre (Érable champêtre)","Acer ginnala","Acer japonicum","Acer monspessulanum","Acer pseudoplatanus","Acer shirasawanum 'Aureum'","Acer truncatum"],
+    "🌸 Azalea & Rhododendron": ["Azalea satsuki","Azalea kurume","Azalea indica","Rhododendron indicum","Rhododendron obtusum","Rhododendron simsii"],
+    "🌲 Conifères — Pins": ["Pinus thunbergii (Pin noir du Japon)","Pinus parviflora (Pin blanc du Japon)","Pinus sylvestris (Pin sylvestre)","Pinus mugo (Pin des montagnes)","Pinus densiflora","Pinus pentaphylla","Pinus halepensis","Pinus nigra","Pinus strobus","Pinus pinea"],
+    "🌲 Conifères — Genévriers": ["Juniperus chinensis 'Itoigawa'","Juniperus chinensis 'Shimpaku'","Juniperus rigida","Juniperus procumbens","Juniperus sabina","Juniperus communis","Juniperus horizontalis","Juniperus virginiana"],
+    "🌲 Conifères — Autres": ["Cedrus libani","Cedrus atlantica","Cedrus deodara","Chamaecyparis obtusa (Hinoki)","Cryptomeria japonica","Cupressus sempervirens","Larix decidua","Larix kaempferi","Picea abies","Taxus baccata","Taxus cuspidata","Thuja occidentalis","Tsuga canadensis"],
+    "🌳 Feuillus — Charmes & Bouleaux": ["Betula pendula","Carpinus betulus","Carpinus japonica","Carpinus turczaninowii"],
+    "🌳 Feuillus — Chênes": ["Quercus robur","Quercus suber","Quercus ilex","Quercus pubescens","Quercus serrata"],
+    "🌳 Feuillus — Hêtres & Ormes": ["Fagus sylvatica","Fagus sylvatica 'Purpurea'","Fagus crenata","Ulmus parvifolia (Orme de Chine)","Ulmus pumila","Zelkova serrata","Zelkova nire"],
+    "🌳 Feuillus — Divers": ["Buxus sempervirens","Cotoneaster horizontalis","Cotoneaster microphyllus","Crataegus monogyna","Ginkgo biloba","Ilex crenata","Ilex serrata","Lagerstroemia indica","Lonicera nitida","Salix babylonica","Serissa foetida"],
+    "🍑 Prunus & Fruitiers": ["Prunus mume","Prunus serrulata","Prunus spinosa","Malus floribunda","Malus sylvestris","Punica granatum (Grenadier)","Pyracantha angustifolia","Pyracantha coccinea","Sorbus aucuparia","Morus alba","Olea europaea (Olivier)","Ficus carica (Figuier)"],
+    "🌴 Tropicaux & Intérieur": ["Ficus microcarpa","Ficus benjamina","Ficus ginseng","Bougainvillea glabra","Carmona retusa","Crassula ovata","Portulacaria afra","Sageretia theezans","Schefflera arboricola"],
+    "🌿 Divers & Spéciaux": ["Wisteria sinensis","Wisteria floribunda","Camellia japonica","Camellia sinensis","Forsythia suspensa","Nandina domestica","Rosa chinensis","Spiraea japonica","Tamarix ramosissima"],
 };
-
-const DB_NAME = 'BonsaiMasterPro', STORE_NAME = 'trees';
-let bonsais = [], currentUid = null, currentPhotoBase64 = null;
-
-const dbApi = {
-    open: () => new Promise(res => {
-        const r = indexedDB.open(DB_NAME, 1);
-        r.onupgradeneeded = e => e.target.result.createObjectStore(STORE_NAME, { keyPath: 'uid' });
-        r.onsuccess = e => res(e.target.result);
-    }),
-    getAll: async () => {
-        const db = await dbApi.open();
-        return new Promise(res => {
-            db.transaction(STORE_NAME, 'readonly')
-              .objectStore(STORE_NAME).getAll()
-              .onsuccess = e => res(e.target.result);
-        });
-    },
-    put: async item => {
-        const db = await dbApi.open();
-        db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).put(item);
-    },
-    delete: async uid => {
-        const db = await dbApi.open();
-        db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).delete(uid);
-    }
+const DB_NAME='BonsaiMasterPro', STORE_NAME='trees';
+let bonsais=[], currentUid=null, currentPhotoBase64=null;
+const dbApi={
+    open:()=>new Promise(res=>{const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=e=>e.target.result.createObjectStore(STORE_NAME,{keyPath:'uid'});r.onsuccess=e=>res(e.target.result);}),
+    getAll:async()=>{const db=await dbApi.open();return new Promise(res=>{db.transaction(STORE_NAME,'readonly').objectStore(STORE_NAME).getAll().onsuccess=e=>res(e.target.result);});},
+    put:async item=>{const db=await dbApi.open();db.transaction(STORE_NAME,'readwrite').objectStore(STORE_NAME).put(item);},
+    delete:async uid=>{const db=await dbApi.open();db.transaction(STORE_NAME,'readwrite').objectStore(STORE_NAME).delete(uid);}
 };
-
-function openSpeciesModal() {
-    document.getElementById('species-search').value = '';
-    renderSpeciesList('');
-    document.getElementById('species-modal').classList.add('open');
-    setTimeout(() => document.getElementById('species-search').focus(), 150);
+function openSpeciesModal(){document.getElementById('species-search').value='';renderSpeciesList('');document.getElementById('species-modal').classList.add('open');setTimeout(()=>document.getElementById('species-search').focus(),150);}
+function closeSpeciesModal(){document.getElementById('species-modal').classList.remove('open');}
+function filterSpecies(){renderSpeciesList(document.getElementById('species-search').value);}
+function renderSpeciesList(query){
+    const c=document.getElementById('species-list-container');c.innerHTML='';
+    const q=query.toLowerCase().trim();let t=0;
+    for(const[g,items]of Object.entries(SPECIES_DB)){const f=q?items.filter(s=>s.toLowerCase().includes(q)):items;if(!f.length)continue;const h=document.createElement('div');h.className='species-group-header';h.textContent=g;c.appendChild(h);f.forEach(sp=>{t++;const d=document.createElement('div');d.className='species-item';d.textContent=sp;d.addEventListener('pointerdown',()=>selectSpecies(sp));c.appendChild(d);});}
+    if(!t){const e=document.createElement('div');e.className='species-empty';e.textContent='Aucun résultat';c.appendChild(e);}
 }
-function closeSpeciesModal() {
-    document.getElementById('species-modal').classList.remove('open');
+function selectSpecies(sp){document.getElementById('edit-species').value=sp;const txt=document.getElementById('species-display-text');txt.textContent=sp;txt.classList.add('selected');closeSpeciesModal();updateDossier();}
+function getBadge(b){
+    const a=[b.lastPot,b.lastCut,b.lastFertil,b.lastWire].filter(Boolean);
+    if(!a.length)return{label:'Non suivi',cls:'badge-yellow',pct:0,status:'Non suivi'};
+    const days=Math.floor((Date.now()-Math.max(...a.map(d=>new Date(d))))/86400000);
+    if(days<=30)return{label:'En Santé',cls:'badge-green',pct:Math.max(70,100-days),status:'En Santé'};
+    if(days<=90)return{label:'Attention',cls:'badge-yellow',pct:Math.max(35,70-Math.floor(days/3)),status:'Attention'};
+    return{label:'Urgent',cls:'badge-red',pct:15,status:'Soins Urgents'};
 }
-function filterSpecies() {
-    renderSpeciesList(document.getElementById('species-search').value);
-}
-function renderSpeciesList(query) {
-    const container = document.getElementById('species-list-container');
-    container.innerHTML = '';
-    const q = query.toLowerCase().trim();
-    let total = 0;
-    for (const [group, items] of Object.entries(SPECIES_DB)) {
-        const filtered = q ? items.filter(s => s.toLowerCase().includes(q)) : items;
-        if (!filtered.length) continue;
-        const header = document.createElement('div');
-        header.className = 'species-group-header';
-        header.textContent = group;
-        container.appendChild(header);
-        filtered.forEach(sp => {
-            total++;
-            const div = document.createElement('div');
-            div.className = 'species-item';
-            div.textContent = sp;
-            div.addEventListener('pointerdown', () => selectSpecies(sp));
-            container.appendChild(div);
-        });
-    }
-    if (total === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'species-empty';
-        empty.textContent = 'Aucun résultat pour "' + query + '"';
-        container.appendChild(empty);
-    }
-}
-function selectSpecies(sp) {
-    document.getElementById('edit-species').value = sp;
-    const txt = document.getElementById('species-display-text');
-    txt.textContent = sp;
-    txt.classList.add('selected');
-    closeSpeciesModal();
-    updateDossier();
-}
-
-function getBadge(b) {
-    const actions = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire].filter(Boolean);
-    if (!actions.length) return { label: 'Non suivi', cls: 'badge-yellow' };
-    const days = Math.floor((Date.now() - Math.max(...actions.map(d => new Date(d)))) / 86400000);
-    if (days <= 30)  return { label: 'Vert = Parfait',    cls: 'badge-green'  };
-    if (days <= 90)  return { label: 'Jaune = Attention', cls: 'badge-yellow' };
-    return                   { label: 'Rouge = Urgent',   cls: 'badge-red'    };
-}
-
-async function refresh() {
-    bonsais = await dbApi.getAll();
-    renderList(bonsais);
-}
-// Groupes conifères dans SPECIES_DB
-const CONIFER_GROUPS = [
-    '🌲 Conifères — Pins',
-    '🌲 Conifères — Genévriers',
-    '🌲 Conifères — Autres',
-];
-// Mots-clés de secours si espèce saisie manuellement
-const CONIFER_KEYWORDS = [
-    'pinus','pin ','juniperus','genévrier','cedrus','cèdre','cedar',
-    'chamaecyparis','cryptomeria','cupressus','cyprès','larix','mélèze',
-    'picea','épicéa','podocarpus','pseudolarix','taxodium','taxus','if ',
-    'thuja','tsuga','abies','sapin','araucaria','sequoia',
-];
-function isConifer(species) {
-    if (!species) return false;
-    const sp = species.toLowerCase();
-    // Vérifier si l'espèce appartient à un groupe conifère dans SPECIES_DB
-    for (const group of CONIFER_GROUPS) {
-        if (SPECIES_DB[group] && SPECIES_DB[group].some(s => s === species)) return true;
-    }
-    // Sinon, heuristique par mots-clés
-    return CONIFER_KEYWORDS.some(k => sp.includes(k));
-}
-
-function makeCard(b) {
-    const badge = getBadge(b);
-    const card = document.createElement('div');
-    card.className = 'bonsai-card';
-    card.onclick = () => openEditor(b.uid);
-    card.innerHTML = `
-        <div class="card-photo" style="background-image:url(${b.photo || ''})">
-            ${b.photo ? '' : '<i class="fa-solid fa-tree"></i>'}
-        </div>
-        <div class="card-info">
-            <div class="card-name">${b.name || 'SANS NOM'}</div>
-            <div class="card-species">${b.species || '—'}</div>
-            <span class="card-badge ${badge.cls}">${badge.label}</span>
-        </div>`;
+const CONIFER_GROUPS=['🌲 Conifères — Pins','🌲 Conifères — Genévriers','🌲 Conifères — Autres'];
+const CONIFER_KW=['pinus','pin ','juniperus','genévrier','cedrus','cèdre','cedar','chamaecyparis','cryptomeria','cupressus','cyprès','larix','mélèze','picea','épicéa','taxodium','taxus','if ','thuja','tsuga','abies','sapin'];
+function isConifer(sp){if(!sp)return false;const s=sp.toLowerCase();for(const g of CONIFER_GROUPS)if(SPECIES_DB[g]?.some(x=>x===sp))return true;return CONIFER_KW.some(k=>s.includes(k));}
+function makeCard(b){
+    const badge=getBadge(b);const card=document.createElement('div');card.className='bonsai-card';card.onclick=()=>openEditor(b.uid);
+    card.innerHTML=`<div class="card-photo" style="background-image:url(${b.photo||''})">${b.photo?'':'<i class="fa-solid fa-tree"></i>'}</div><div class="card-info"><div class="card-name">${b.name||'SANS NOM'}</div><div class="card-species">${b.species||'—'}</div><span class="card-badge ${badge.cls}">${badge.label}</span></div>`;
     return card;
 }
-
-function makeAddBtn(category) {
-    const btn = document.createElement('div');
-    btn.className = 'card-add';
-    btn.onclick = () => openEditor(null, category);
-    btn.innerHTML = `<i class="fa-solid fa-plus"></i><span>Ajouter<br>un arbre</span>`;
-    return btn;
-}
-
-function renderList(list) {
-    const container = document.getElementById('list-container');
-    container.innerHTML = '';
-    document.getElementById('bonsai-count').textContent =
-        bonsais.length + ' arbre' + (bonsais.length > 1 ? 's' : '');
-
-    const DECIDUOUS_GROUPS = [
-        '🍁 Acer palmatum — Hybrides', '🍁 Acer — Autres érables',
-        '🌸 Azalea & Rhododendron',
-        '🌳 Feuillus — Charmes & Bouleaux', '🌳 Feuillus — Chênes',
-        '🌳 Feuillus — Hêtres & Ormes', '🌳 Feuillus — Divers',
-        '🍒 Fruitiers & Fleurs', '🌿 Divers & Spéciaux',
-    ];
-    const DECIDUOUS_KEYWORDS = [
-        'acer','érable','azalea','rhododendron','betula','bouleau',
-        'carpinus','charme','quercus','chêne','fagus','hêtre','ulmus','orme',
-        'zelkova','buxus','buis','celtis','cornus','cotoneaster','crataegus',
-        'ficus','lagerstroemia','malus','morus','olea','olivier',
-        'prunus','pyracantha','punica','salix','sorbus','wisteria','glycine',
-        'camellia','forsythia','rosa','tamarix','nandina','spiraea','stewartia',
-        'bougainvillea','carmona','crassula','jacaranda','portulacaria','sageretia',
-    ];
-    function isDeciduous(species) {
-        if (!species) return false;
-        const sp = species.toLowerCase();
-        for (const group of DECIDUOUS_GROUPS) {
-            if (SPECIES_DB[group] && SPECIES_DB[group].some(s => s === species)) return true;
-        }
-        return DECIDUOUS_KEYWORDS.some(k => sp.includes(k));
+function makeAddBtn(cat){const btn=document.createElement('div');btn.className='card-add';btn.onclick=()=>openEditor(null,cat);btn.innerHTML=`<i class="fa-solid fa-plus"></i><span>Ajouter<br>un arbre</span>`;return btn;}
+async function refresh(){bonsais=await dbApi.getAll();renderList(bonsais);const badge=document.getElementById('nav-badge');if(bonsais.length){badge.style.display='block';badge.textContent=bonsais.length;}else{badge.style.display='none';}}
+function renderList(list){
+    const c=document.getElementById('list-container');c.innerHTML='';
+    document.getElementById('bonsai-count').textContent=bonsais.length+' arbre'+(bonsais.length>1?'s':'');
+    const DEC_KW=['acer','érable','azalea','rhododendron','betula','bouleau','carpinus','charme','quercus','chêne','fagus','hêtre','ulmus','orme','zelkova','buxus','buis','cotoneaster','crataegus','ficus','malus','morus','olea','olivier','prunus','pyracantha','punica','salix','sorbus','wisteria','camellia','forsythia','rosa','nandina','spiraea','bougainvillea','carmona','crassula','portulacaria','sageretia'];
+    function isDec(sp){if(!sp)return false;const s=sp.toLowerCase();for(const g of Object.keys(SPECIES_DB).filter(g=>!g.includes('Conifères')))if(SPECIES_DB[g]?.some(x=>x===sp))return true;return DEC_KW.some(k=>s.includes(k));}
+    function getCat(b){if(b.category&&b.category!=='auto')return b.category;if(isConifer(b.species))return 'conifer';if(isDec(b.species))return 'deciduous';return 'other';}
+    const conifers=list.filter(b=>getCat(b)==='conifer'),dec=list.filter(b=>getCat(b)==='deciduous'),others=list.filter(b=>getCat(b)==='other');
+    function buildSection(items,label,icon,css,cat){
+        const sec=document.createElement('div');sec.className='category-section';
+        const hd=document.createElement('div');hd.className='category-header';hd.innerHTML=`<div class="category-label ${css}"><i class="${icon}"></i>${label}</div><span class="category-count">${items.length}</span><div class="category-header-line"></div>`;sec.appendChild(hd);
+        const grid=document.createElement('div');grid.className='category-grid';items.forEach(b=>grid.appendChild(makeCard(b)));grid.appendChild(makeAddBtn(cat));sec.appendChild(grid);c.appendChild(sec);
     }
-
-    function getCategory(b) {
-        if (b.category && b.category !== 'auto') return b.category;
-        if (isConifer(b.species))   return 'conifer';
-        if (isDeciduous(b.species)) return 'deciduous';
-        return 'other';
-    }
-    const conifers  = list.filter(b => getCategory(b) === 'conifer');
-    const deciduous = list.filter(b => getCategory(b) === 'deciduous');
-    const others    = list.filter(b => getCategory(b) === 'other');
-
-    function buildSection(items, label, iconClass, cssClass, category) {
-        const section = document.createElement('div');
-        section.className = 'category-section';
-        const header = document.createElement('div');
-        header.className = 'category-header';
-        header.innerHTML = '<div class="category-label ' + cssClass + '"><i class="' + iconClass + '"></i>' + label + '</div><span class="category-count">' + items.length + '</span><div class="category-header-line"></div>';
-        section.appendChild(header);
-        const grid = document.createElement('div');
-        grid.className = 'category-grid';
-        items.forEach(b => grid.appendChild(makeCard(b)));
-        grid.appendChild(makeAddBtn(category));
-        section.appendChild(grid);
-        container.appendChild(section);
-    }
-
-    buildSection(conifers,  'Conifères',      'fa-solid fa-tree',     'conifers',  'conifer');
-    buildSection(deciduous, 'Feuillus',       'fa-solid fa-leaf',     'deciduous', 'deciduous');
-    buildSection(others,    'Autres Bonsaïs', 'fa-solid fa-seedling', 'others',    'other');
+    buildSection(conifers,'Conifères','fa-solid fa-tree','conifers','conifer');
+    buildSection(dec,'Feuillus','fa-solid fa-leaf','deciduous','deciduous');
+    buildSection(others,'Autres Bonsaïs','fa-solid fa-seedling','others','other');
 }
-function filterBonsais() {
-    const q = document.getElementById('search-input').value.toLowerCase();
-    renderList(bonsais.filter(b =>
-        (b.name    || '').toLowerCase().includes(q) ||
-        (b.species || '').toLowerCase().includes(q) ||
-        (b.origin  || '').toLowerCase().includes(q)
-    ));
+function filterBonsais(){const q=document.getElementById('search-input').value.toLowerCase();renderList(bonsais.filter(b=>(b.name||'').toLowerCase().includes(q)||(b.species||'').toLowerCase().includes(q)||(b.origin||'').toLowerCase().includes(q)));}
+function updateStatusCard(b){
+    const badge=b?getBadge(b):{status:'Non suivi',pct:0,cls:'badge-yellow'};
+    document.getElementById('status-value').textContent=badge.status||badge.label;
+    const ring=document.getElementById('status-ring');
+    const pct=badge.pct||0;
+    const color=badge.cls==='badge-green'?'#3D7A4A':badge.cls==='badge-yellow'?'#C9A84C':'#C05040';
+    ring.style.background=`conic-gradient(${color} 0% ${pct}%, rgba(0,0,0,0.12) ${pct}% 100%)`;
+    ring.textContent=pct?pct+'%':'—';
 }
-
-function resetEditor() {
-    ['edit-name','edit-date','edit-substrat','edit-notes']
-        .forEach(id => document.getElementById(id).value = '');
-    ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire']
-        .forEach(id => document.getElementById(id).value = '');
-    document.getElementById('edit-species').value = '';
-    document.getElementById('edit-origin').value    = 'Pépinière';
-    document.getElementById('edit-style').value    = '';
-    document.getElementById('edit-category').value = 'auto';
-    const txt = document.getElementById('species-display-text');
-    txt.textContent = 'Tapez ou sélectionnez…';
-    txt.classList.remove('selected');
-    const hero = document.getElementById('hero-photo');
-    hero.style.backgroundImage = '';
-    document.getElementById('hero-icon').style.display = 'block';
-    document.getElementById('ai-output').style.display = 'none';
-    document.getElementById('ai-output').textContent   = '';
-    currentGallery = [];
-    renderGallery();
+function resetEditor(){
+    ['edit-name','edit-date','edit-substrat','edit-notes'].forEach(id=>document.getElementById(id).value='');
+    ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('edit-species').value='';document.getElementById('edit-origin').value='Pépinière';document.getElementById('edit-style').value='';document.getElementById('edit-category').value='auto';
+    const txt=document.getElementById('species-display-text');txt.textContent='Tapez ou sélectionnez…';txt.classList.remove('selected');
+    document.getElementById('hero-photo').style.backgroundImage='';document.getElementById('hero-icon').style.display='block';
+    document.getElementById('ai-output').style.display='none';document.getElementById('ai-output').textContent='';
+    currentGallery=[];renderGallery();
+    document.getElementById('hero-display-name').textContent='Nouvel arbre';document.getElementById('hero-display-species').textContent='— espèce non définie';
+    updateStatusCard(null);
 }
-function openEditor(uid, category) {
-    currentUid = uid;
-    currentPhotoBase64 = null;
-    resetEditor();
-    document.getElementById('btn-delete').style.display = uid ? 'block' : 'none';
-    if (uid) {
-        const b = bonsais.find(x => x.uid === uid);
-        document.getElementById('edit-name').value     = b.name     || '';
-        document.getElementById('edit-date').value     = b.date     || '';
-        document.getElementById('edit-substrat').value = b.substrat || '';
-        document.getElementById('edit-notes').value    = b.notes    || '';
-        document.getElementById('edit-origin').value    = b.origin   || 'Pépinière';
-        document.getElementById('edit-style').value    = b.style    || '';
-        document.getElementById('edit-category').value = b.category || 'auto';
-        ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire']
-            .forEach((id, i) => {
-                document.getElementById(id).value = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire][i] || '';
-            });
-        if (b.species) {
-            document.getElementById('edit-species').value = b.species;
-            const txt = document.getElementById('species-display-text');
-            txt.textContent = b.species;
-            txt.classList.add('selected');
-        }
-        if (b.photo) {
-            currentPhotoBase64 = b.photo;
-            document.getElementById('hero-photo').style.backgroundImage = `url(${b.photo})`;
-            document.getElementById('hero-icon').style.display = 'none';
-        }
-        currentGallery = b.gallery || [];
-        renderGallery();
-        updateDossier();
-    } else {
-        document.getElementById('edit-header-title').textContent = 'Nouvel arbre';
-        document.getElementById('edit-header-sub').textContent   = 'Ma Collection';
-        document.getElementById('dossier-name').textContent      = 'Dossier Global';
-        document.getElementById('dossier-sub').textContent       = '—';
+function openEditor(uid,cat){
+    currentUid=uid;currentPhotoBase64=null;resetEditor();
+    document.getElementById('btn-delete').style.display=uid?'block':'none';
+    if(uid){
+        const b=bonsais.find(x=>x.uid===uid);
+        document.getElementById('edit-name').value=b.name||'';document.getElementById('edit-date').value=b.date||'';document.getElementById('edit-substrat').value=b.substrat||'';document.getElementById('edit-notes').value=b.notes||'';document.getElementById('edit-origin').value=b.origin||'Pépinière';document.getElementById('edit-style').value=b.style||'';document.getElementById('edit-category').value=b.category||'auto';
+        ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire'].forEach((id,i)=>{document.getElementById(id).value=[b.lastPot,b.lastCut,b.lastFertil,b.lastWire][i]||'';});
+        if(b.species){document.getElementById('edit-species').value=b.species;const txt=document.getElementById('species-display-text');txt.textContent=b.species;txt.classList.add('selected');}
+        if(b.photo){currentPhotoBase64=b.photo;document.getElementById('hero-photo').style.backgroundImage=`url(${b.photo})`;document.getElementById('hero-icon').style.display='none';}
+        currentGallery=b.gallery||[];renderGallery();updateDossier();updateStatusCard(b);
     }
     nav('edit');
 }
-function updateDossier() {
-    const name = document.getElementById('edit-name').value;
-    const sp   = document.getElementById('edit-species').value;
-    document.getElementById('edit-header-title').textContent = name || 'Nouvel arbre';
-    document.getElementById('edit-header-sub').textContent   = sp   || 'Ma Collection';
-    document.getElementById('dossier-name').textContent      = name ? `Dossier — ${name}` : 'Dossier Global';
-    document.getElementById('dossier-sub').textContent       = sp   || '—';
+function updateDossier(){
+    const name=document.getElementById('edit-name').value;const sp=document.getElementById('edit-species').value;
+    document.getElementById('edit-header-title').textContent=name||'Nouvel arbre';document.getElementById('edit-header-sub').textContent=sp||'Ma Collection';
+    document.getElementById('dossier-name').textContent=name?`Dossier — ${name}`:'Dossier Global';document.getElementById('dossier-sub').textContent=sp||'—';
+    document.getElementById('hero-display-name').textContent=name||'Nouvel arbre';document.getElementById('hero-display-species').textContent=sp||'— espèce non définie';
 }
-async function saveBonsai() {
-    const name = document.getElementById('edit-name').value.trim();
-    if (!name) return showToast('⚠ Surnom requis');
-    await dbApi.put({
-        uid:        currentUid || Date.now(),
-        name,
-        photo:      currentPhotoBase64,
-        species:    document.getElementById('edit-species').value,
-        date:       document.getElementById('edit-date').value,
-        origin:     document.getElementById('edit-origin').value,
-        style:      document.getElementById('edit-style').value,
-        substrat:   document.getElementById('edit-substrat').value,
-        lastPot:    document.getElementById('edit-last-pot').value,
-        lastCut:    document.getElementById('edit-last-cut').value,
-        lastFertil: document.getElementById('edit-last-fertil').value,
-        lastWire:   document.getElementById('edit-last-wire').value,
-        notes:      document.getElementById('edit-notes').value,
-        category:   document.getElementById('edit-category').value,
-        gallery:    currentGallery,
-    });
-    await refresh();
-    nav('list');
-    showToast('✓ Enregistré');
+async function saveBonsai(){
+    const name=document.getElementById('edit-name').value.trim();if(!name)return showToast('⚠ Surnom requis');
+    await dbApi.put({uid:currentUid||Date.now(),name,photo:currentPhotoBase64,species:document.getElementById('edit-species').value,date:document.getElementById('edit-date').value,origin:document.getElementById('edit-origin').value,style:document.getElementById('edit-style').value,substrat:document.getElementById('edit-substrat').value,lastPot:document.getElementById('edit-last-pot').value,lastCut:document.getElementById('edit-last-cut').value,lastFertil:document.getElementById('edit-last-fertil').value,lastWire:document.getElementById('edit-last-wire').value,notes:document.getElementById('edit-notes').value,category:document.getElementById('edit-category').value,gallery:currentGallery});
+    await refresh();nav('list');showToast('✓ Enregistré');
 }
-async function deleteBonsai() {
-    if (!confirm('Supprimer cet arbre ?')) return;
-    await dbApi.delete(currentUid);
-    await refresh();
-    nav('list');
+async function deleteBonsai(){if(!confirm('Supprimer cet arbre ?'))return;await dbApi.delete(currentUid);await refresh();nav('list');}
+function askAI(){
+    const sp=document.getElementById('edit-species').value.toLowerCase();const out=document.getElementById('ai-output');out.style.display='block';out.textContent='⏳ Analyse en cours…';
+    setTimeout(()=>{
+        if(sp.includes('pinus')||sp.includes('pin'))out.textContent="🌲 CONSEIL PIN\n\n• Plein soleil obligatoire toute l'année.\n• Arrosage : laisser sécher en surface entre deux arrosages.\n• Fertilisation organique au printemps et en automne.\n• Pincer les chandelles à mi-hauteur en mai.";
+        else if(sp.includes('acer')||sp.includes('érable'))out.textContent="🍁 CONSEIL ÉRABLE\n\n• Mi-ombre en été pour éviter les brûlures foliaires.\n• Rempotage tous les 2 ans au printemps.\n• Pincer les jeunes pousses à deux paires de feuilles.";
+        else if(sp.includes('juniperus')||sp.includes('genévrier'))out.textContent="🌿 CONSEIL GENÉVRIER\n\n• Plein soleil, extérieur toute l'année.\n• Tailler après la pousse principale en été.\n• Arrosage modéré.";
+        else if(sp.includes('ficus'))out.textContent="🪴 CONSEIL FICUS\n\n• Intérieur lumineux ou extérieur en été.\n• Arrosage régulier, brumiser les feuilles.\n• Rempotage tous les 2-3 ans.";
+        else if(sp.includes('olea')||sp.includes('olivier'))out.textContent="🫒 CONSEIL OLIVIER\n\n• Plein soleil, rentrer en hiver si gel.\n• Substrat très drainant. Tailler après floraison.";
+        else if(sp.includes('azalea')||sp.includes('rhododendron'))out.textContent="🌸 CONSEIL AZALÉE\n\n• Mi-ombre en été, protéger du gel.\n• Arrosage eau de pluie. Substrat acide.";
+        else if(document.getElementById('edit-species').value)out.textContent="🌱 CONSEIL GÉNÉRAL\n\n• Observez quotidiennement feuilles et substrat.\n• Adaptez l'arrosage à la saison.\n• Fertilisez au printemps et en automne.";
+        else out.textContent="⚠ Renseignez d'abord l'espèce.";
+    },800);
 }
-
-function askAI() {
-    const sp  = document.getElementById('edit-species').value.toLowerCase();
-    const out = document.getElementById('ai-output');
-    out.style.display = 'block';
-    out.textContent = '⏳ Analyse en cours…';
-    setTimeout(() => {
-        if (sp.includes('pinus') || sp.includes('pin')) {
-            out.textContent = "🌲 CONSEIL PIN\n\n• Plein soleil obligatoire toute l'année.\n• Arrosage : laisser sécher en surface entre deux arrosages.\n• Fertilisation organique au printemps et en automne.\n• Pincer les chandelles à mi-hauteur en mai.\n• Ne jamais effeuiller totalement.";
-        } else if (sp.includes('acer') || sp.includes('érable')) {
-            out.textContent = "🍁 CONSEIL ÉRABLE\n\n• Mi-ombre en été pour éviter les brûlures foliaires.\n• Rempotage tous les 2 ans au printemps dans substrat drainant.\n• Pincer les jeunes pousses à deux paires de feuilles.\n• Arrosage régulier, ne jamais laisser sécher.";
-        } else if (sp.includes('juniperus') || sp.includes('genévrier')) {
-            out.textContent = "🌿 CONSEIL GENÉVRIER\n\n• Plein soleil, extérieur toute l'année.\n• Tailler après la pousse principale en été.\n• Ligature possible en toute saison.\n• Arrosage modéré, supporte la sécheresse ponctuelle.";
-        } else if (sp.includes('ficus')) {
-            out.textContent = "🪴 CONSEIL FICUS\n\n• Intérieur lumineux ou extérieur en été (>15°C).\n• Arrosage régulier, brumiser les feuilles.\n• Rempotage tous les 2-3 ans.\n• Supporte bien la taille sévère au printemps.";
-        } else if (sp.includes('olea') || sp.includes('olivier')) {
-            out.textContent = "🫒 CONSEIL OLIVIER\n\n• Plein soleil, rentrer en hiver si gel prévu.\n• Substrat très drainant, supporte bien la sécheresse.\n• Tailler après la floraison.\n• Fertilisation modérée au printemps.";
-        } else if (sp.includes('azalea') || sp.includes('rhododendron')) {
-            out.textContent = "🌸 CONSEIL AZALÉE\n\n• Mi-ombre en été, protéger du gel en hiver.\n• Arrosage avec eau de pluie (sensible au calcaire).\n• Rempotage après la floraison tous les 2 ans.\n• Substrat acide (tourbe + akadama).";
-        } else if (document.getElementById('edit-species').value) {
-            out.textContent = "🌱 CONSEIL GÉNÉRAL\n\n• Observez quotidiennement feuilles et substrat.\n• Adaptez l'arrosage à la saison et au substrat.\n• Fertilisez au printemps (croissance) et en automne.\n• Pour des conseils précis, précisez le style et l'âge.";
-        } else {
-            out.textContent = "⚠ Renseignez d'abord l'espèce pour obtenir des conseils personnalisés.";
-        }
-    }, 800);
-}
-
-const cropImg  = document.getElementById('crop-image');
-const cropMask = document.getElementById('crop-mask');
-const cropView = document.getElementById('crop-viewport');
-let maskPos = { x: 20, y: 20 };
-
-function startCrop(input) {
-    if (!input.files[0]) return;
-    galleryMode = false;
-    const reader = new FileReader();
-    reader.onload = e => {
-        cropImg.onload = () => {
-            document.getElementById('crop-screen').style.display = 'flex';
-            maskPos = { x: (cropView.clientWidth - 450) / 2, y: 80 };
-            applyMask();
-        };
-        cropImg.src = e.target.result;
-    };
-    reader.readAsDataURL(input.files[0]);
-}
-function applyMask() {
-    cropMask.style.left = maskPos.x + 'px';
-    cropMask.style.top  = maskPos.y + 'px';
-}
-cropMask.addEventListener('pointerdown', e => {
-    cropMask.setPointerCapture(e.pointerId);
-    const ox = e.clientX - maskPos.x, oy = e.clientY - maskPos.y;
-    cropMask.onpointermove = ev => {
-        maskPos.x = ev.clientX - ox;
-        maskPos.y = ev.clientY - oy;
-        applyMask();
-    };
-    cropMask.onpointerup = () => cropMask.onpointermove = null;
-});
-function closeCrop() {
-    document.getElementById('crop-screen').style.display = 'none';
-    galleryMode = false;
-}
-
-function nav(screen) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('screen-' + screen).classList.add('active');
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (screen === 'list') document.getElementById('nav-collection').classList.add('active');
-    window.scrollTo(0, 0);
-}
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-async function exportData() {
-    const data = await dbApi.getAll();
-    if (!data.length) return showToast('⚠ Aucun arbre à exporter');
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href     = url;
-    a.download = 'bonsai-sauvegarde-' + new Date().toISOString().slice(0,10) + '.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('✓ Sauvegarde exportée !');
-}
-
-async function importData(input) {
-    if (!input.files[0]) return;
-    const reader = new FileReader();
-    reader.onload = async e => {
-        try {
-            const data = JSON.parse(e.target.result);
-            if (!Array.isArray(data)) throw new Error();
-            if (!confirm(`Importer ${data.length} arbre(s) ? Cela remplacera la collection actuelle.`)) return;
-            const existing = await dbApi.getAll();
-            for (const b of existing) await dbApi.delete(b.uid);
-            for (const b of data) await dbApi.put(b);
-            await refresh();
-            showToast('✓ ' + data.length + ' arbre(s) importé(s) !');
-        } catch {
-            showToast('⚠ Fichier invalide');
-        }
-    };
-    reader.readAsText(input.files[0]);
-    input.value = '';
-}
-
-// ═══════════════════════════════════════
-// GALERIE PHOTOS
-// ═══════════════════════════════════════
-let currentGallery = []; // [{base64, date}]
-let viewerIndex = 0;
-let galleryMode = false; // true = crop pour galerie, false = photo principale
-
-function startGalleryCrop(input) {
-    if (!input.files[0]) return;
-    galleryMode = true;
-    const reader = new FileReader();
-    reader.onload = e => {
-        cropImg.onload = () => {
-            document.getElementById('crop-screen').style.display = 'flex';
-            maskPos = { x: (cropView.clientWidth - 450) / 2, y: 80 };
-            applyMask();
-        };
-        cropImg.src = e.target.result;
-    };
-    reader.readAsDataURL(input.files[0]);
-    input.value = '';
-}
-
-function confirmCrop() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 600; canvas.height = 600;
-    const ctx = canvas.getContext('2d');
-    const ir  = cropImg.getBoundingClientRect();
-    const mr  = cropMask.getBoundingClientRect();
-    const rx  = cropImg.naturalWidth  / ir.width;
-    const ry  = cropImg.naturalHeight / ir.height;
-    ctx.drawImage(cropImg,
-        (mr.left - ir.left) * rx, (mr.top - ir.top) * ry,
-        450 * rx, 450 * ry, 0, 0, 600, 600);
-    const b64 = canvas.toDataURL('image/jpeg', 0.8);
-
-    if (galleryMode) {
-        const today = new Date().toISOString().slice(0, 10);
-        currentGallery.push({ base64: b64, date: today });
-        renderGallery();
-        galleryMode = false;
-    } else {
-        currentPhotoBase64 = b64;
-        document.getElementById('hero-photo').style.backgroundImage = `url(${b64})`;
-        document.getElementById('hero-icon').style.display = 'none';
-    }
-    closeCrop();
-}
-
-function renderGallery() {
-    const grid = document.getElementById('gallery-grid');
-    grid.innerHTML = '';
-    if (!currentGallery.length) {
-        grid.innerHTML = '<div class="gallery-empty">Aucune photo — ajoutez des clichés pour suivre l\'évolution de votre arbre.</div>';
-        return;
-    }
-    currentGallery.forEach((item, idx) => {
-        const thumb = document.createElement('div');
-        thumb.className = 'gallery-thumb';
-        thumb.innerHTML = `
-            <img src="${item.base64}" alt="Photo ${idx+1}" loading="lazy">
-            <div class="gallery-thumb-date">${formatDate(item.date)}</div>
-            <button class="gallery-thumb-del" onclick="event.stopPropagation(); deleteGalleryPhoto(${idx})">
-                <i class="fa-solid fa-xmark"></i>
-            </button>`;
-        thumb.addEventListener('click', () => openViewer(idx));
-        grid.appendChild(thumb);
-    });
-}
-
-function formatDate(dateStr) {
-    if (!dateStr) return '';
-    const d = new Date(dateStr + 'T00:00:00');
-    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: '2-digit' });
-}
-
-function deleteGalleryPhoto(idx) {
-    if (!confirm('Supprimer cette photo ?')) return;
-    currentGallery.splice(idx, 1);
-    renderGallery();
-}
-
-function openViewer(idx) {
-    viewerIndex = idx;
-    refreshViewer();
-    document.getElementById('gallery-viewer').classList.add('open');
-}
-function closeViewer() {
-    document.getElementById('gallery-viewer').classList.remove('open');
-}
-function refreshViewer() {
-    const item = currentGallery[viewerIndex];
-    document.getElementById('viewer-img').src = item.base64;
-    document.getElementById('viewer-tree-name').textContent =
-        document.getElementById('edit-name').value || 'Arbre sans nom';
-    document.getElementById('viewer-date').textContent = formatDate(item.date);
-    document.getElementById('viewer-counter').textContent =
-        `${viewerIndex + 1} / ${currentGallery.length}`;
-    document.getElementById('btn-viewer-prev').style.opacity = viewerIndex > 0 ? '1' : '0.3';
-    document.getElementById('btn-viewer-next').style.opacity = viewerIndex < currentGallery.length - 1 ? '1' : '0.3';
-}
-function viewerNav(dir) {
-    const next = viewerIndex + dir;
-    if (next < 0 || next >= currentGallery.length) return;
-    viewerIndex = next;
-    refreshViewer();
-}
-function viewerDelete() {
-    if (!confirm('Supprimer cette photo ?')) return;
-    currentGallery.splice(viewerIndex, 1);
-    renderGallery();
-    if (!currentGallery.length) { closeViewer(); return; }
-    viewerIndex = Math.min(viewerIndex, currentGallery.length - 1);
-    refreshViewer();
-}
-
-window.onload = () => refresh();
+const cropImg=document.getElementById('crop-image'),cropMask=document.getElementById('crop-mask'),cropView=document.getElementById('crop-viewport');
+let maskPos={x:20,y:20};
+function startCrop(input){if(!input.files[0])return;galleryMode=false;const r=new FileReader();r.onload=e=>{cropImg.onload=()=>{document.getElementById('crop-screen').style.display='flex';maskPos={x:(cropView.clientWidth-450)/2,y:80};applyMask();};cropImg.src=e.target.result;};r.readAsDataURL(input.files[0]);}
+function applyMask(){cropMask.style.left=maskPos.x+'px';cropMask.style.top=maskPos.y+'px';}
+cropMask.addEventListener('pointerdown',e=>{cropMask.setPointerCapture(e.pointerId);const ox=e.clientX-maskPos.x,oy=e.clientY-maskPos.y;cropMask.onpointermove=ev=>{maskPos.x=ev.clientX-ox;maskPos.y=ev.clientY-oy;applyMask();};cropMask.onpointerup=()=>cropMask.onpointermove=null;});
+function closeCrop(){document.getElementById('crop-screen').style.display='none';galleryMode=false;}
+function nav(screen){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+screen).classList.add('active');document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));if(screen==='list')document.getElementById('nav-collection').classList.add('active');window.scrollTo(0,0);}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+async function exportData(){const data=await dbApi.getAll();if(!data.length)return showToast('⚠ Aucun arbre à exporter');const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='bonsai-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);showToast('✓ Exporté !');}
+async function importData(input){if(!input.files[0])return;const r=new FileReader();r.onload=async e=>{try{const data=JSON.parse(e.target.result);if(!Array.isArray(data))throw 0;if(!confirm(`Importer ${data.length} arbre(s) ?`))return;const ex=await dbApi.getAll();for(const b of ex)await dbApi.delete(b.uid);for(const b of data)await dbApi.put(b);await refresh();showToast('✓ '+data.length+' importé(s) !');}catch{showToast('⚠ Fichier invalide');}};r.readAsText(input.files[0]);input.value='';}
+let currentGallery=[],viewerIndex=0,galleryMode=false;
+function startGalleryCrop(input){if(!input.files[0])return;galleryMode=true;const r=new FileReader();r.onload=e=>{cropImg.onload=()=>{document.getElementById('crop-screen').style.display='flex';maskPos={x:(cropView.clientWidth-450)/2,y:80};applyMask();};cropImg.src=e.target.result;};r.readAsDataURL(input.files[0]);input.value='';}
+function confirmCrop(){const canvas=document.createElement('canvas');canvas.width=600;canvas.height=600;const ctx=canvas.getContext('2d'),ir=cropImg.getBoundingClientRect(),mr=cropMask.getBoundingClientRect(),rx=cropImg.naturalWidth/ir.width,ry=cropImg.naturalHeight/ir.height;ctx.drawImage(cropImg,(mr.left-ir.left)*rx,(mr.top-ir.top)*ry,450*rx,450*ry,0,0,600,600);const b64=canvas.toDataURL('image/jpeg',0.8);if(galleryMode){currentGallery.push({base64:b64,date:new Date().toISOString().slice(0,10)});renderGallery();galleryMode=false;}else{currentPhotoBase64=b64;document.getElementById('hero-photo').style.backgroundImage=`url(${b64})`;document.getElementById('hero-icon').style.display='none';}closeCrop();}
+function renderGallery(){const grid=document.getElementById('gallery-grid');grid.innerHTML='';if(!currentGallery.length){grid.innerHTML='<div class="gallery-empty">Aucune photo — ajoutez des clichés pour suivre l\'évolution.</div>';return;}currentGallery.forEach((item,idx)=>{const thumb=document.createElement('div');thumb.className='gallery-thumb';thumb.innerHTML=`<img src="${item.base64}" loading="lazy"><div class="gallery-thumb-date">${formatDate(item.date)}</div><button class="gallery-thumb-del" onclick="event.stopPropagation();deleteGalleryPhoto(${idx})"><i class="fa-solid fa-xmark"></i></button>`;thumb.addEventListener('click',()=>openViewer(idx));grid.appendChild(thumb);});}
+function formatDate(d){if(!d)return'';const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'2-digit'});}
+function deleteGalleryPhoto(idx){if(!confirm('Supprimer ?'))return;currentGallery.splice(idx,1);renderGallery();}
+function openViewer(idx){viewerIndex=idx;refreshViewer();document.getElementById('gallery-viewer').classList.add('open');}
+function closeViewer(){document.getElementById('gallery-viewer').classList.remove('open');}
+function refreshViewer(){const item=currentGallery[viewerIndex];document.getElementById('viewer-img').src=item.base64;document.getElementById('viewer-tree-name').textContent=document.getElementById('edit-name').value||'Arbre';document.getElementById('viewer-date').textContent=formatDate(item.date);document.getElementById('viewer-counter').textContent=`${viewerIndex+1} / ${currentGallery.length}`;document.getElementById('btn-viewer-prev').style.opacity=viewerIndex>0?'1':'0.3';document.getElementById('btn-viewer-next').style.opacity=viewerIndex<currentGallery.length-1?'1':'0.3';}
+function viewerNav(dir){const n=viewerIndex+dir;if(n<0||n>=currentGallery.length)return;viewerIndex=n;refreshViewer();}
+function viewerDelete(){if(!confirm('Supprimer ?'))return;currentGallery.splice(viewerIndex,1);renderGallery();if(!currentGallery.length){closeViewer();return;}viewerIndex=Math.min(viewerIndex,currentGallery.length-1);refreshViewer();}
+window.onload=()=>refresh();
 </script>
 </body>
 </html>
