@@ -556,6 +556,17 @@ input[type="file"] { display: none; }
             </div>
 
             <div class="id-tile">
+                <label>Catégorie</label>
+                <select id="edit-category">
+                    <option value="auto">🔄 Automatique</option>
+                    <option value="conifer">🌲 Conifère</option>
+                    <option value="deciduous">🍁 Feuillu</option>
+                    <option value="other">🌱 Autre Bonsaï</option>
+                </select>
+                <i class="fa-solid fa-tags id-tile-icon"></i>
+            </div>
+
+            <div class="id-tile">
                 <label>Acquisition</label>
                 <input type="date" id="edit-date">
             </div>
@@ -1064,9 +1075,15 @@ function renderList(list) {
         return DECIDUOUS_KEYWORDS.some(k => sp.includes(k));
     }
 
-    const conifers  = list.filter(b =>  isConifer(b.species));
-    const deciduous = list.filter(b => !isConifer(b.species) && isDeciduous(b.species));
-    const others    = list.filter(b => !isConifer(b.species) && !isDeciduous(b.species));
+    function getCategory(b) {
+        if (b.category && b.category !== 'auto') return b.category;
+        if (isConifer(b.species))   return 'conifer';
+        if (isDeciduous(b.species)) return 'deciduous';
+        return 'other';
+    }
+    const conifers  = list.filter(b => getCategory(b) === 'conifer');
+    const deciduous = list.filter(b => getCategory(b) === 'deciduous');
+    const others    = list.filter(b => getCategory(b) === 'other');
 
     function buildSection(items, label, iconClass, cssClass, category) {
         const section = document.createElement('div');
@@ -1102,8 +1119,9 @@ function resetEditor() {
     ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire']
         .forEach(id => document.getElementById(id).value = '');
     document.getElementById('edit-species').value = '';
-    document.getElementById('edit-origin').value  = 'Pépinière';
-    document.getElementById('edit-style').value   = '';
+    document.getElementById('edit-origin').value    = 'Pépinière';
+    document.getElementById('edit-style').value    = '';
+    document.getElementById('edit-category').value = 'auto';
     const txt = document.getElementById('species-display-text');
     txt.textContent = 'Tapez ou sélectionnez…';
     txt.classList.remove('selected');
@@ -1124,8 +1142,9 @@ function openEditor(uid, category) {
         document.getElementById('edit-date').value     = b.date     || '';
         document.getElementById('edit-substrat').value = b.substrat || '';
         document.getElementById('edit-notes').value    = b.notes    || '';
-        document.getElementById('edit-origin').value   = b.origin   || 'Pépinière';
+        document.getElementById('edit-origin').value    = b.origin   || 'Pépinière';
         document.getElementById('edit-style').value    = b.style    || '';
+        document.getElementById('edit-category').value = b.category || 'auto';
         ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire']
             .forEach((id, i) => {
                 document.getElementById(id).value = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire][i] || '';
@@ -1175,6 +1194,7 @@ async function saveBonsai() {
         lastFertil: document.getElementById('edit-last-fertil').value,
         lastWire:   document.getElementById('edit-last-wire').value,
         notes:      document.getElementById('edit-notes').value,
+        category:   document.getElementById('edit-category').value,
     });
     await refresh();
     nav('list');
