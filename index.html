@@ -7,127 +7,32 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
+/* ... Tes styles existants ... */
 :root {
-  --bg:          #F2EFE8;
-  --bg2:         #FFFFFF;
-  --card:        #FFFFFF;
-  --card2:       #F7F4EE;
-  --green:       #4A7A56;
-  --green-light: #E6EFE8;
-  --green-text:  #3A6A46;
-  --btn-dark:    #2E2A24;
-  --btn-darker:  #1A1712;
-  --border:      #E2DDD4;
-  --border2:     #CFC9BF;
-  --text:        #1A1814;
-  --text-sec:    #6A6258;
-  --text-dim:    #ABA49B;
-  --blue:        #3A7A9A;
-  --red:         #A05040;
-  --amber:       #8A6830;
-  --urgent:      #C0392B;
-  --radius:      16px;
-  --radius-sm:   12px;
-  --shadow:      0 2px 16px rgba(0,0,0,0.08);
-  --shadow-sm:   0 1px 8px rgba(0,0,0,0.05);
-  --font:        'DM Sans', sans-serif;
-  --font-serif:  'Noto Serif JP', serif;
+  --bg: #F2EFE8; --bg2: #FFFFFF; --card: #FFFFFF; --card2: #F7F4EE;
+  --green: #4A7A56; --green-light: #E6EFE8; --green-text: #3A6A46;
+  --btn-dark: #2E2A24; --btn-darker: #1A1712; --border: #E2DDD4;
+  --text: #1A1814; --text-sec: #6A6258; --text-dim: #ABA49B;
+  --urgent: #C0392B; --radius: 16px; --radius-sm: 12px;
+  --shadow-sm: 0 1px 8px rgba(0,0,0,0.05);
+  --font: 'DM Sans', sans-serif; --font-serif: 'Noto Serif JP', serif;
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 76px; }
-::-webkit-scrollbar { width: 0; height: 0; }
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); padding-bottom: 76px; }
 .screen { display: none; }
 .screen.active { display: block; }
 
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-/* --- STYLE DU CAROUSEL --- */
-.category-grid { 
-  display: flex; 
-  flex-direction: row; 
-  gap: 14px; 
-  padding: 4px 14px 20px; 
-  overflow-x: auto; 
-  scroll-snap-type: x mandatory; 
-  -webkit-overflow-scrolling: touch;
-}
-.category-grid::-webkit-scrollbar { display: none; }
-
-.bonsai-card { 
-  flex: 0 0 160px; 
-  scroll-snap-align: start;
-  background: #fff; 
-  border-radius: var(--radius); 
-  overflow: hidden; 
-  cursor: pointer; 
-  display: flex;
-  flex-direction: column; 
-  transition: transform 0.15s; 
-  box-shadow: var(--shadow); 
-  border: 1px solid var(--border);
-  animation: slideIn 0.4s ease forwards;
-}
-.bonsai-card:active { transform: scale(0.96); }
-
-.card-photo { 
-  width: 100%; 
-  aspect-ratio: 1/1; 
-  background: var(--card2); 
-  background-size: cover; 
-  background-position: center; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  font-size: 1.8rem; 
-  color: var(--text-dim); 
-}
-
-.card-info { padding: 10px; flex: 1; }
-.card-name { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
-.card-species { font-size: 0.65rem; color: var(--text-sec); font-style: italic; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-badge { display: inline-block; font-size: 0.52rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
-
-.card-add { 
-  flex: 0 0 120px;
-  scroll-snap-align: start;
-  background: transparent; 
-  border: 1.5px dashed var(--border); 
-  border-radius: var(--radius); 
-  display: flex; 
-  flex-direction: column;
-  align-items: center; 
-  justify-content: center; 
-  gap: 8px; 
-  cursor: pointer; 
-}
-
-.badge-green  { background: #DFF0E4; color: #2E7A48; }
-.badge-yellow { background: #FBF0D8; color: #8A6020; }
-.badge-red    { background: #FADDDA; color: #9A3828; }
-
-.category-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px 6px; }
-.category-label { display: flex; align-items: center; gap: 7px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
-.conifers { color: #3A7A50; } .deciduous { color: #8A6020; } .others { color: #4A6A8A; }
-
-#toast { visibility: hidden; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--btn-dark); color: #fff; padding: 11px 22px; border-radius: 24px; z-index: 3000; font-size: 0.78rem; font-weight: 600; white-space: nowrap; box-shadow: 0 4px 24px rgba(0,0,0,0.25); transition: opacity 0.2s, transform 0.2s; opacity: 0; }
-#toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
-
-.home-bottom-bar { position: fixed; bottom: 72px; left: 0; right: 0; background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 10px 14px; display: flex; gap: 8px; z-index: 800; }
-.btn-backup { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fff; font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
-
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); height: 72px; display: flex; justify-content: space-around; align-items: flex-start; padding-top: 10px; border-top: 1px solid var(--border); z-index: 900; }
-.nav-btn { color: var(--text-dim); background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.57rem; font-weight: 500; cursor: pointer; position: relative; }
+/* Styles de navigation et header */
+.home-header { background: #fff; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.home-logo { display: flex; align-items: center; gap: 10px; }
+.home-logo-icon { font-size: 2.2rem; color: #C0392B; }
+.home-logo-text { font-family: var(--font-serif); font-size: 1.9rem; font-weight: 700; }
+.search-wrap { padding: 10px 14px; }
+.search-bar { display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 11px 14px; gap: 10px; border: 1px solid var(--border); }
+.search-bar input { flex: 1; border: none; outline: none; font-family: var(--font); }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; height: 72px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); }
+.nav-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-dim); font-size: 0.6rem; }
 .nav-btn.active { color: var(--text); }
-.nav-btn.active::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 2.5px; background: var(--green); border-radius: 2px; }
-
-.edit-bottom-bar { position: fixed; bottom: 72px; left: 0; right: 0; background: rgba(255,255,255,0.97); border-top: 1px solid var(--border); padding: 10px 14px; display: none; gap: 10px; z-index: 800; }
-.btn-cta-primary { flex: 1; padding: 15px; border: none; border-radius: 50px; background: var(--btn-dark); color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.btn-cta-delete { padding: 15px 18px; border: none; border-radius: 50px; background: #FADDDA; color: #9A3828; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -135,174 +40,36 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 <div id="screen-list" class="screen active">
     <div class="home-header">
         <div class="home-logo">
-            <i class="fa-solid fa-torii-gate" style="color:#C0392B; font-size:1.8rem;"></i>
-            <span style="font-family:var(--font-serif); font-weight:700; font-size:1.3rem; margin-left:10px;">BONSAI-EN</span>
+            <span class="home-logo-icon"><i class="fa-solid fa-torii-gate"></i></span>
+            <div class="home-logo-text">BONSAI-EN</div>
         </div>
-        <span id="bonsai-count" style="font-size:0.65rem; background:var(--card2); padding:4px 10px; border-radius:20px; border:1px solid var(--border);">0 arbres</span>
+        <div class="home-count" id="bonsai-count">0 arbres</div>
     </div>
 
-    <div id="list-container" style="padding-bottom: 140px;"></div>
-
-    <div class="home-bottom-bar">
-        <button class="btn-backup" onclick="exportData()"><i class="fa-solid fa-download"></i> Exporter</button>
-        <label class="btn-backup" style="background:var(--green-light); color:var(--green-text);">
-            <i class="fa-solid fa-upload"></i> Importer
-            <input type="file" accept=".json" style="display:none" onchange="importData(this)">
-        </label>
-    </div>
-</div>
-
-<div id="screen-edit" class="screen">
-    <div class="edit-header">
-        <button onclick="nav('list')" style="width:36px; height:36px; border-radius:50%; border:1px solid var(--border); background:var(--card2);"><i class="fa-solid fa-chevron-left"></i></button>
-        <div style="flex:1; margin-left:12px;">
-            <div id="edit-header-title" style="font-family:var(--font-serif); font-weight:700;">Nouvel arbre</div>
+    <div class="search-wrap">
+        <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search-input" placeholder="Rechercher espèce, nom...">
         </div>
-        <div id="autosave-indicator" class="edit-autosave">✓ Sauvegardé</div>
     </div>
 
-    <div id="hero-photo" style="width:100%; height:240px; background:var(--card2); background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; position:relative;" onclick="document.getElementById('file-input').click()">
-        <i class="fa-solid fa-tree" id="hero-icon" style="font-size:3.5rem; color:var(--text-dim);"></i>
-        <div style="position:absolute; bottom:12px; right:12px; background:rgba(0,0,0,0.45); color:white; padding:7px 14px; border-radius:20px; font-size:0.68rem; font-weight:600;"><i class="fa-solid fa-camera"></i> Modifier</div>
-    </div>
-    <input type="file" id="file-input" accept="image/*" style="display:none" onchange="updatePhoto(this)">
-
-    <div style="padding:20px;">
-        <input type="text" id="edit-name" placeholder="Surnom de l'arbre" style="width:100%; padding:15px; border-radius:12px; border:1px solid var(--border); font-size:1rem; outline:none;" oninput="updateDossier()">
-    </div>
-
-    <div class="edit-bottom-bar" id="edit-bottom-bar">
-        <button class="btn-cta-primary" onclick="saveBonsai()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
-        <button class="btn-cta-delete" id="btn-delete" onclick="confirmDeleteBonsai()"><i class="fa-solid fa-trash"></i></button>
+    <div id="list-container" style="padding: 14px; text-align: center; color: var(--text-dim);">
+        Chargement de la collection...
     </div>
 </div>
 
-<div class="bottom-nav">
-    <button class="nav-btn active" onclick="nav('list')"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
-    <button class="nav-btn" onclick="showToast('Agenda bientôt')"><i class="fa-regular fa-calendar"></i><span>Agenda</span></button>
-    <button class="nav-btn" onclick="showToast('Conseils bientôt')"><i class="fa-regular fa-lightbulb"></i><span>Conseils</span></button>
-    <button class="nav-btn" onclick="showToast('Profil bientôt')"><i class="fa-regular fa-user"></i><span>Profil</span></button>
-</div>
-
-<div id="toast"></div>
+<nav class="bottom-nav">
+    <button class="nav-btn active"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
+    <button class="nav-btn"><i class="fa-regular fa-calendar"></i><span>Calendrier</span></button>
+    <button class="nav-btn"><i class="fa-regular fa-lightbulb"></i><span>Conseils</span></button>
+</nav>
 
 <script>
-const DB_NAME = 'BonsaiMasterPro', STORE_NAME = 'trees';
-let bonsais = [], currentUid = null, currentPhotoBase64 = null;
-
-const dbApi = {
-  open: () => new Promise(res => {
-    const r = indexedDB.open(DB_NAME, 1);
-    r.onupgradeneeded = e => e.target.result.createObjectStore(STORE_NAME, { keyPath: 'uid' });
-    r.onsuccess = e => res(e.target.result);
-  }),
-  getAll: async () => {
-    const db = await dbApi.open();
-    return new Promise(res => { db.transaction(STORE_NAME,'readonly').objectStore(STORE_NAME).getAll().onsuccess = e => res(e.target.result); });
-  },
-  put: async item => {
-    const db = await dbApi.open();
-    return new Promise(res => { db.transaction(STORE_NAME,'readwrite').objectStore(STORE_NAME).put(item).onsuccess = () => res(); });
-  },
-  delete: async uid => {
-    const db = await dbApi.open();
-    return new Promise(res => { db.transaction(STORE_NAME,'readwrite').objectStore(STORE_NAME).delete(uid).onsuccess = () => res(); });
-  }
-};
-
-function nav(screen) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + screen).classList.add('active');
-  document.getElementById('edit-bottom-bar').style.display = (screen === 'edit') ? 'flex' : 'none';
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast'); t.textContent = msg;
-  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-function makeCard(b) {
-  const card = document.createElement('div'); card.className = 'bonsai-card';
-  card.onclick = () => openEditor(b.uid);
-  card.innerHTML = `
-    <div class="card-photo" style="background-image:url(${b.photo||''})">${b.photo?'':'<i class="fa-solid fa-tree"></i>'}</div>
-    <div class="card-info">
-        <div class="card-name">${b.name||'SANS NOM'}</div>
-        <div class="card-species">${b.species||'Espèce à définir'}</div>
-        <span class="card-badge badge-green">En Santé</span>
-    </div>`;
-  return card;
-}
-
-function makeAddBtn(catId) {
-  const btn = document.createElement('div'); btn.className = 'card-add';
-  btn.onclick = () => openEditor(null);
-  btn.innerHTML = `<i class="fa-solid fa-plus" style="font-size:1.5rem; color:var(--green);"></i><span style="font-size:0.6rem; font-weight:700; color:var(--green);">AJOUTER</span>`;
-  return btn;
-}
-
-async function refresh() {
-  bonsais = await dbApi.getAll();
-  const c = document.getElementById('list-container'); c.innerHTML = '';
-  document.getElementById('bonsai-count').textContent = bonsais.length + ' arbres';
-  
-  const cats = [{id:'conifer', label:'Conifères'}, {id:'deciduous', label:'Feuillus'}, {id:'other', label:'Autres'}];
-  
-  cats.forEach(cat => {
-    const section = document.createElement('div');
-    section.innerHTML = `
-        <div class="category-header">
-            <div class="category-label">${cat.label}</div>
-            <div style="flex:1; height:1px; background:var(--border);"></div>
-        </div>`;
-    const grid = document.createElement('div'); grid.className = 'category-grid';
-    const filtered = bonsais.filter(b => b.category === cat.id || (!b.category && cat.id === 'other'));
-    filtered.forEach(b => grid.appendChild(makeCard(b)));
-    grid.appendChild(makeAddBtn(cat.id));
-    section.appendChild(grid);
-    c.appendChild(section);
-  });
-}
-
-function openEditor(uid) {
-  currentUid = uid; currentPhotoBase64 = null;
-  document.getElementById('edit-name').value = '';
-  document.getElementById('hero-photo').style.backgroundImage = '';
-  document.getElementById('hero-icon').style.display = 'block';
-  if(uid) {
-    const b = bonsais.find(x => x.uid === uid);
-    document.getElementById('edit-name').value = b.name;
-    if(b.photo) {
-        currentPhotoBase64 = b.photo;
-        document.getElementById('hero-photo').style.backgroundImage = `url(${b.photo})`;
-        document.getElementById('hero-icon').style.display = 'none';
-    }
-  }
-  nav('edit');
-}
-
-async function saveBonsai() {
-  const name = document.getElementById('edit-name').value.trim();
-  if(!name) return showToast('Nom requis');
-  await dbApi.put({ uid: currentUid || Date.now(), name, photo: currentPhotoBase64, category: 'other' });
-  await refresh(); nav('list');
-}
-
-async function confirmDeleteBonsai() { if(confirm('Supprimer cet arbre ?')) { await dbApi.delete(currentUid); await refresh(); nav('list'); } }
-
-function updateDossier() { document.getElementById('edit-header-title').textContent = document.getElementById('edit-name').value || 'Nouvel Arbre'; }
-
-function updatePhoto(input) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    currentPhotoBase64 = e.target.result;
-    document.getElementById('hero-photo').style.backgroundImage = `url(${e.target.result})`;
-    document.getElementById('hero-icon').style.display = 'none';
-  };
-  reader.readAsDataURL(input.files[0]);
-}
-
-window.onload = refresh;
+    // Logique de base pour tester l'affichage
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log("Interface BONSAI-EN chargée.");
+    });
 </script>
+
 </body>
 </html>
