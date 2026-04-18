@@ -7,153 +7,69 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
+/* ... Tes styles existants ... */
 :root {
-  --bg:          #F2EFE8;
-  --bg2:         #FFFFFF;
-  --card:        #FFFFFF;
-  --card2:       #F7F4EE;
-  --green:       #4A7A56;
-  --green-light: #E6EFE8;
-  --green-text:  #3A6A46;
-  --btn-dark:    #2E2A24;
-  --btn-darker:  #1A1712;
-  --border:      #E2DDD4;
-  --border2:     #CFC9BF;
-  --text:        #1A1814;
-  --text-sec:    #6A6258;
-  --text-dim:    #ABA49B;
-  --blue:        #3A7A9A;
-  --red:         #A05040;
-  --amber:       #8A6830;
-  --urgent:      #C0392B;
-  --radius:      16px;
-  --radius-sm:   12px;
-  --shadow:      0 2px 16px rgba(0,0,0,0.08);
-  --shadow-sm:   0 1px 8px rgba(0,0,0,0.05);
-  --font:        'DM Sans', sans-serif;
-  --font-serif:  'Noto Serif JP', serif;
+  --bg: #F2EFE8; --bg2: #FFFFFF; --card: #FFFFFF; --card2: #F7F4EE;
+  --green: #4A7A56; --green-light: #E6EFE8; --green-text: #3A6A46;
+  --btn-dark: #2E2A24; --btn-darker: #1A1712; --border: #E2DDD4;
+  --text: #1A1814; --text-sec: #6A6258; --text-dim: #ABA49B;
+  --urgent: #C0392B; --radius: 16px; --radius-sm: 12px;
+  --shadow-sm: 0 1px 8px rgba(0,0,0,0.05);
+  --font: 'DM Sans', sans-serif; --font-serif: 'Noto Serif JP', serif;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 76px; }
-::-webkit-scrollbar { width: 0; height: 0; }
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); padding-bottom: 76px; }
 .screen { display: none; }
 .screen.active { display: block; }
 
-#toast {
-  visibility: hidden; position: fixed; bottom: 90px;
-  left: 50%; transform: translateX(-50%) translateY(10px);
-  background: var(--btn-dark); color: #fff; padding: 11px 22px;
-  border-radius: 24px; z-index: 3000; font-size: 0.78rem; font-weight: 600;
-  white-space: nowrap; box-shadow: 0 4px 24px rgba(0,0,0,0.25);
-  transition: visibility 0s, opacity 0.2s, transform 0.2s; opacity: 0;
-}
-#toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
-
-#confirm-overlay {
-  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-  z-index: 9000; align-items: center; justify-content: center; padding: 20px;
-}
-#confirm-overlay.open { display: flex; }
-.confirm-box {
-  background: #fff; border-radius: 20px; padding: 24px 22px 18px;
-  max-width: 320px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-  animation: popIn 0.18s ease;
-}
-@keyframes popIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.confirm-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-.confirm-msg { font-size: 0.85rem; color: var(--text-sec); line-height: 1.5; margin-bottom: 20px; }
-.confirm-btns { display: flex; gap: 10px; }
-.confirm-cancel { flex: 1; padding: 13px; border: 1px solid var(--border); border-radius: 50px; background: var(--card2); color: var(--text-sec); font-family: var(--font); font-size: 0.88rem; font-weight: 600; cursor: pointer; }
-.confirm-ok { flex: 1; padding: 13px; border: none; border-radius: 50px; background: var(--btn-dark); color: #fff; font-family: var(--font); font-size: 0.88rem; font-weight: 700; cursor: pointer; }
-.confirm-ok.danger { background: var(--urgent); }
-
-.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); height: 72px;
-  display: flex; justify-content: space-around; align-items: flex-start;
-  padding-top: 10px; border-top: 1px solid var(--border); z-index: 900;
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
-}
-.nav-btn {
-  color: var(--text-dim); background: none; border: none;
-  display: flex; flex-direction: column; align-items: center;
-  gap: 4px; font-size: 0.57rem; font-weight: 500;
-  font-family: var(--font); cursor: pointer; padding: 0 10px; position: relative;
-}
-.nav-btn i { font-size: 1.1rem; }
-.nav-btn.active { color: var(--text); }
-.nav-btn.active::after {
-  content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-  width: 20px; height: 2.5px; background: var(--green); border-radius: 2px;
-}
-
-#crop-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
-#crop-viewport { flex: 1; width: 100%; position: relative; overflow: auto; display: flex; align-items: center; justify-content: center; -webkit-overflow-scrolling: touch; }
-#crop-image { max-width: 100%; display: block; }
-#crop-mask { position: absolute; width: 420px; height: 420px; border: 2px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 9999px rgba(0,0,0,0.65); cursor: move; z-index: 2010; touch-action: none; border-radius: 14px; }
-.crop-bar { height: 80px; display: flex; gap: 10px; padding: 14px 20px; background: #111; }
-.btn-crop { flex: 1; border: none; border-radius: var(--radius-sm); font-weight: 700; color: white; cursor: pointer; font-family: var(--font); font-size: 0.9rem; }
-.btn-crop-cancel { background: #333; }
-.btn-crop-ok { background: var(--green); }
-
-.home-header {
-  background: rgba(255,255,255,0.97); padding: 16px 18px 14px;
-  position: sticky; top: 0; z-index: 100;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  box-shadow: var(--shadow-sm);
-}
+/* Styles de navigation et header */
+.home-header { background: #fff; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
 .home-logo { display: flex; align-items: center; gap: 10px; }
 .home-logo-icon { font-size: 2.2rem; color: #C0392B; }
-.home-logo-text { font-family: var(--font-serif); font-size: 1.9rem; font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
-.home-count { font-size: 0.65rem; font-weight: 600; color: var(--text-sec); background: var(--card2); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); }
-.btn-lang {
-  background: var(--card2); border: 1px solid var(--border); border-radius: 20px;
-  padding: 6px 12px; font-family: var(--font); font-size: 0.72rem; font-weight: 700;
-  color: var(--text-sec); cursor: pointer; display: flex; align-items: center; gap: 5px;
-  margin-right: 8px;
-}
-.btn-lang:active { background: var(--green-light); color: var(--green-text); }
-.home-header-right { display: flex; align-items: center; gap: 0; }
+.home-logo-text { font-family: var(--font-serif); font-size: 1.9rem; font-weight: 700; }
+.search-wrap { padding: 10px 14px; }
+.search-bar { display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 11px 14px; gap: 10px; border: 1px solid var(--border); }
+.search-bar input { flex: 1; border: none; outline: none; font-family: var(--font); }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; height: 72px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); }
+.nav-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-dim); font-size: 0.6rem; }
+.nav-btn.active { color: var(--text); }
+</style>
+</head>
+<body>
 
-.urgency-banner {
-  margin: 10px 14px 0; background: #FFF0ED; border-radius: var(--radius-sm);
-  border: 1px solid rgba(192,57,43,0.25); padding: 12px 14px;
-  display: none; cursor: pointer;
-}
-.urgency-banner.show { display: flex; align-items: center; gap: 10px; }
-.urgency-icon { background: rgba(192,57,43,0.12); color: var(--urgent); width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
-.urgency-text { font-size: 0.78rem; font-weight: 600; color: var(--urgent); flex: 1; }
-.urgency-sub { font-size: 0.66rem; color: #9A3828; font-weight: 400; margin-top: 1px; }
+<div id="screen-list" class="screen active">
+    <div class="home-header">
+        <div class="home-logo">
+            <span class="home-logo-icon"><i class="fa-solid fa-torii-gate"></i></span>
+            <div class="home-logo-text">BONSAI-EN</div>
+        </div>
+        <div class="home-count" id="bonsai-count">0 arbres</div>
+    </div>
 
-.upcoming-widget {
-  margin: 10px 14px 0; background: #fff; border-radius: var(--radius);
-  border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden;
-}
-.upcoming-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px 8px; border-bottom: 1px solid var(--border); }
-.upcoming-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--green-text); letter-spacing: 0.06em; display: flex; align-items: center; gap: 7px; }
-.upcoming-days-label { font-size: 0.62rem; color: var(--text-dim); }
-.upcoming-list { padding: 4px 0; }
-.upcoming-item { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--border); }
-.upcoming-item:last-child { border-bottom: none; }
-.upcoming-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.upcoming-info { flex: 1; }
-.upcoming-task { font-size: 0.78rem; font-weight: 600; color: var(--text); }
-.upcoming-tree { font-size: 0.66rem; color: var(--text-sec); margin-top: 1px; }
-.upcoming-date { font-size: 0.65rem; font-weight: 700; color: var(--text-dim); }
+    <div class="search-wrap">
+        <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search-input" placeholder="Rechercher espèce, nom...">
+        </div>
+    </div>
 
-.search-wrap { padding: 10px 14px 4px; }
-.search-bar { display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 11px 14px; gap: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-.search-bar input { flex: 1; border: none; background: transparent; font-family: var(--font); font-size: 0.88rem; color: var(--text); outline: none; }
-.search-bar input::placeholder { color: var(--text-dim); }
-.search-bar i { color: var(--text-dim); font-size: 0.85rem; }
+    <div id="list-container" style="padding: 14px; text-align: center; color: var(--text-dim);">
+        Chargement de la collection...
+    </div>
+</div>
 
-.home-bottom-bar {
-  position: fixed; bottom: 72px; left: 0; right: 0;
-  background: rgba(255,255,255,0.97); backdrop-filter: blur(12px);
-  border-top: 1px solid var(--border); padding: 10px 14px;
-  display: flex; gap: 8px; z-index: 800;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
-}
-.home-bottom-bar.hidden { display: none; }
+<nav class="bottom-nav">
+    <button class="nav-btn active"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
+    <button class="nav-btn"><i class="fa-regular fa-calendar"></i><span>Calendrier</span></button>
+    <button class="nav-btn"><i class="fa-regular fa-lightbulb"></i><span>Conseils</span></button>
+</nav>
+
+<script>
+    // Logique de base pour tester l'affichage
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log("Interface BONSAI-EN chargée.");
+    });
+</script>
+
+</body>
+</html>
