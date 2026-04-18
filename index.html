@@ -142,7 +142,14 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .search-bar input::placeholder { color: var(--text-dim); }
 .search-bar i { color: var(--text-dim); font-size: 0.85rem; }
 
-.backup-bar { display: flex; gap: 8px; padding: 8px 14px 2px; }
+/* Barre de backup fixe en bas pour l'accueil */
+.home-bottom-bar {
+  position: fixed; bottom: 72px; left: 0; right: 0;
+  background: rgba(255,255,255,0.97); backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border); padding: 10px 14px;
+  display: flex; gap: 8px; z-index: 800;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+}
 .btn-backup { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fff; color: var(--text-sec); font-family: var(--font); font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: var(--shadow-sm); }
 .btn-import { color: var(--green-text); background: var(--green-light); border-color: rgba(74,122,86,0.25); }
 
@@ -153,6 +160,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .category-label.conifers { color: #3A7A50; }
 .category-label.deciduous { color: #8A6020; }
 .category-label.others { color: #4A6A8A; }
+.category-count { font-size: 0.58rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--card2); color: var(--text-dim); border: 1px solid var(--border); }
 .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 6px; }
 
 .bonsai-card { background: #fff; border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); border: 1px solid var(--border); }
@@ -415,11 +423,13 @@ input[type="file"] { display: none; }
             <input type="text" id="search-input" placeholder="Rechercher espèce, nom, origine…" oninput="filterBonsais()">
         </div>
     </div>
-    <div class="backup-bar">
+
+    <div id="list-container"></div>
+
+    <div class="home-bottom-bar" id="home-bottom-bar">
         <button class="btn-backup" onclick="exportData()"><i class="fa-solid fa-download"></i> Exporter</button>
         <label class="btn-backup btn-import"><i class="fa-solid fa-upload"></i> Importer<input type="file" accept=".json" onchange="importData(this)"></label>
     </div>
-    <div id="list-container"></div>
 </div>
 
 <div id="screen-edit" class="screen">
@@ -533,7 +543,7 @@ input[type="file"] { display: none; }
 
     <div class="edit-bottom-bar" id="edit-bottom-bar">
         <button class="btn-cta-primary" onclick="saveBonsai()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
-        <button class="btn-cta-secondary" id="btn-delete" onclick="confirmDeleteBonsai()" style="background:#FADDDA; color:#9A3828; border-radius:50px; padding:15px 18px; border:none; font-family:var(--font); font-size:0.9rem; font-weight:700; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+        <button class="btn-cta-delete" id="btn-delete" onclick="confirmDeleteBonsai()" style="background:#FADDDA; color:#9A3828; border-radius:50px; padding:15px 18px; border:none; font-family:var(--font); font-size:0.9rem; font-weight:700; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
     </div>
 </div>
 
@@ -699,7 +709,11 @@ function nav(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + screen).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  // Gestion de l'affichage des barres fixes du bas
   document.getElementById('edit-bottom-bar').style.display = (screen === 'edit') ? 'flex' : 'none';
+  document.getElementById('home-bottom-bar').style.display = (screen === 'list') ? 'flex' : 'none';
+  
   if (screen === 'list')     document.getElementById('nav-collection').classList.add('active');
   if (screen === 'calendar') { document.getElementById('nav-calendar').classList.add('active'); renderCalendar(); }
   window.scrollTo(0, 0);
