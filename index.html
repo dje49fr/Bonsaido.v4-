@@ -170,7 +170,32 @@ body.screen-list-active { padding-bottom: calc(76px + 54px); }
 .category-label.deciduous { color: #8A6020; }
 .category-label.others { color: #4A6A8A; }
 .category-count { font-size: 0.58rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--card2); color: var(--text-dim); border: 1px solid var(--border); }
-.category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 6px; }
+.carousel-wrap { position: relative; }
+.category-carousel {
+  display: flex; gap: 10px;
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  padding-bottom: 6px; padding-right: 14px;
+}
+.category-carousel::-webkit-scrollbar { display: none; }
+.category-carousel .bonsai-card,
+.category-carousel .card-add {
+  flex: 0 0 calc(33.333% - 7px);
+  min-width: 0;
+  scroll-snap-align: start;
+}
+.carousel-dots {
+  display: flex; justify-content: center; gap: 5px;
+  padding: 8px 0 2px;
+}
+.carousel-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border); transition: background 0.2s, width 0.2s;
+  cursor: pointer; border: none; padding: 0;
+}
+.carousel-dot.active {
+  background: var(--green); width: 16px; border-radius: 3px;
+}
 
 .bonsai-card { background: #fff; border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); border: 1px solid var(--border); }
 .bonsai-card:active { transform: scale(0.96); box-shadow: none; }
@@ -407,7 +432,6 @@ input[type="file"] { display: none; }
             <div class="home-logo-text">BONSAI-EN</div>
         </div>
         <div class="home-header-right">
-            <button class="btn-lang" onclick="toggleLang()" id="btn-lang">🌐 EN</button>
             <span class="home-count" id="bonsai-count">0 <span data-i18n="trees">arbres</span></span>
         </div>
     </div>
@@ -578,8 +602,8 @@ input[type="file"] { display: none; }
     <button class="nav-btn" onclick="showToast(T('adviceSoon'))">
         <i class="fa-regular fa-lightbulb"></i><span data-i18n="advice">Conseils</span>
     </button>
-    <button class="nav-btn" onclick="showToast(T('profileSoon'))">
-        <i class="fa-regular fa-user"></i><span data-i18n="profile">Profil</span>
+    <button class="nav-btn" id="nav-lang" onclick="toggleLang()">
+        <i class="fa-solid fa-earth-europe"></i><span id="nav-lang-label">EN</span>
     </button>
 </div>
 
@@ -754,7 +778,7 @@ function toggleLang() {
 }
 
 function applyLang() {
-  document.getElementById('btn-lang').textContent = lang === 'fr' ? '🌐 EN' : '🌐 FR';
+  document.getElementById('nav-lang-label').textContent = lang === 'fr' ? 'EN' : 'FR';
   document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (T(k)) el.textContent = T(k); });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { const k = el.getAttribute('data-i18n-placeholder'); if (T(k)) el.placeholder = T(k); });
 }
@@ -881,9 +905,34 @@ function renderList(list) {
     const hd = document.createElement('div'); hd.className = 'category-header';
     hd.innerHTML = `<div class="category-label ${css}"><i class="${icon}"></i>${T(labelKey)}</div><span class="category-count">${items.length}</span><div class="category-header-line"></div>`;
     sec.appendChild(hd);
-    const grid = document.createElement('div'); grid.className = 'category-grid';
-    items.forEach(b => grid.appendChild(makeCard(b)));
-    grid.appendChild(makeAddBtn(cat)); sec.appendChild(grid); c.appendChild(sec);
+    const wrap = document.createElement('div'); wrap.className = 'carousel-wrap';
+    const carousel = document.createElement('div'); carousel.className = 'category-carousel';
+    items.forEach(b => carousel.appendChild(makeCard(b)));
+    carousel.appendChild(makeAddBtn(cat));
+    wrap.appendChild(carousel);
+    // Dots
+    const totalCards = items.length + 1; // +1 for add btn
+    const visibleCount = 3;
+    const maxPage = Math.max(0, totalCards - visibleCount);
+    const dotsRow = document.createElement('div'); dotsRow.className = 'carousel-dots';
+    const numDots = Math.min(maxPage + 1, 8);
+    for (let i = 0; i < numDots; i++) {
+      const dot = document.createElement('button'); dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => {
+        const cardW = carousel.scrollWidth / totalCards;
+        carousel.scrollTo({ left: i * cardW, behavior: 'smooth' });
+      });
+      dotsRow.appendChild(dot);
+    }
+    if (numDots > 1) {
+      carousel.addEventListener('scroll', () => {
+        const cardW = carousel.scrollWidth / totalCards;
+        const page = Math.min(Math.round(carousel.scrollLeft / cardW), numDots - 1);
+        dotsRow.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === page));
+      });
+      wrap.appendChild(dotsRow);
+    }
+    sec.appendChild(wrap); c.appendChild(sec);
   }
   buildSection(conifers, 'conifers', 'fa-solid fa-tree', 'conifers', 'conifer');
   buildSection(dec, 'deciduous', 'fa-solid fa-leaf', 'deciduous', 'deciduous');
