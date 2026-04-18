@@ -1,457 +1,249 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!DOCTYPE html><html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BONSAI-EN · PRO</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:          #F2EFE8;
-  --bg2:         #FFFFFF;
-  --card:        #FFFFFF;
-  --card2:       #F7F4EE;
-  --green:       #4A7A56;
-  --green-light: #E6EFE8;
-  --green-text:  #3A6A46;
-  --btn-dark:    #2E2A24;
-  --btn-darker:  #1A1712;
-  --border:      #E2DDD4;
-  --border2:     #CFC9BF;
-  --text:        #1A1814;
-  --text-sec:    #6A6258;
-  --text-dim:    #ABA49B;
-  --blue:        #3A7A9A;
-  --red:         #A05040;
-  --amber:       #8A6830;
-  --urgent:      #C0392B;
-  --radius:      16px;
-  --radius-sm:   12px;
-  --shadow:      0 2px 16px rgba(0,0,0,0.08);
-  --shadow-sm:   0 1px 8px rgba(0,0,0,0.05);
-  --font:        'DM Sans', sans-serif;
-  --font-serif:  'Noto Serif JP', serif;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 76px; }
-::-webkit-scrollbar { width: 0; height: 0; }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BONSAI-EN PRO</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"><style>
+body { font-family:'DM Sans',sans-serif; margin:0; background:#F2EFE8; }
+header { padding:16px; font-weight:700; font-size:20px; background:white; }
+.container { padding:12px; }
 
-.screen { display: none; }
-.screen.active { display: block; }
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
+.card {
+  background:white;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:10px;
+  cursor:pointer;
 }
 
-/* --- CONFIGURATION DÉFILEMENT HORIZONTAL --- */
-.category-grid { 
-  display: flex; 
-  flex-direction: row; /* Aligné sur une ligne */
-  gap: 14px; 
-  padding: 4px 14px 20px; /* Padding latéral pour l'alignement */
-  overflow-x: auto; /* Défilement horizontal */
-  scroll-snap-type: x mandatory; /* Effet d'aimant au défilement */
-  -webkit-overflow-scrolling: touch;
-}
-.category-grid::-webkit-scrollbar { display: none; }
+.badge { font-size:11px; padding:3px 8px; border-radius:20px; }
+.green { background:#DFF0E4; color:#2E7A48; }
+.red { background:#FADDDA; color:#9A3828; }
 
-.bonsai-card { 
-  flex: 0 0 160px; /* Largeur fixe pour chaque tuile */
-  scroll-snap-align: start;
-  background: #fff; 
-  border-radius: var(--radius); 
-  overflow: hidden; 
-  cursor: pointer; 
-  display: flex;
-  flex-direction: column; /* Retour au format vertical pour les tuiles du carrousel */
-  transition: transform 0.15s; 
-  box-shadow: var(--shadow); 
-  border: 1px solid var(--border);
-  animation: slideIn 0.4s ease forwards;
-}
-.bonsai-card:active { transform: scale(0.96); }
-
-.card-photo { 
-  width: 100%; 
-  aspect-ratio: 1/1; 
-  background: var(--card2); 
-  background-size: cover; 
-  background-position: center; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  font-size: 1.8rem; 
-  color: var(--text-dim); 
+input, select {
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border-radius:8px;
+  border:1px solid #ccc;
 }
 
-.card-info { padding: 10px; flex: 1; }
-.card-name { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
-.card-species { font-size: 0.65rem; color: var(--text-sec); font-style: italic; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-badge { display: inline-block; font-size: 0.52rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
-
-.card-add { 
-  flex: 0 0 120px;
-  scroll-snap-align: start;
-  background: transparent; 
-  border: 1.5px dashed var(--border); 
-  border-radius: var(--radius); 
-  display: flex; 
-  flex-direction: column;
-  align-items: center; 
-  justify-content: center; 
-  gap: 8px; 
-  cursor: pointer; 
+button {
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#2E2A24;
+  color:white;
+  font-weight:700;
+  margin-top:10px;
+  width:100%;
 }
-.card-add i { color: var(--green-text); font-size: 1.2rem; }
-.card-add span { font-size: 0.6rem; font-weight: 700; color: var(--green-text); text-transform: uppercase; text-align: center; }
 
-/* Styles généraux restants */
-.badge-green  { background: #DFF0E4; color: #2E7A48; }
-.badge-yellow { background: #FBF0D8; color: #8A6020; }
-.badge-red    { background: #FADDDA; color: #9A3828; }
+#calendar div {
+  display:inline-block;
+  width:14%;
+  text-align:center;
+  padding:8px 0;
+}
 
-.category-section { padding-top: 8px; }
-.category-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px 6px; }
-.category-label { display: flex; align-items: center; gap: 7px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
-.category-header-line { flex: 1; height: 1px; background: var(--border); }
-.category-count { font-size: 0.58rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--card2); color: var(--text-dim); border: 1px solid var(--border); }
-.conifers { color: #3A7A50; } .deciduous { color: #8A6020; } .others { color: #4A6A8A; }
+.today { background:black; color:white; border-radius:50%; }
+.task { background:#4A7A56; color:white; border-radius:50%; }
+</style></head><body><header>BONSAI-EN 🌱</header><div class="container" id="list"></div><div class="container" id="editor" style="display:none">
+  <input id="name" placeholder="Nom">
+  <input id="species" placeholder="Espèce">  <select id="category">
+    <option value="auto">Auto</option>
+    <option value="conifer">Conifère</option>
+    <option value="deciduous">Feuillu</option>
+    <option value="other">Autre</option>
+  </select>  <input type="date" id="lastWater">
+  <input type="date" id="lastCut">  <input type="file" id="photo"><button onclick="save()">Enregistrer</button>
+<button onclick="del()">Supprimer</button>
+<button onclick="back()">Retour</button>
 
-#toast { visibility: hidden; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--btn-dark); color: #fff; padding: 11px 22px; border-radius: 24px; z-index: 3000; font-size: 0.78rem; font-weight: 600; white-space: nowrap; box-shadow: 0 4px 24px rgba(0,0,0,0.25); transition: opacity 0.2s, transform 0.2s; opacity: 0; }
-#toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
-#confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9000; align-items: center; justify-content: center; padding: 20px; }
-#confirm-overlay.open { display: flex; }
-.confirm-box { background: #fff; border-radius: 20px; padding: 24px 22px 18px; max-width: 320px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.25); animation: popIn 0.18s ease; }
-@keyframes popIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.confirm-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-.confirm-msg { font-size: 0.85rem; color: var(--text-sec); line-height: 1.5; margin-bottom: 20px; }
-.confirm-btns { display: flex; gap: 10px; }
-.confirm-cancel { flex: 1; padding: 13px; border: 1px solid var(--border); border-radius: 50px; background: var(--card2); font-weight: 600; cursor: pointer; }
-.confirm-ok { flex: 1; padding: 13px; border: none; border-radius: 50px; background: var(--btn-dark); color: #fff; font-weight: 700; cursor: pointer; }
-.confirm-ok.danger { background: var(--urgent); }
+</div><div class="container" id="calendar" style="display:none"></div><script>
+let db;
+let currentId = null;
+let bonsais = [];
 
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); height: 72px; display: flex; justify-content: space-around; align-items: flex-start; padding-top: 10px; border-top: 1px solid var(--border); z-index: 900; }
-.nav-btn { color: var(--text-dim); background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.57rem; font-weight: 500; cursor: pointer; position: relative; }
-.nav-btn i { font-size: 1.1rem; }
-.nav-btn.active { color: var(--text); }
-.nav-btn.active::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 2.5px; background: var(--green); border-radius: 2px; }
-.nav-badge { position: absolute; top: -3px; right: 4px; background: var(--green); color: white; border-radius: 10px; font-size: 0.5rem; font-weight: 700; padding: 1px 5px; }
+const request = indexedDB.open("bonsaiDB", 1);
 
-#crop-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
-#crop-viewport { flex: 1; position: relative; overflow: auto; display: flex; align-items: center; justify-content: center; }
-#crop-image { max-width: 100%; }
-#crop-mask { position: absolute; width: 420px; height: 420px; border: 2px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 9999px rgba(0,0,0,0.65); border-radius: 14px; }
-.crop-bar { height: 80px; display: flex; gap: 10px; padding: 14px 20px; background: #111; }
-.btn-crop { flex: 1; border: none; border-radius: var(--radius-sm); font-weight: 700; color: white; }
-
-.home-header { background: rgba(255,255,255,0.97); padding: 16px 18px 14px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.home-logo { display: flex; align-items: center; gap: 10px; }
-.home-logo-icon { font-size: 1.8rem; color: #C0392B; }
-.home-logo-text { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 700; }
-.home-count { font-size: 0.65rem; font-weight: 600; color: var(--text-sec); background: var(--card2); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); }
-
-.search-wrap { padding: 10px 14px 4px; }
-.search-bar { display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 11px 14px; gap: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-.search-bar input { flex: 1; border: none; outline: none; font-size: 0.88rem; }
-
-.home-bottom-bar { position: fixed; bottom: 72px; left: 0; right: 0; background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 10px 14px; display: flex; gap: 8px; z-index: 800; }
-.btn-backup { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fff; font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
-
-.edit-header { background: rgba(255,255,255,0.97); padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
-.btn-back { background: var(--card2); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.edit-header-title { font-family: var(--font-serif); font-size: 1rem; font-weight: 700; }
-.edit-header-sub { font-size: 0.65rem; color: var(--text-sec); font-style: italic; }
-.edit-autosave { font-size: 0.58rem; color: var(--green-text); opacity: 0; transition: opacity 0.3s; }
-.edit-autosave.show { opacity: 1; }
-
-.hero-photo { width: 100%; height: 240px; background: var(--card2); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: var(--text-dim); position: relative; }
-.hero-photo-btn { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.45); backdrop-filter: blur(8px); color: white; padding: 7px 14px; border-radius: 20px; font-size: 0.68rem; font-weight: 600; display: flex; align-items: center; gap: 5px; }
-
-.action-list { padding: 0 14px; display: flex; flex-direction: column; gap: 8px; }
-.action-row-item { background: #fff; border-radius: var(--radius-sm); padding: 13px 14px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); position: relative; }
-.action-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-.blue { background: #DFF0F5; color: #3A7A9A; } .red { background: #F5E8E6; color: #9A5040; } .amber { background: #F5EED8; color: #7A5828; } .green { background: #DFF0E4; color: #2E7A48; }
-
-.edit-bottom-bar { position: fixed; bottom: 72px; left: 0; right: 0; background: rgba(255,255,255,0.97); border-top: 1px solid var(--border); padding: 10px 14px; display: none; gap: 10px; z-index: 800; }
-.btn-cta-primary { flex: 1; padding: 15px; border: none; border-radius: 50px; background: var(--btn-dark); color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.btn-cta-delete { padding: 15px 18px; border: none; border-radius: 50px; background: #FADDDA; color: #9A3828; font-weight: 700; }
-
-.id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.id-tile { background: #fff; border-radius: var(--radius-sm); padding: 10px 12px; border: 1px solid var(--border); position: relative; }
-.id-tile.full { grid-column: span 2; }
-.id-tile > label { display: block; font-size: 0.6rem; font-weight: 700; color: var(--green-text); text-transform: uppercase; margin-bottom: 4px; }
-.id-tile input, .id-tile select { width: 100%; border: none; background: transparent; outline: none; font-size: 0.85rem; }
-
-.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.gallery-thumb { aspect-ratio: 1/1; border-radius: 9px; overflow: hidden; position: relative; background: var(--card2); }
-.gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
-
-.cal-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
-.cal-day { aspect-ratio: 1/1; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; }
-.cal-day.today { background: var(--text); color: #fff; }
-.cal-day.selected { background: var(--green); color: #fff; }
-</style>
-</head>
-<body>
-
-<div id="confirm-overlay">
-  <div class="confirm-box">
-    <div class="confirm-title" id="confirm-title">Confirmer</div>
-    <div class="confirm-msg" id="confirm-msg"></div>
-    <div class="confirm-btns">
-      <button class="confirm-cancel" id="confirm-cancel-btn">Annuler</button>
-      <button class="confirm-ok" id="confirm-ok-btn">Confirmer</button>
-    </div>
-  </div>
-</div>
-
-<div id="gallery-viewer" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:4000; flex-direction:column; align-items:center; justify-content:center;">
-    <img id="viewer-img" style="max-width:90%; max-height:70%; border-radius:8px;">
-    <div style="color:white; margin-top:20px;" id="viewer-counter"></div>
-    <button onclick="closeViewer()" style="margin-top:20px; padding:10px 20px; border-radius:20px; border:none; background:white; font-weight:700;">Fermer</button>
-</div>
-
-<div id="crop-screen">
-    <div id="crop-viewport"><img id="crop-image"><div id="crop-mask"></div></div>
-    <div class="crop-bar">
-        <button class="btn-crop" style="background:#333" onclick="closeCrop()">Annuler</button>
-        <button class="btn-crop" style="background:var(--green)" onclick="confirmCrop()">✓ Valider</button>
-    </div>
-</div>
-
-<div id="species-modal" class="species-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:5000; align-items:flex-end;" onclick="closeSpeciesModal()">
-    <div style="background:white; width:100%; height:70%; border-radius:24px 24px 0 0; padding:20px; overflow-y:auto;" onclick="event.stopPropagation()">
-        <input type="text" id="species-search" placeholder="Rechercher une espèce..." oninput="filterSpecies()" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); margin-bottom:15px;">
-        <div id="species-list-container"></div>
-    </div>
-</div>
-
-<div id="screen-list" class="screen active">
-    <div class="home-header">
-        <div class="home-logo">
-            <span class="home-logo-icon"><i class="fa-solid fa-torii-gate"></i></span>
-            <div class="home-logo-text">BONSAI-EN</div>
-        </div>
-        <span class="home-count" id="bonsai-count">0 arbres</span>
-    </div>
-
-    <div class="urgency-banner" id="urgency-banner" onclick="nav('calendar')">
-        <div class="urgency-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <div>
-            <div class="urgency-text" id="urgency-text">Actions urgentes</div>
-            <div class="urgency-sub">Appuyez pour voir le calendrier</div>
-        </div>
-    </div>
-
-    <div class="upcoming-widget" id="upcoming-widget" style="display:none">
-        <div class="upcoming-header" style="padding:10px 14px">
-            <div class="upcoming-title" style="font-size:0.75rem; font-weight:700;"><i class="fa-regular fa-calendar"></i> PROCHAINES TÂCHES</div>
-        </div>
-        <div id="upcoming-list" style="padding:0 14px"></div>
-    </div>
-
-    <div class="search-wrap">
-        <div class="search-bar">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="search-input" placeholder="Rechercher..." oninput="filterBonsais()">
-        </div>
-    </div>
-
-    <div id="list-container" style="padding-bottom: 140px;"></div>
-
-    <div class="home-bottom-bar" id="home-bottom-bar">
-        <button class="btn-backup" onclick="exportData()"><i class="fa-solid fa-download"></i> Exporter</button>
-        <label class="btn-backup btn-import" style="background:var(--green-light); color:var(--green-text);">
-            <i class="fa-solid fa-upload"></i> Importer
-            <input type="file" accept=".json" style="display:none" onchange="importData(this)">
-        </label>
-    </div>
-</div>
-
-<div id="screen-edit" class="screen">
-    <div class="edit-header">
-        <button class="btn-back" onclick="nav('list')"><i class="fa-solid fa-chevron-left"></i></button>
-        <div style="flex:1">
-            <div class="edit-header-title" id="edit-header-title">Nouvel arbre</div>
-            <div class="edit-header-sub" id="edit-header-sub">Ma Collection</div>
-        </div>
-        <div class="edit-autosave" id="autosave-indicator">✓ Sauvegardé</div>
-    </div>
-
-    <div class="hero-photo" id="hero-photo" onclick="document.getElementById('file-input').click()">
-        <i class="fa-solid fa-tree" id="hero-icon"></i>
-        <div class="hero-photo-btn"><i class="fa-solid fa-camera"></i> Modifier</div>
-    </div>
-    <input type="file" id="file-input" accept="image/*" style="display:none" onchange="startCrop(this)">
-
-    <div class="action-list" style="margin-top:20px">
-        <div class="action-row-item"><div class="action-icon blue"><i class="fa-solid fa-bucket"></i></div><input type="date" id="edit-last-pot" style="border:none; outline:none; flex:1" onchange="autoSave()"></div>
-        <div class="action-row-item"><div class="action-icon red"><i class="fa-solid fa-scissors"></i></div><input type="date" id="edit-last-cut" style="border:none; outline:none; flex:1" onchange="autoSave()"></div>
-    </div>
-
-    <div style="padding:14px">
-        <div class="id-grid">
-            <div class="id-tile full" onclick="openSpeciesModal()"><label>Espèce</label><div id="species-display-text" style="font-size:0.85rem">Choisir...</div><input type="hidden" id="edit-species"></div>
-            <div class="id-tile"><label>Surnom</label><input type="text" id="edit-name" oninput="updateDossier();autoSave()"></div>
-            <div class="id-tile"><label>Catégorie</label><select id="edit-category" onchange="autoSave()"><option value="auto">Auto</option><option value="conifer">Conifère</option><option value="deciduous">Feuillu</option><option value="other">Autre</option></select></div>
-        </div>
-    </div>
-
-    <div class="edit-bottom-bar" id="edit-bottom-bar">
-        <button class="btn-cta-primary" onclick="saveBonsai()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
-        <button class="btn-cta-delete" id="btn-delete" onclick="confirmDeleteBonsai()"><i class="fa-solid fa-trash"></i></button>
-    </div>
-</div>
-
-<div class="bottom-nav">
-    <button class="nav-btn active" onclick="nav('list')"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
-    <button class="nav-btn" onclick="nav('calendar')"><i class="fa-regular fa-calendar"></i><span>Agenda</span></button>
-    <button class="nav-btn" onclick="showToast('Bientôt disponible')"><i class="fa-regular fa-lightbulb"></i><span>Conseils</span></button>
-    <button class="nav-btn" onclick="showToast('Bientôt disponible')"><i class="fa-regular fa-user"></i><span>Profil</span></button>
-</div>
-
-<div id="screen-calendar" class="screen">
-    <div style="padding:20px; font-family:var(--font-serif); font-size:1.5rem; font-weight:700;">Calendrier</div>
-    <div id="cal-days" style="padding:14px"></div>
-</div>
-
-<div id="toast" style="position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:black; color:white; padding:10px 20px; border-radius:20px; z-index:9999; font-size:0.8rem;"></div>
-
-<script>
-const SPECIES_DB = {
-  "🍁 Érables": ["Acer palmatum", "Acer buergerianum", "Acer campestre"],
-  "🌲 Conifères": ["Pinus thunbergii", "Juniperus chinensis", "Cedrus libani"],
-  "🌳 Feuillus": ["Ulmus parvifolia", "Zelkova serrata", "Carpinus betulus"]
+request.onupgradeneeded = e => {
+  db = e.target.result;
+  db.createObjectStore("trees", { keyPath: "id" });
 };
 
-const DB_NAME = 'BonsaiMasterPro', STORE_NAME = 'trees';
-let bonsais = [], currentUid = null, currentPhotoBase64 = null;
+request.onsuccess = e => {
+  db = e.target.result;
+  load();
+};
 
-const dbApi = {
-  open: () => new Promise(res => {
-    const r = indexedDB.open(DB_NAME, 1);
-    r.onupgradeneeded = e => e.target.result.createObjectStore(STORE_NAME, { keyPath: 'uid' });
-    r.onsuccess = e => res(e.target.result);
-  }),
-  getAll: async () => {
-    const db = await dbApi.open();
-    return new Promise(res => { db.transaction(STORE_NAME,'readonly').objectStore(STORE_NAME).getAll().onsuccess = e => res(e.target.result); });
-  },
-  put: async item => {
-    const db = await dbApi.open();
-    return new Promise(res => { db.transaction(STORE_NAME,'readwrite').objectStore(STORE_NAME).put(item).onsuccess = () => res(); });
-  },
-  delete: async uid => {
-    const db = await dbApi.open();
-    return new Promise(res => { db.transaction(STORE_NAME,'readwrite').objectStore(STORE_NAME).delete(uid).onsuccess = () => res(); });
+function inferCategory(species){
+  if(!species) return 'other';
+  if(species.includes('Pinus') || species.includes('Juniperus')) return 'conifer';
+  if(species.includes('Acer') || species.includes('Ulmus')) return 'deciduous';
+  return 'other';
+}
+
+function load(){
+  const tx = db.transaction("trees","readonly");
+  const store = tx.objectStore("trees");
+  const req = store.getAll();
+
+  req.onsuccess = () => {
+    bonsais = req.result;
+    renderList();
+    renderCalendar();
+  };
+}
+
+function renderList(){
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  bonsais.forEach(b => {
+    const div = document.createElement("div");
+    div.className = "card";
+
+    const urgent = isUrgent(b);
+
+    div.innerHTML = `
+      <b>${b.name}</b><br>
+      ${b.species}<br>
+      <span class="badge ${urgent?'red':'green'}">
+        ${urgent?'À faire':'OK'}
+      </span>
+    `;
+
+    div.onclick = () => edit(b);
+    list.appendChild(div);
+  });
+
+  const add = document.createElement("button");
+  add.textContent = "+ Ajouter";
+  add.onclick = () => edit(null);
+  list.appendChild(add);
+
+  const cal = document.createElement("button");
+  cal.textContent = "📅 Calendrier";
+  cal.onclick = () => showCalendar();
+  list.appendChild(cal);
+}
+
+function isUrgent(b){
+  if(!b.lastWater) return true;
+
+  const last = new Date(b.lastWater);
+  const now = new Date();
+
+  const diff = (now - last) / (1000*60*60*24);
+  return diff > 5;
+}
+
+function edit(b){
+  list.style.display="none";
+  calendar.style.display="none";
+  editor.style.display="block";
+
+  if(b){
+    currentId = b.id;
+    name.value = b.name;
+    species.value = b.species;
+    category.value = b.category || 'auto';
+    lastWater.value = b.lastWater || '';
+    lastCut.value = b.lastCut || '';
+  } else {
+    currentId = null;
+    name.value = '';
+    species.value = '';
+    category.value = 'auto';
+    lastWater.value = '';
+    lastCut.value = '';
   }
-};
-
-function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.visibility = 'visible'; t.style.opacity = '1'; setTimeout(() => { t.style.opacity = '0'; }, 2000); }
-
-function nav(screen) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + screen).classList.add('active');
-  document.getElementById('edit-bottom-bar').style.display = (screen === 'edit') ? 'flex' : 'none';
-  document.getElementById('home-bottom-bar').style.display = (screen === 'list') ? 'flex' : 'none';
 }
 
-function openSpeciesModal() { document.getElementById('species-modal').style.display = 'flex'; renderSpeciesList(''); }
-function closeSpeciesModal() { document.getElementById('species-modal').style.display = 'none'; }
-function renderSpeciesList(q) {
-  const c = document.getElementById('species-list-container'); c.innerHTML = '';
-  for(const [g, list] of Object.entries(SPECIES_DB)) {
-    list.filter(s => s.toLowerCase().includes(q.toLowerCase())).forEach(s => {
-      const d = document.createElement('div'); d.style.padding = '15px 0'; d.style.borderBottom = '1px solid #eee'; d.textContent = s;
-      d.onclick = () => { document.getElementById('edit-species').value = s; document.getElementById('species-display-text').textContent = s; closeSpeciesModal(); autoSave(); };
-      c.appendChild(d);
+function save(){
+  let cat = category.value;
+  if(cat === 'auto') cat = inferCategory(species.value);
+
+  const reader = new FileReader();
+
+  const saveData = (photo) => {
+    const tx = db.transaction("trees","readwrite");
+    const store = tx.objectStore("trees");
+
+    store.put({
+      id: currentId || Date.now(),
+      name: name.value,
+      species: species.value,
+      category: cat,
+      lastWater: lastWater.value,
+      lastCut: lastCut.value,
+      photo: photo
     });
+
+    back();
+    load();
+  };
+
+  if(photo.files[0]){
+    reader.onload = e => saveData(e.target.result);
+    reader.readAsDataURL(photo.files[0]);
+  } else {
+    saveData(null);
   }
 }
 
-function makeCard(b, index) {
-  const card = document.createElement('div'); card.className = 'bonsai-card'; card.onclick = () => openEditor(b.uid);
-  card.style.animationDelay = (index * 0.05) + 's';
-  card.innerHTML = `<div class="card-photo" style="background-image:url(${b.photo||''})">${b.photo?'':'<i class="fa-solid fa-tree"></i>'}</div><div class="card-info"><div class="card-name">${b.name||'SANS NOM'}</div><div class="card-species">${b.species||'—'}</div><span class="card-badge badge-green">Suivi</span></div>`;
-  return card;
+function del(){
+  if(!currentId) return;
+  if(!confirm("Supprimer cet arbre ?")) return;
+
+  const tx = db.transaction("trees","readwrite");
+  tx.objectStore("trees").delete(currentId);
+
+  back();
+  load();
 }
 
-function makeAddBtn(cat, index) {
-  const btn = document.createElement('div'); btn.className = 'card-add'; btn.onclick = () => openEditor(null, cat);
-  btn.style.animationDelay = (index * 0.05) + 's';
-  btn.innerHTML = `<i class="fa-solid fa-plus"></i><span>Ajouter</span>`;
-  return btn;
+function back(){
+  editor.style.display="none";
+  calendar.style.display="none";
+  list.style.display="block";
 }
 
-async function refresh() {
-  bonsais = await dbApi.getAll();
-  const c = document.getElementById('list-container'); c.innerHTML = '';
-  document.getElementById('bonsai-count').textContent = bonsais.length + ' arbres';
-  
-  const cats = { conifer: 'Conifères', deciduous: 'Feuillus', other: 'Autres' };
-  for(const [key, label] of Object.entries(cats)) {
-    const list = bonsais.filter(b => (b.category === key || (!b.category && key==='other')));
-    const sec = document.createElement('div'); sec.className = 'category-section';
-    sec.innerHTML = `<div class="category-header"><div class="category-label ${key}s">${label}</div><div class="category-header-line"></div></div>`;
-    const grid = document.createElement('div'); grid.className = 'category-grid';
-    list.forEach((b, i) => grid.appendChild(makeCard(b, i)));
-    grid.appendChild(makeAddBtn(key, list.length));
-    sec.appendChild(grid); c.appendChild(sec);
+function showCalendar(){
+  list.style.display="none";
+  editor.style.display="none";
+  calendar.style.display="block";
+}
+
+function renderCalendar(){
+  const cal = document.getElementById("calendar");
+  cal.innerHTML = "";
+
+  const today = new Date();
+  const days = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
+
+  for(let i=1;i<=days;i++){
+    const d = document.createElement("div");
+    d.textContent = i;
+
+    const dateStr = today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,'0')+"-"+String(i).padStart(2,'0');
+
+    if(i === today.getDate()) d.classList.add("today");
+
+    if(hasTask(dateStr)) d.classList.add("task");
+
+    cal.appendChild(d);
   }
 }
 
-function openEditor(uid) {
-  currentUid = uid; currentPhotoBase64 = null;
-  document.getElementById('edit-name').value = '';
-  document.getElementById('edit-species').value = '';
-  document.getElementById('species-display-text').textContent = 'Choisir...';
-  document.getElementById('hero-photo').style.backgroundImage = '';
-  document.getElementById('hero-icon').style.display = 'block';
-  
-  if(uid) {
-    const b = bonsais.find(x => x.uid === uid);
-    document.getElementById('edit-name').value = b.name;
-    document.getElementById('edit-species').value = b.species;
-    document.getElementById('species-display-text').textContent = b.species || 'Choisir...';
-    if(b.photo) { currentPhotoBase64 = b.photo; document.getElementById('hero-photo').style.backgroundImage = `url(${b.photo})`; document.getElementById('hero-icon').style.display = 'none'; }
-  }
-  nav('edit');
+function hasTask(date){
+  return bonsais.some(b => {
+    if(!b.lastWater) return false;
+    const last = new Date(b.lastWater);
+    const d = new Date(date);
+    const diff = (d - last) / (1000*60*60*24);
+    return diff >=5 && diff <=6;
+  });
 }
-
-async function saveBonsai() {
-  const name = document.getElementById('edit-name').value.trim();
-  if(!name) { showToast('Nom requis'); return; }
-  await dbApi.put({ uid: currentUid || Date.now(), name, species: document.getElementById('edit-species').value, photo: currentPhotoBase64, category: document.getElementById('edit-category').value });
-  await refresh(); nav('list');
-}
-
-async function confirmDeleteBonsai() { if(confirm('Supprimer ?')) { await dbApi.delete(currentUid); await refresh(); nav('list'); } }
-
-function autoSave() { /* Logique simplifiée pour l'exemple */ }
-function updateDossier() { document.getElementById('edit-header-title').textContent = document.getElementById('edit-name').value || 'Nouvel Arbre'; }
-
-const cropImg = document.getElementById('crop-image');
-function startCrop(input) {
-    const r = new FileReader(); 
-    r.onload = e => { 
-        document.getElementById('crop-screen').style.display = 'flex'; 
-        cropImg.src = e.target.result; 
-    }; 
-    r.readAsDataURL(input.files[0]);
-}
-function closeCrop() { document.getElementById('crop-screen').style.display = 'none'; }
-function confirmCrop() {
-    const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = 400;
-    canvas.getContext('2d').drawImage(cropImg, 0, 0, 400, 400);
-    currentPhotoBase64 = canvas.toDataURL('image/jpeg', 0.8);
-    document.getElementById('hero-photo').style.backgroundImage = `url(${currentPhotoBase64})`;
-    document.getElementById('hero-icon').style.display = 'none';
-    closeCrop();
-}
-
-window.onload = refresh;
-</script>
-</body>
+</script></body>
 </html>
