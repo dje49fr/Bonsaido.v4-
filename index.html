@@ -40,6 +40,29 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .screen { display: none; }
 .screen.active { display: block; }
 
+/* Animation des tuiles */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.bonsai-card { 
+  background: #fff; 
+  border-radius: var(--radius); 
+  overflow: hidden; 
+  cursor: pointer; 
+  transition: transform 0.15s, box-shadow 0.15s; 
+  box-shadow: var(--shadow); 
+  border: 1px solid var(--border);
+  animation: slideIn 0.4s ease forwards; /* L'animation s'applique ici */
+}
+
 #toast {
   visibility: hidden; position: fixed; bottom: 90px;
   left: 50%; transform: translateX(-50%) translateY(10px);
@@ -142,7 +165,6 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .search-bar input::placeholder { color: var(--text-dim); }
 .search-bar i { color: var(--text-dim); font-size: 0.85rem; }
 
-/* Barre de backup fixe en bas pour l'accueil */
 .home-bottom-bar {
   position: fixed; bottom: 72px; left: 0; right: 0;
   background: rgba(255,255,255,0.97); backdrop-filter: blur(12px);
@@ -163,7 +185,6 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .category-count { font-size: 0.58rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--card2); color: var(--text-dim); border: 1px solid var(--border); }
 .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 6px; }
 
-.bonsai-card { background: #fff; border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); border: 1px solid var(--border); }
 .bonsai-card:active { transform: scale(0.96); box-shadow: none; }
 .card-photo { width: 100%; aspect-ratio: 1/1; background: var(--card2); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--text-dim); }
 .card-info { padding: 8px 10px 10px; }
@@ -710,7 +731,6 @@ function nav(screen) {
   document.getElementById('screen-' + screen).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   
-  // Gestion de l'affichage des barres fixes du bas
   document.getElementById('edit-bottom-bar').style.display = (screen === 'edit') ? 'flex' : 'none';
   document.getElementById('home-bottom-bar').style.display = (screen === 'list') ? 'flex' : 'none';
   
@@ -755,14 +775,20 @@ function isConifer(sp) { if (!sp) return false; const s = sp.toLowerCase(); for 
 function isDec(sp) { if (!sp) return false; const s = sp.toLowerCase(); for (const g of Object.keys(SPECIES_DB).filter(g => !g.includes('Conifères'))) if (SPECIES_DB[g]?.some(x => x === sp)) return true; return DEC_KW.some(k => s.includes(k)); }
 function getCat(b) { if (b.category && b.category !== 'auto') return b.category; if (isConifer(b.species)) return 'conifer'; if (isDec(b.species)) return 'deciduous'; return 'other'; }
 
-function makeCard(b) {
+function makeCard(b, index) { /* Index ajouté pour l'animation progressive */
   const badge = getBadge(b);
   const card = document.createElement('div'); card.className = 'bonsai-card'; card.onclick = () => openEditor(b.uid);
+  
+  /* Ajout d'un léger délai d'animation pour chaque tuile */
+  card.style.animationDelay = (index * 0.05) + 's';
+  
   card.innerHTML = `<div class="card-photo" style="background-image:url(${b.photo||''})">${b.photo?'':'<i class="fa-solid fa-tree"></i>'}</div><div class="card-info"><div class="card-name">${b.name||'SANS NOM'}</div><div class="card-species">${b.species||'—'}</div><span class="card-badge ${badge.cls}">${badge.label}</span></div>`;
   return card;
 }
-function makeAddBtn(cat) {
+
+function makeAddBtn(cat, index) {
   const btn = document.createElement('div'); btn.className = 'card-add'; btn.onclick = () => openEditor(null, cat);
+  btn.style.animationDelay = (index * 0.05) + 's';
   btn.innerHTML = `<i class="fa-solid fa-plus"></i><span>Ajouter<br>un arbre</span>`;
   return btn;
 }
@@ -782,14 +808,18 @@ function renderList(list) {
   const conifers = list.filter(b => getCat(b) === 'conifer');
   const dec      = list.filter(b => getCat(b) === 'deciduous');
   const others   = list.filter(b => getCat(b) === 'other');
+  
+  let globalIdx = 0; /* Pour l'animation staggered */
+
   function buildSection(items, label, icon, css, cat) {
     const sec = document.createElement('div'); sec.className = 'category-section';
     const hd = document.createElement('div'); hd.className = 'category-header';
     hd.innerHTML = `<div class="category-label ${css}"><i class="${icon}"></i>${label}</div><span class="category-count">${items.length}</span><div class="category-header-line"></div>`;
     sec.appendChild(hd);
     const grid = document.createElement('div'); grid.className = 'category-grid';
-    items.forEach(b => grid.appendChild(makeCard(b)));
-    grid.appendChild(makeAddBtn(cat)); sec.appendChild(grid); c.appendChild(sec);
+    items.forEach(b => { grid.appendChild(makeCard(b, globalIdx)); globalIdx++; });
+    grid.appendChild(makeAddBtn(cat, globalIdx)); globalIdx++;
+    sec.appendChild(grid); c.appendChild(sec);
   }
   buildSection(conifers, 'Conifères',     'fa-solid fa-tree',     'conifers',  'conifer');
   buildSection(dec,      'Feuillus',      'fa-solid fa-leaf',     'deciduous', 'deciduous');
