@@ -236,6 +236,8 @@ input[type="file"] { display: none; }
 .action-icon.green  { background: #DFF0E4; color: #2E7A48; }
 .action-icon.purple { background: #EEE8F8; color: #6A4A9A; }
 .action-icon.teal   { background: #E0F4F0; color: #2A7A6A; }
+.action-icon.rose   { background: #F8E8F0; color: #9A3A6A; }
+.action-icon.olive  { background: #EEF0DC; color: #5A6A2A; }
 .action-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
 .action-sub { font-size: 0.7rem; color: var(--text-sec); margin-top: 2px; }
 .overdue-label { font-size: 0.6rem; font-weight: 700; color: var(--urgent); background: rgba(192,57,43,0.1); padding: 2px 7px; border-radius: 10px; margin-top: 3px; display: inline-block; }
@@ -392,6 +394,8 @@ input[type="file"] { display: none; }
 .task-type-btn.t-purple.selected{ border-color: #6A4A9A; background: #EEE8F8; color: #6A4A9A; }
 .task-type-btn.t-violet.selected{ border-color: #7A4A9A; background: #F0E8F8; color: #7A4A9A; }
 .task-type-btn.t-teal.selected  { border-color: #2A7A6A; background: #E0F4F0; color: #2A7A6A; }
+.task-type-btn.t-rose.selected  { border-color: #9A3A6A; background: #F8E8F0; color: #9A3A6A; }
+.task-type-btn.t-olive.selected { border-color: #5A6A2A; background: #EEF0DC; color: #5A6A2A; }
 .task-type-btn.t-gray.selected  { border-color: #5A5A6A; background: #EEEEF2; color: #5A5A6A; }
 .btn-save-task { width: 100%; padding: 15px; border: none; border-radius: 50px; background: var(--btn-dark); color: #fff; font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-top: 6px; }
 .recurrence-row { display: flex; gap: 8px; }
@@ -564,6 +568,24 @@ input[type="file"] { display: none; }
             </div>
             <i class="fa-solid fa-chevron-right arr"></i>
         </div>
+        <div class="action-row-item" id="action-mekiri">
+            <div class="action-icon rose"><i class="fa-solid fa-cut"></i></div>
+            <div style="flex:1">
+                <div class="action-title" data-i18n="mekiri">Mékiri</div>
+                <div class="action-sub"><input type="date" id="edit-last-mekiri" class="date-input-row" onchange="checkOverdue();autoSave()"></div>
+                <div id="overdue-mekiri" style="display:none"><span class="overdue-label" data-i18n="late">⚠ En retard</span></div>
+            </div>
+            <i class="fa-solid fa-chevron-right arr"></i>
+        </div>
+        <div class="action-row-item" id="action-metsumi">
+            <div class="action-icon olive"><i class="fa-solid fa-hand-scissors"></i></div>
+            <div style="flex:1">
+                <div class="action-title" data-i18n="metsumi">Metsumi</div>
+                <div class="action-sub"><input type="date" id="edit-last-metsumi" class="date-input-row" onchange="checkOverdue();autoSave()"></div>
+                <div id="overdue-metsumi" style="display:none"><span class="overdue-label" data-i18n="late">⚠ En retard</span></div>
+            </div>
+            <i class="fa-solid fa-chevron-right arr"></i>
+        </div>
     </div>
     <div class="dossier-band">
         <div class="dossier-icon"><i class="fa-solid fa-folder-open"></i></div>
@@ -685,6 +707,8 @@ input[type="file"] { display: none; }
                 <button class="task-type-btn t-purple" data-type="ligature" data-color="#6A4A9A" onclick="selectTaskType(this)"><i class="fa-solid fa-circle-notch"></i><span data-i18n="wiring">Ligature</span></button>
                 <button class="task-type-btn t-violet" data-type="effeuillage" data-color="#7A4A9A" onclick="selectTaskType(this)"><i class="fa-solid fa-leaf-heart"></i><span data-i18n="defoliation">Effeuillage</span></button>
                 <button class="task-type-btn t-teal" data-type="desaiguillage" data-color="#2A7A6A" onclick="selectTaskType(this)"><i class="fa-solid fa-spa"></i><span data-i18n="deneedling">Désaiguillage</span></button>
+                <button class="task-type-btn t-rose" data-type="mekiri" data-color="#9A3A6A" onclick="selectTaskType(this)"><i class="fa-solid fa-cut"></i><span data-i18n="mekiri">Mékiri</span></button>
+                <button class="task-type-btn t-olive" data-type="metsumi" data-color="#5A6A2A" onclick="selectTaskType(this)"><i class="fa-solid fa-hand-scissors"></i><span data-i18n="metsumi">Metsumi</span></button>
                 <button class="task-type-btn t-gray" data-type="autre" data-color="#5A5A6A" onclick="selectTaskType(this)"><i class="fa-solid fa-pen"></i><span data-i18n="other">Autre</span></button>
             </div>
         </div>
@@ -804,7 +828,9 @@ const TRANSLATIONS = {
     andOthers: 'et', other1: 'autre', others1: 'autres',
     actionPot: 'rempotage', actionCut: 'taille', actionFertil: 'fertilisation', actionWire: 'ligature',
     actionDefoil: 'effeuillage', actionDeneedle: 'désaiguillage',
+    actionMekiri: 'mékiri', actionMetsumi: 'metsumi',
     defoliation: 'Effeuillage', deneedling: 'Désaiguillage',
+    mekiri: 'Mékiri', metsumi: 'Metsumi',
     lastAction: 'Dernière action',
     noTaskDay: 'Aucune tâche ce jour.\nAppuyez sur + pour en ajouter.',
     taskAdded: '✓ Tâche ajoutée !', deleteTask: 'Supprimer cette tâche ?',
@@ -860,7 +886,9 @@ const TRANSLATIONS = {
     andOthers: 'and', other1: 'other', others1: 'others',
     actionPot: 'repotting', actionCut: 'pruning', actionFertil: 'fertilization', actionWire: 'wiring',
     actionDefoil: 'defoliation', actionDeneedle: 'deneedling',
+    actionMekiri: 'mekiri', actionMetsumi: 'metsumi',
     defoliation: 'Defoliation', deneedling: 'Deneedling',
+    mekiri: 'Mekiri', metsumi: 'Metsumi',
     lastAction: 'Last action',
     noTaskDay: 'No tasks this day.\nTap + to add one.',
     taskAdded: '✓ Task added!', deleteTask: 'Delete this task?',
@@ -996,7 +1024,7 @@ function selectSpecies(sp) {
 }
 
 function getBadge(b) {
-  const a = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire, b.lastDefoil, b.lastDeneedle].filter(Boolean);
+  const a = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire, b.lastDefoil, b.lastDeneedle, b.lastMekiri, b.lastMetsumi].filter(Boolean);
   if (!a.length) return { label: T('untracked'), cls: 'badge-yellow' };
   const days = Math.floor((Date.now() - Math.max(...a.map(d => new Date(d)))) / 86400000);
   if (days <= 30) return { label: T('healthy'), cls: 'badge-green' };
@@ -1020,6 +1048,8 @@ function getUrgencyDetails(b) {
     { key: 'lastWire',     labelKey: 'actionWire' },
     { key: 'lastDefoil',   labelKey: 'actionDefoil' },
     { key: 'lastDeneedle', labelKey: 'actionDeneedle' },
+    { key: 'lastMekiri',   labelKey: 'actionMekiri' },
+    { key: 'lastMetsumi',  labelKey: 'actionMetsumi' },
   ];
   const filled = actions.filter(a => b[a.key]).map(a => ({ ...a, date: new Date(b[a.key]) }));
   if (!filled.length) return { days: null, lastActionKey: null };
@@ -1130,7 +1160,7 @@ function renderUpcomingWidget() {
   widget.style.display = 'block'; list.innerHTML = '';
   document.querySelector('.upcoming-title span').textContent = T('upcomingTasks');
   document.querySelector('.upcoming-days-label').textContent = T('next7days');
-  const colors = { taille:'#9A5040', fertilisation:'#7A5828', rempotage:'#2E7A48', ligature:'#6A4A9A', effeuillage:'#7A4A9A', desaiguillage:'#2A7A6A', autre:'#5A5A6A' };
+  const colors = { taille:'#9A5040', fertilisation:'#7A5828', rempotage:'#2E7A48', ligature:'#6A4A9A', effeuillage:'#7A4A9A', desaiguillage:'#2A7A6A', mekiri:'#9A3A6A', metsumi:'#5A6A2A', autre:'#5A5A6A' };
   upcoming.forEach(t => {
     const isToday = t.date === new Date().toISOString().slice(0,10);
     const item = document.createElement('div'); item.className = 'upcoming-item';
@@ -1141,7 +1171,7 @@ function renderUpcomingWidget() {
 
 function checkOverdue() {
   const today = Date.now();
-  [['pot',730],['cut',365],['fertil',90],['wire',180],['defoil',365],['deneedle',365]].forEach(([key, limit]) => {
+  [['pot',730],['cut',365],['fertil',90],['wire',180],['defoil',365],['deneedle',365],['mekiri',365],['metsumi',365]].forEach(([key, limit]) => {
     const val = document.getElementById('edit-last-'+key).value;
     const row = document.getElementById('action-'+key);
     const label = document.getElementById('overdue-'+key);
@@ -1164,7 +1194,7 @@ function updateDossier() {
 
 function resetEditor() {
   ['edit-name','edit-date','edit-notes'].forEach(id => document.getElementById(id).value = '');
-  ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire','edit-last-defoil','edit-last-deneedle'].forEach(id => document.getElementById(id).value = '');
+  ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire','edit-last-defoil','edit-last-deneedle','edit-last-mekiri','edit-last-metsumi'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('edit-species').value = '';
   document.getElementById('edit-origin').value = 'Pépinière';
   document.getElementById('edit-category').value = 'auto';
@@ -1178,7 +1208,7 @@ function resetEditor() {
   document.getElementById('btn-ai').disabled = false;
   document.getElementById('file-input').value = '';
   currentGallery = []; renderGallery(); updateDossier();
-  ['pot','cut','fertil','wire','defoil','deneedle'].forEach(k => { document.getElementById('action-'+k).classList.remove('overdue'); document.getElementById('overdue-'+k).style.display = 'none'; });
+  ['pot','cut','fertil','wire','defoil','deneedle','mekiri','metsumi'].forEach(k => { document.getElementById('action-'+k).classList.remove('overdue'); document.getElementById('overdue-'+k).style.display = 'none'; });
 }
 
 function openEditor(uid, cat) {
@@ -1193,7 +1223,7 @@ function openEditor(uid, cat) {
     document.getElementById('edit-origin').value = b.origin || 'Pépinière';
     document.getElementById('edit-category').value = b.category || 'auto';
     buildStyleOptions(b.style || '');
-    ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire','edit-last-defoil','edit-last-deneedle'].forEach((id,i) => { document.getElementById(id).value = [b.lastPot,b.lastCut,b.lastFertil,b.lastWire,b.lastDefoil,b.lastDeneedle][i] || ''; });
+    ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire','edit-last-defoil','edit-last-deneedle','edit-last-mekiri','edit-last-metsumi'].forEach((id,i) => { document.getElementById(id).value = [b.lastPot,b.lastCut,b.lastFertil,b.lastWire,b.lastDefoil,b.lastDeneedle,b.lastMekiri,b.lastMetsumi][i] || ''; });
     if (b.species) { document.getElementById('edit-species').value = b.species; const txt = document.getElementById('species-display-text'); txt.textContent = b.species; txt.classList.add('selected'); }
     if (b.photo) { currentPhotoBase64 = b.photo; document.getElementById('hero-photo').style.backgroundImage = `url(${b.photo})`; document.getElementById('hero-icon').style.display = 'none'; }
     currentGallery = b.gallery || []; renderGallery(); updateDossier(); checkOverdue();
@@ -1206,7 +1236,7 @@ async function _doSave(goBack = true) {
   if (!name) { showToast(T('nicknameRequired')); return false; }
   const uid = currentUid || Date.now();
   if (!currentUid) currentUid = uid;
-  await dbApi.put({ uid, name, photo: currentPhotoBase64, species: document.getElementById('edit-species').value, date: document.getElementById('edit-date').value, origin: document.getElementById('edit-origin').value, style: document.getElementById('edit-style').value, substrat: document.getElementById('edit-substrat').value, lastPot: document.getElementById('edit-last-pot').value, lastCut: document.getElementById('edit-last-cut').value, lastFertil: document.getElementById('edit-last-fertil').value, lastWire: document.getElementById('edit-last-wire').value, lastDefoil: document.getElementById('edit-last-defoil').value, lastDeneedle: document.getElementById('edit-last-deneedle').value, notes: document.getElementById('edit-notes').value, category: document.getElementById('edit-category').value, gallery: currentGallery });
+  await dbApi.put({ uid, name, photo: currentPhotoBase64, species: document.getElementById('edit-species').value, date: document.getElementById('edit-date').value, origin: document.getElementById('edit-origin').value, style: document.getElementById('edit-style').value, substrat: document.getElementById('edit-substrat').value, lastPot: document.getElementById('edit-last-pot').value, lastCut: document.getElementById('edit-last-cut').value, lastFertil: document.getElementById('edit-last-fertil').value, lastWire: document.getElementById('edit-last-wire').value, lastDefoil: document.getElementById('edit-last-defoil').value, lastDeneedle: document.getElementById('edit-last-deneedle').value, lastMekiri: document.getElementById('edit-last-mekiri').value, lastMetsumi: document.getElementById('edit-last-metsumi').value, notes: document.getElementById('edit-notes').value, category: document.getElementById('edit-category').value, gallery: currentGallery });
   await refresh();
   if (goBack) { nav('list'); showToast(T('registered')); }
   return true;
@@ -1410,8 +1440,8 @@ function renderTasksForDate(dateStr) {
   list.innerHTML = '';
   if (!dayTasks.length) { list.innerHTML = `<div class="cal-empty">${T('noTaskDay')}</div>`; return; }
   dayTasks.forEach(t => {
-    const icons = { taille:'fa-scissors', fertilisation:'fa-seedling', rempotage:'fa-bucket', ligature:'fa-circle-notch', effeuillage:'fa-leaf-heart', desaiguillage:'fa-spa', autre:'fa-pen' };
-    const typeLabel = { taille: T('pruning'), fertilisation: T('fertilization'), rempotage: T('repotting'), ligature: T('wiring'), effeuillage: T('defoliation'), desaiguillage: T('deneedling'), autre: T('other') };
+    const icons = { taille:'fa-scissors', fertilisation:'fa-seedling', rempotage:'fa-bucket', ligature:'fa-circle-notch', effeuillage:'fa-leaf-heart', desaiguillage:'fa-spa', mekiri:'fa-cut', metsumi:'fa-hand-scissors', autre:'fa-pen' };
+    const typeLabel = { taille: T('pruning'), fertilisation: T('fertilization'), rempotage: T('repotting'), ligature: T('wiring'), effeuillage: T('defoliation'), desaiguillage: T('deneedling'), mekiri: T('mekiri'), metsumi: T('metsumi'), autre: T('other') };
     const isOverdue = t.date < today;
     const item = document.createElement('div'); item.className = 'cal-task-item' + (isOverdue ? ' is-overdue' : '');
     item.innerHTML = `<div class="cal-task-color" style="background:${t.color}"></div><div class="cal-task-info"><div class="cal-task-title"><i class="fa-solid ${icons[t.type]||'fa-pen'}" style="color:${t.color};margin-right:7px"></i>${typeLabel[t.type]||t.type}${t.tree?' — '+t.tree:''}${t.recurrence&&t.recurrence!=='none'?` <span style="font-size:0.6rem;opacity:0.6">(${T(t.recurrence)})</span>`:''}</div>${t.desc?`<div class="cal-task-sub">${t.desc}</div>`:''}${isOverdue?`<div class="overdue-label">${T('late')}</div>`:''}</div><button class="cal-task-del" onclick="confirmDeleteTask('${t.uid}')"><i class="fa-solid fa-xmark"></i></button>`;
