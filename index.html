@@ -428,32 +428,47 @@ input[type="file"] { display: none; }
 }
 .watering-toggle-switch.on::after { transform: translateX(18px); }
 .watering-toggle-label { font-size: 0.78rem; color: var(--text-sec); font-weight: 600; }
-.seasons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.season-tile {
+
+/* Mini-calendrier d'arrosage */
+.water-cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.water-cal-nav .cal-month-label { font-size: 0.88rem; font-weight: 700; color: var(--text); text-transform: capitalize; }
+.water-cal-tools {
+  display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap;
+}
+.water-tool-btn {
+  flex: 1; min-width: 0;
   background: var(--card2); border: 1px solid var(--border);
-  border-radius: 10px; padding: 10px 8px; text-align: center;
+  border-radius: 8px; padding: 7px 6px;
+  font-family: var(--font); font-size: 0.66rem; font-weight: 700;
+  color: var(--text-sec); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  white-space: nowrap;
 }
-.season-tile.summer  { background: #FFF5E8; border-color: rgba(200,130,40,0.22); }
-.season-tile.mid     { background: #F0F5E8; border-color: rgba(120,150,80,0.22); }
-.season-tile.winter  { background: #E8F0F5; border-color: rgba(80,120,160,0.22); }
-.season-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-sec); display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 6px; }
-.season-tile.summer .season-label { color: #8A6020; }
-.season-tile.mid    .season-label { color: #4A7A56; }
-.season-tile.winter .season-label { color: #3A7A9A; }
-.season-interval { display: flex; align-items: center; justify-content: center; gap: 4px; }
-.season-interval input {
-  width: 42px; text-align: center; border: 1px solid var(--border);
-  border-radius: 8px; padding: 6px 4px; font-family: var(--font);
-  font-size: 0.88rem; font-weight: 700; color: var(--text);
-  background: #fff; outline: none;
+.water-tool-btn:active { background: #DFF0F5; color: #3A7A9A; border-color: rgba(58,122,154,0.3); }
+.water-tool-btn i { font-size: 0.65rem; }
+.water-cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); margin-bottom: 4px; }
+.water-cal-weekdays > div { text-align: center; font-size: 0.58rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; padding: 3px 0; }
+.water-cal-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+.water-day {
+  aspect-ratio: 1/1; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--card2); display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 600; color: var(--text); cursor: pointer;
+  font-family: var(--font); position: relative;
+  transition: background 0.1s, border-color 0.1s, transform 0.1s;
 }
-.season-interval-unit { font-size: 0.62rem; color: var(--text-sec); font-weight: 600; }
-.watering-next {
-  margin-top: 10px; padding: 8px 10px; background: #DFF0F5;
+.water-day:active { transform: scale(0.92); }
+.water-day.other-month { color: var(--text-dim); opacity: 0.35; pointer-events: none; background: transparent; border-color: transparent; }
+.water-day.past { opacity: 0.4; pointer-events: none; }
+.water-day.today { border-color: var(--text); border-width: 2px; font-weight: 700; }
+.water-day.selected { background: #3A7A9A; color: #fff; border-color: #3A7A9A; }
+.water-day.selected.today { box-shadow: 0 0 0 2px rgba(58,122,154,0.3); }
+.water-day.selected::after { content: '💧'; position: absolute; top: 1px; right: 1px; font-size: 0.5rem; }
+.watering-summary {
+  margin-top: 10px; padding: 9px 11px; background: #DFF0F5;
   border-radius: 8px; font-size: 0.72rem; color: #3A7A9A;
   font-weight: 600; display: flex; align-items: center; gap: 6px;
 }
-.watering-next.hidden { display: none; }
+.watering-summary.empty { background: var(--card2); color: var(--text-dim); font-style: italic; }
 </style>
 </head>
 <body>
@@ -656,42 +671,26 @@ input[type="file"] { display: none; }
         </div>
     </div>
     <div class="watering-block">
-        <label><i class="fa-solid fa-droplet"></i> <span data-i18n="seasonalWatering">Arrosage saisonnier</span></label>
+        <label><i class="fa-solid fa-droplet"></i> <span data-i18n="wateringSchedule">Planning d'arrosage</span></label>
         <div class="watering-toggle">
             <div class="watering-toggle-switch" id="watering-switch" onclick="toggleWatering()"></div>
             <span class="watering-toggle-label" id="watering-toggle-label" data-i18n="enableWatering">Activer les rappels d'arrosage</span>
         </div>
         <div id="watering-config" style="display:none">
-            <div class="seasons-grid">
-                <div class="season-tile summer">
-                    <div class="season-label">☀️ <span data-i18n="summer">Été</span></div>
-                    <div class="season-interval">
-                        <span data-i18n="every">Tous les</span>
-                        <input type="number" id="water-summer" min="1" max="30" value="1" onchange="saveWateringConfig()">
-                        <span class="season-interval-unit" data-i18n="days">j</span>
-                    </div>
-                </div>
-                <div class="season-tile mid">
-                    <div class="season-label">🍃 <span data-i18n="midSeason">Mi-saison</span></div>
-                    <div class="season-interval">
-                        <span data-i18n="every">Tous les</span>
-                        <input type="number" id="water-mid" min="1" max="30" value="2" onchange="saveWateringConfig()">
-                        <span class="season-interval-unit" data-i18n="days">j</span>
-                    </div>
-                </div>
-                <div class="season-tile winter">
-                    <div class="season-label">❄️ <span data-i18n="winter">Hiver</span></div>
-                    <div class="season-interval">
-                        <span data-i18n="every">Tous les</span>
-                        <input type="number" id="water-winter" min="1" max="30" value="5" onchange="saveWateringConfig()">
-                        <span class="season-interval-unit" data-i18n="days">j</span>
-                    </div>
-                </div>
+            <div class="water-cal-nav">
+                <button class="btn-month" type="button" onclick="changeWaterMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="cal-month-label" id="water-cal-label"></div>
+                <button class="btn-month" type="button" onclick="changeWaterMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
-            <div class="watering-next hidden" id="watering-next">
-                <i class="fa-solid fa-calendar-check"></i>
-                <span id="watering-next-text"></span>
+            <div class="water-cal-tools">
+                <button type="button" class="water-tool-btn" onclick="waterSelectAll()"><i class="fa-solid fa-check-double"></i> <span data-i18n="selectAll">Tout</span></button>
+                <button type="button" class="water-tool-btn" onclick="waterSelectEveryN(2)"><span data-i18n="every2">1j/2</span></button>
+                <button type="button" class="water-tool-btn" onclick="waterSelectEveryN(3)"><span data-i18n="every3">1j/3</span></button>
+                <button type="button" class="water-tool-btn" onclick="waterClearMonth()"><i class="fa-solid fa-xmark"></i> <span data-i18n="clearMonth">Effacer</span></button>
             </div>
+            <div class="water-cal-weekdays" id="water-cal-weekdays"></div>
+            <div class="water-cal-days" id="water-cal-days"></div>
+            <div class="watering-summary" id="watering-summary"></div>
         </div>
     </div>
     <div class="ai-block">
@@ -871,11 +870,10 @@ const TRANSLATIONS = {
     conifers: 'Conifères', deciduous: 'Feuillus', others: 'Autres Bonsaïs',
     healthy: 'En Santé', attention: 'Attention', urgent: 'Urgent', untracked: 'Non suivi',
     healthStatus: 'État de santé',
-    seasonalWatering: 'Arrosage saisonnier', enableWatering: 'Activer les rappels',
-    summer: 'Été', midSeason: 'Mi-saison', winter: 'Hiver',
-    every: 'Tous les', days: 'j',
-    nextWatering: 'Prochain arrosage',
-    wateringConfigured: '✓ Arrosage programmé',
+    wateringSchedule: "Planning d'arrosage", enableWatering: 'Activer les rappels',
+    selectAll: 'Tout', every2: '1j/2', every3: '1j/3', clearMonth: 'Effacer',
+    daySelected: 'jour sélectionné', daysSelected: 'jours sélectionnés',
+    noDaySelected: 'Aucun jour sélectionné — cochez les jours d\'arrosage',
     auto: '🔄 Auto', conifer: '🌲 Conifère', other: '🌱 Autre',
     today: "Aujourd'hui",
     months: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
@@ -925,11 +923,10 @@ const TRANSLATIONS = {
     conifers: 'Conifers', deciduous: 'Deciduous', others: 'Other Bonsai',
     healthy: 'Healthy', attention: 'Attention', urgent: 'Urgent', untracked: 'Untracked',
     healthStatus: 'Health status',
-    seasonalWatering: 'Seasonal watering', enableWatering: 'Enable reminders',
-    summer: 'Summer', midSeason: 'Mid-season', winter: 'Winter',
-    every: 'Every', days: 'd',
-    nextWatering: 'Next watering',
-    wateringConfigured: '✓ Watering scheduled',
+    wateringSchedule: 'Watering schedule', enableWatering: 'Enable reminders',
+    selectAll: 'All', every2: '1d/2', every3: '1d/3', clearMonth: 'Clear',
+    daySelected: 'day selected', daysSelected: 'days selected',
+    noDaySelected: 'No day selected — tap days to schedule watering',
     auto: '🔄 Auto', conifer: '🌲 Conifer', other: '🌱 Other',
     today: 'Today',
     months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
@@ -1007,84 +1004,136 @@ function selectHealth(btn) {
   autoSave();
 }
 
-// ── ARROSAGE SAISONNIER ───────────────────────────────────────────────────
-// Saison selon mois (hémisphère nord) : été = juin-août, mi-saison = avril-mai + sept-oct, hiver = nov-mars
-function getSeasonForDate(date) {
-  const m = date.getMonth(); // 0=janv
-  if (m >= 5 && m <= 7) return 'summer';          // juin, juillet, août
-  if (m === 3 || m === 4 || m === 8 || m === 9) return 'mid'; // avril, mai, sept, oct
-  return 'winter';                                  // nov-mars
-}
-function getIntervalForDate(cfg, date) {
-  const season = getSeasonForDate(date);
-  if (season === 'summer') return cfg.summer || 1;
-  if (season === 'mid')    return cfg.mid    || 2;
-  return cfg.winter || 5;
-}
-
+// ── ARROSAGE — PLANNING PAR JOUR ──────────────────────────────────────────
+// Stockage : Set de dates "YYYY-MM-DD" (jours cochés par l'utilisateur)
 let wateringEnabled = false;
+let wateringDates = new Set();
+let waterCalYear = new Date().getFullYear();
+let waterCalMonth = new Date().getMonth();
+
 function toggleWatering() {
   wateringEnabled = !wateringEnabled;
   document.getElementById('watering-switch').classList.toggle('on', wateringEnabled);
   document.getElementById('watering-config').style.display = wateringEnabled ? 'block' : 'none';
-  saveWateringConfig();
-}
-
-function saveWateringConfig() {
-  updateNextWateringDisplay();
+  if (wateringEnabled) renderWaterCal();
   autoSave();
 }
 
-function updateNextWateringDisplay() {
-  const box = document.getElementById('watering-next');
-  const txt = document.getElementById('watering-next-text');
-  if (!wateringEnabled) { box.classList.add('hidden'); return; }
-  const cfg = {
-    summer: parseInt(document.getElementById('water-summer').value) || 1,
-    mid:    parseInt(document.getElementById('water-mid').value)    || 2,
-    winter: parseInt(document.getElementById('water-winter').value) || 5,
-  };
-  const today = new Date();
-  const interval = getIntervalForDate(cfg, today);
-  const next = new Date(today); next.setDate(next.getDate() + interval);
-  box.classList.remove('hidden');
-  const seasonLabel = { summer: T('summer'), mid: T('midSeason'), winter: T('winter') }[getSeasonForDate(today)];
-  txt.textContent = `${T('nextWatering')}: ${formatDate(next.toISOString().slice(0,10))} (${seasonLabel} — ${T('every').toLowerCase()} ${interval}${T('days')})`;
+function changeWaterMonth(dir) {
+  waterCalMonth += dir;
+  if (waterCalMonth > 11) { waterCalMonth = 0; waterCalYear++; }
+  if (waterCalMonth < 0)  { waterCalMonth = 11; waterCalYear--; }
+  renderWaterCal();
 }
 
-// Génère les tâches d'arrosage pour un arbre (sur ~60 jours, adaptées à la saison)
-function generateWateringTasks(treeName, cfg) {
-  if (!cfg || !cfg.enabled) return [];
-  const out = [];
+function renderWaterCal() {
   const today = new Date(); today.setHours(0,0,0,0);
-  const end = new Date(today); end.setDate(end.getDate() + 60);
-  let cursor = new Date(today);
-  while (cursor <= end) {
-    const interval = getIntervalForDate(cfg, cursor);
-    cursor = new Date(cursor); cursor.setDate(cursor.getDate() + interval);
-    if (cursor > end) break;
-    out.push({
-      uid: `water-${treeName}-${cursor.getTime()}`,
-      type: 'arrosage',
-      color: '#3A7A9A',
-      desc: '',
-      tree: treeName,
-      date: cursor.toISOString().slice(0,10),
-      recurrence: 'seasonal',
-      auto: true,
-    });
+  const todayStr = today.toISOString().slice(0,10);
+  document.getElementById('water-cal-label').textContent = T('months')[waterCalMonth] + ' ' + waterCalYear;
+
+  // Jours de la semaine
+  const wdEl = document.getElementById('water-cal-weekdays'); wdEl.innerHTML = '';
+  T('weekdays').forEach((wd, i) => {
+    const d = document.createElement('div');
+    if (i >= 5) d.style.color = '#C0392B';
+    d.textContent = wd.slice(0, 1);
+    wdEl.appendChild(d);
+  });
+
+  // Grille
+  const daysEl = document.getElementById('water-cal-days'); daysEl.innerHTML = '';
+  const firstDay = new Date(waterCalYear, waterCalMonth, 1);
+  const lastDay = new Date(waterCalYear, waterCalMonth + 1, 0);
+  let startDow = firstDay.getDay(); startDow = startDow === 0 ? 6 : startDow - 1;
+
+  // Jours du mois précédent (vides mais occupant la grille)
+  for (let i = 0; i < startDow; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'water-day other-month';
+    daysEl.appendChild(empty);
   }
-  return out;
+
+  // Jours du mois courant
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const dateStr = waterCalYear + '-' + String(waterCalMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'water-day';
+    btn.textContent = d;
+    if (dateStr < todayStr) btn.classList.add('past');
+    if (dateStr === todayStr) btn.classList.add('today');
+    if (wateringDates.has(dateStr)) btn.classList.add('selected');
+    btn.onclick = () => toggleWaterDay(dateStr);
+    daysEl.appendChild(btn);
+  }
+  renderWateringSummary();
 }
 
-// Régénère TOUTES les tâches auto d'arrosage à partir des arbres en BDD
+function toggleWaterDay(dateStr) {
+  if (wateringDates.has(dateStr)) wateringDates.delete(dateStr);
+  else wateringDates.add(dateStr);
+  renderWaterCal();
+  autoSave();
+}
+
+function waterSelectAll() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayStr = today.toISOString().slice(0,10);
+  const lastDay = new Date(waterCalYear, waterCalMonth + 1, 0).getDate();
+  for (let d = 1; d <= lastDay; d++) {
+    const dateStr = waterCalYear + '-' + String(waterCalMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    if (dateStr >= todayStr) wateringDates.add(dateStr);
+  }
+  renderWaterCal(); autoSave();
+}
+
+function waterSelectEveryN(n) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayStr = today.toISOString().slice(0,10);
+  const lastDay = new Date(waterCalYear, waterCalMonth + 1, 0).getDate();
+  for (let d = 1; d <= lastDay; d++) {
+    const dateStr = waterCalYear + '-' + String(waterCalMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    if (dateStr >= todayStr && (d - 1) % n === 0) wateringDates.add(dateStr);
+  }
+  renderWaterCal(); autoSave();
+}
+
+function waterClearMonth() {
+  const prefix = waterCalYear + '-' + String(waterCalMonth + 1).padStart(2, '0') + '-';
+  [...wateringDates].forEach(d => { if (d.startsWith(prefix)) wateringDates.delete(d); });
+  renderWaterCal(); autoSave();
+}
+
+function renderWateringSummary() {
+  const box = document.getElementById('watering-summary');
+  const prefix = waterCalYear + '-' + String(waterCalMonth + 1).padStart(2, '0') + '-';
+  const count = [...wateringDates].filter(d => d.startsWith(prefix)).length;
+  if (!count) {
+    box.classList.add('empty');
+    box.innerHTML = `<i class="fa-regular fa-calendar"></i> ${T('noDaySelected')}`;
+  } else {
+    box.classList.remove('empty');
+    box.innerHTML = `<i class="fa-solid fa-calendar-check"></i> ${count} ${T(count > 1 ? 'daysSelected' : 'daySelected')}`;
+  }
+}
+
+// Génère les tâches à partir des dates cochées de tous les arbres
 function refreshWateringTasks() {
-  // Retire les anciennes tâches auto
   tasks = tasks.filter(t => !t.auto);
-  // Regénère à partir de chaque arbre avec arrosage activé
   bonsais.forEach(b => {
-    if (b.watering && b.watering.enabled && b.name) {
-      tasks.push(...generateWateringTasks(b.name, b.watering));
+    if (b.watering && b.watering.enabled && Array.isArray(b.watering.dates) && b.name) {
+      b.watering.dates.forEach(dateStr => {
+        tasks.push({
+          uid: `water-${b.uid}-${dateStr}`,
+          type: 'arrosage',
+          color: '#3A7A9A',
+          desc: '',
+          tree: b.name,
+          date: dateStr,
+          recurrence: 'custom',
+          auto: true,
+        });
+      });
     }
   });
   saveTasks();
@@ -1286,14 +1335,13 @@ function resetEditor() {
   // Santé : reset à "untracked"
   selectedHealth = 'untracked';
   document.querySelectorAll('.health-btn').forEach(b => b.classList.toggle('selected', b.dataset.health === 'untracked'));
-  // Arrosage : désactivé par défaut
+  // Arrosage : désactivé + calendrier vide
   wateringEnabled = false;
+  wateringDates = new Set();
+  waterCalYear = new Date().getFullYear();
+  waterCalMonth = new Date().getMonth();
   document.getElementById('watering-switch').classList.remove('on');
   document.getElementById('watering-config').style.display = 'none';
-  document.getElementById('water-summer').value = 1;
-  document.getElementById('water-mid').value = 2;
-  document.getElementById('water-winter').value = 5;
-  document.getElementById('watering-next').classList.add('hidden');
   currentGallery = []; renderGallery(); updateDossier();
   ['pot','cut','fertil','wire'].forEach(k => { document.getElementById('action-'+k).classList.remove('overdue'); document.getElementById('overdue-'+k).style.display = 'none'; });
 }
@@ -1317,15 +1365,13 @@ function openEditor(uid, cat) {
     // Santé manuelle
     selectedHealth = b.healthStatus || 'untracked';
     document.querySelectorAll('.health-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.health === selectedHealth));
-    // Arrosage saisonnier
+    // Arrosage : charger les dates cochées
     if (b.watering) {
       wateringEnabled = !!b.watering.enabled;
+      wateringDates = new Set(Array.isArray(b.watering.dates) ? b.watering.dates : []);
       document.getElementById('watering-switch').classList.toggle('on', wateringEnabled);
       document.getElementById('watering-config').style.display = wateringEnabled ? 'block' : 'none';
-      document.getElementById('water-summer').value = b.watering.summer || 1;
-      document.getElementById('water-mid').value    = b.watering.mid    || 2;
-      document.getElementById('water-winter').value = b.watering.winter || 5;
-      updateNextWateringDisplay();
+      if (wateringEnabled) renderWaterCal();
     }
   }
   nav('edit');
@@ -1338,9 +1384,7 @@ async function _doSave(goBack = true) {
   if (!currentUid) currentUid = uid;
   const wateringConfig = {
     enabled: wateringEnabled,
-    summer: parseInt(document.getElementById('water-summer').value) || 1,
-    mid:    parseInt(document.getElementById('water-mid').value)    || 2,
-    winter: parseInt(document.getElementById('water-winter').value) || 5,
+    dates: [...wateringDates].sort(),
   };
   await dbApi.put({ uid, name, photo: currentPhotoBase64, species: document.getElementById('edit-species').value, date: document.getElementById('edit-date').value, origin: document.getElementById('edit-origin').value, style: document.getElementById('edit-style').value, substrat: document.getElementById('edit-substrat').value, lastPot: document.getElementById('edit-last-pot').value, lastCut: document.getElementById('edit-last-cut').value, lastFertil: document.getElementById('edit-last-fertil').value, lastWire: document.getElementById('edit-last-wire').value, notes: document.getElementById('edit-notes').value, category: document.getElementById('edit-category').value, gallery: currentGallery, healthStatus: selectedHealth, watering: wateringConfig });
   await refresh();
