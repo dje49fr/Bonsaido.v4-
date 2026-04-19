@@ -402,73 +402,6 @@ input[type="file"] { display: none; }
 /* Badge de carte — pulsation douce quand urgent */
 .card-badge.badge-red { animation: badgePulse 2.2s ease-in-out infinite; }
 @keyframes badgePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(192,57,43,0); } 50% { box-shadow: 0 0 0 4px rgba(192,57,43,0.15); } }
-
-/* ── ARROSAGE SAISONNIER ── */
-.watering-block {
-  margin: 10px 14px 4px; background: #fff; border-radius: var(--radius);
-  padding: 14px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
-}
-.watering-block > label {
-  font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
-  color: #3A7A9A; display: flex; align-items: center; gap: 6px;
-  margin-bottom: 10px; letter-spacing: 0.05em;
-}
-.watering-toggle { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.watering-toggle-switch {
-  position: relative; width: 42px; height: 24px;
-  background: var(--border); border-radius: 20px;
-  cursor: pointer; transition: background 0.2s; flex-shrink: 0;
-}
-.watering-toggle-switch.on { background: #3A7A9A; }
-.watering-toggle-switch::after {
-  content: ''; position: absolute; top: 2px; left: 2px;
-  width: 20px; height: 20px; background: #fff;
-  border-radius: 50%; transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-.watering-toggle-switch.on::after { transform: translateX(18px); }
-.watering-toggle-label { font-size: 0.78rem; color: var(--text-sec); font-weight: 600; }
-
-/* Mini-calendrier d'arrosage */
-.water-cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-.water-cal-nav .cal-month-label { font-size: 0.88rem; font-weight: 700; color: var(--text); text-transform: capitalize; }
-.water-cal-tools {
-  display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap;
-}
-.water-tool-btn {
-  flex: 1; min-width: 0;
-  background: var(--card2); border: 1px solid var(--border);
-  border-radius: 8px; padding: 7px 6px;
-  font-family: var(--font); font-size: 0.66rem; font-weight: 700;
-  color: var(--text-sec); cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-  white-space: nowrap;
-}
-.water-tool-btn:active { background: #DFF0F5; color: #3A7A9A; border-color: rgba(58,122,154,0.3); }
-.water-tool-btn i { font-size: 0.65rem; }
-.water-cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); margin-bottom: 4px; }
-.water-cal-weekdays > div { text-align: center; font-size: 0.58rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; padding: 3px 0; }
-.water-cal-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
-.water-day {
-  aspect-ratio: 1/1; border-radius: 8px; border: 1px solid var(--border);
-  background: var(--card2); display: flex; align-items: center; justify-content: center;
-  font-size: 0.72rem; font-weight: 600; color: var(--text); cursor: pointer;
-  font-family: var(--font); position: relative;
-  transition: background 0.1s, border-color 0.1s, transform 0.1s;
-}
-.water-day:active { transform: scale(0.92); }
-.water-day.other-month { color: var(--text-dim); opacity: 0.35; pointer-events: none; background: transparent; border-color: transparent; }
-.water-day.past { opacity: 0.4; pointer-events: none; }
-.water-day.today { border-color: var(--text); border-width: 2px; font-weight: 700; }
-.water-day.selected { background: #3A7A9A; color: #fff; border-color: #3A7A9A; }
-.water-day.selected.today { box-shadow: 0 0 0 2px rgba(58,122,154,0.3); }
-.water-day.selected::after { content: '💧'; position: absolute; top: 1px; right: 1px; font-size: 0.5rem; }
-.watering-summary {
-  margin-top: 10px; padding: 9px 11px; background: #DFF0F5;
-  border-radius: 8px; font-size: 0.72rem; color: #3A7A9A;
-  font-weight: 600; display: flex; align-items: center; gap: 6px;
-}
-.watering-summary.empty { background: var(--card2); color: var(--text-dim); font-style: italic; }
 </style>
 </head>
 <body>
@@ -670,29 +603,6 @@ input[type="file"] { display: none; }
             </div>
         </div>
     </div>
-    <div class="watering-block">
-        <label><i class="fa-solid fa-droplet"></i> <span data-i18n="wateringSchedule">Planning d'arrosage</span></label>
-        <div class="watering-toggle">
-            <div class="watering-toggle-switch" id="watering-switch" onclick="toggleWatering()"></div>
-            <span class="watering-toggle-label" id="watering-toggle-label" data-i18n="enableWatering">Activer les rappels d'arrosage</span>
-        </div>
-        <div id="watering-config" style="display:none">
-            <div class="water-cal-nav">
-                <button class="btn-month" type="button" onclick="changeWaterMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                <div class="cal-month-label" id="water-cal-label"></div>
-                <button class="btn-month" type="button" onclick="changeWaterMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
-            </div>
-            <div class="water-cal-tools">
-                <button type="button" class="water-tool-btn" onclick="waterSelectAll()"><i class="fa-solid fa-check-double"></i> <span data-i18n="selectAll">Tout</span></button>
-                <button type="button" class="water-tool-btn" onclick="waterSelectEveryN(2)"><span data-i18n="every2">1j/2</span></button>
-                <button type="button" class="water-tool-btn" onclick="waterSelectEveryN(3)"><span data-i18n="every3">1j/3</span></button>
-                <button type="button" class="water-tool-btn" onclick="waterClearMonth()"><i class="fa-solid fa-xmark"></i> <span data-i18n="clearMonth">Effacer</span></button>
-            </div>
-            <div class="water-cal-weekdays" id="water-cal-weekdays"></div>
-            <div class="water-cal-days" id="water-cal-days"></div>
-            <div class="watering-summary" id="watering-summary"></div>
-        </div>
-    </div>
     <div class="ai-block">
         <div class="ai-top">
             <span><i class="fa-solid fa-leaf"></i> <span data-i18n="aiAdvice">Conseils IA</span></span>
@@ -762,8 +672,7 @@ input[type="file"] { display: none; }
         <div class="task-field">
             <label data-i18n="taskType">Type de tâche</label>
             <div class="task-type-grid">
-                <button class="task-type-btn t-blue selected" data-type="arrosage" data-color="#3A7A9A" onclick="selectTaskType(this)"><i class="fa-solid fa-droplet"></i><span data-i18n="watering">Arrosage</span></button>
-                <button class="task-type-btn t-red" data-type="taille" data-color="#9A5040" onclick="selectTaskType(this)"><i class="fa-solid fa-scissors"></i><span data-i18n="pruning">Taille</span></button>
+                <button class="task-type-btn t-red selected" data-type="taille" data-color="#9A5040" onclick="selectTaskType(this)"><i class="fa-solid fa-scissors"></i><span data-i18n="pruning">Taille</span></button>
                 <button class="task-type-btn t-amber" data-type="fertilisation" data-color="#7A5828" onclick="selectTaskType(this)"><i class="fa-solid fa-seedling"></i><span data-i18n="fertilization">Fertilisation</span></button>
                 <button class="task-type-btn t-green" data-type="rempotage" data-color="#2E7A48" onclick="selectTaskType(this)"><i class="fa-solid fa-bucket"></i><span data-i18n="repotting">Rempotage</span></button>
                 <button class="task-type-btn t-purple" data-type="ligature" data-color="#6A4A9A" onclick="selectTaskType(this)"><i class="fa-solid fa-circle-notch"></i><span data-i18n="wiring">Ligature</span></button>
@@ -846,7 +755,7 @@ const TRANSLATIONS = {
     searchPlaceholder: 'Rechercher espèce, nom, origine…',
     notesPlaceholder: 'Notes libres sur cet arbre…',
     taskDescPlaceholder: 'Ex: Vérifier substrat, tailler apex…',
-    newTask: 'Nouvelle tâche', taskType: 'Type de tâche', watering: 'Arrosage',
+    newTask: 'Nouvelle tâche', taskType: 'Type de tâche',
     descOptional: 'Description (optionnel)', treeOptional: 'Arbre concerné (optionnel)',
     date: 'Date', recurrence: 'Récurrence', none: 'Aucune', weekly: 'Hebdo',
     monthly: 'Mensuel', yearly: 'Annuel', saveTask: '✓ Enregistrer la tâche',
@@ -870,10 +779,6 @@ const TRANSLATIONS = {
     conifers: 'Conifères', deciduous: 'Feuillus', others: 'Autres Bonsaïs',
     healthy: 'En Santé', attention: 'Attention', urgent: 'Urgent', untracked: 'Non suivi',
     healthStatus: 'État de santé',
-    wateringSchedule: "Planning d'arrosage", enableWatering: 'Activer les rappels',
-    selectAll: 'Tout', every2: '1j/2', every3: '1j/3', clearMonth: 'Effacer',
-    daySelected: 'jour sélectionné', daysSelected: 'jours sélectionnés',
-    noDaySelected: 'Aucun jour sélectionné — cochez les jours d\'arrosage',
     auto: '🔄 Auto', conifer: '🌲 Conifère', other: '🌱 Autre',
     today: "Aujourd'hui",
     months: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
@@ -899,7 +804,7 @@ const TRANSLATIONS = {
     searchPlaceholder: 'Search species, name, origin…',
     notesPlaceholder: 'Free notes about this tree…',
     taskDescPlaceholder: 'Ex: Check substrate, prune apex…',
-    newTask: 'New task', taskType: 'Task type', watering: 'Watering',
+    newTask: 'New task', taskType: 'Task type',
     descOptional: 'Description (optional)', treeOptional: 'Tree (optional)',
     date: 'Date', recurrence: 'Recurrence', none: 'None', weekly: 'Weekly',
     monthly: 'Monthly', yearly: 'Yearly', saveTask: '✓ Save task',
@@ -923,10 +828,6 @@ const TRANSLATIONS = {
     conifers: 'Conifers', deciduous: 'Deciduous', others: 'Other Bonsai',
     healthy: 'Healthy', attention: 'Attention', urgent: 'Urgent', untracked: 'Untracked',
     healthStatus: 'Health status',
-    wateringSchedule: 'Watering schedule', enableWatering: 'Enable reminders',
-    selectAll: 'All', every2: '1d/2', every3: '1d/3', clearMonth: 'Clear',
-    daySelected: 'day selected', daysSelected: 'days selected',
-    noDaySelected: 'No day selected — tap days to schedule watering',
     auto: '🔄 Auto', conifer: '🌲 Conifer', other: '🌱 Other',
     today: 'Today',
     months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
@@ -1004,140 +905,6 @@ function selectHealth(btn) {
   autoSave();
 }
 
-// ── ARROSAGE — PLANNING PAR JOUR ──────────────────────────────────────────
-// Stockage : Set de dates "YYYY-MM-DD" (jours cochés par l'utilisateur)
-let wateringEnabled = false;
-let wateringDates = new Set();
-let waterCalYear = new Date().getFullYear();
-let waterCalMonth = new Date().getMonth();
-
-function toggleWatering() {
-  wateringEnabled = !wateringEnabled;
-  document.getElementById('watering-switch').classList.toggle('on', wateringEnabled);
-  document.getElementById('watering-config').style.display = wateringEnabled ? 'block' : 'none';
-  if (wateringEnabled) renderWaterCal();
-  autoSave();
-}
-
-function changeWaterMonth(dir) {
-  waterCalMonth += dir;
-  if (waterCalMonth > 11) { waterCalMonth = 0; waterCalYear++; }
-  if (waterCalMonth < 0)  { waterCalMonth = 11; waterCalYear--; }
-  renderWaterCal();
-}
-
-function renderWaterCal() {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const todayStr = today.toISOString().slice(0,10);
-  document.getElementById('water-cal-label').textContent = T('months')[waterCalMonth] + ' ' + waterCalYear;
-
-  // Jours de la semaine
-  const wdEl = document.getElementById('water-cal-weekdays'); wdEl.innerHTML = '';
-  T('weekdays').forEach((wd, i) => {
-    const d = document.createElement('div');
-    if (i >= 5) d.style.color = '#C0392B';
-    d.textContent = wd.slice(0, 1);
-    wdEl.appendChild(d);
-  });
-
-  // Grille
-  const daysEl = document.getElementById('water-cal-days'); daysEl.innerHTML = '';
-  const firstDay = new Date(waterCalYear, waterCalMonth, 1);
-  const lastDay = new Date(waterCalYear, waterCalMonth + 1, 0);
-  let startDow = firstDay.getDay(); startDow = startDow === 0 ? 6 : startDow - 1;
-
-  // Jours du mois précédent (vides mais occupant la grille)
-  for (let i = 0; i < startDow; i++) {
-    const empty = document.createElement('div');
-    empty.className = 'water-day other-month';
-    daysEl.appendChild(empty);
-  }
-
-  // Jours du mois courant
-  for (let d = 1; d <= lastDay.getDate(); d++) {
-    const dateStr = waterCalYear + '-' + String(waterCalMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'water-day';
-    btn.textContent = d;
-    if (dateStr < todayStr) btn.classList.add('past');
-    if (dateStr === todayStr) btn.classList.add('today');
-    if (wateringDates.has(dateStr)) btn.classList.add('selected');
-    btn.onclick = () => toggleWaterDay(dateStr);
-    daysEl.appendChild(btn);
-  }
-  renderWateringSummary();
-}
-
-function toggleWaterDay(dateStr) {
-  if (wateringDates.has(dateStr)) wateringDates.delete(dateStr);
-  else wateringDates.add(dateStr);
-  renderWaterCal();
-  autoSave();
-}
-
-function waterSelectAll() {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const todayStr = today.toISOString().slice(0,10);
-  const lastDay = new Date(waterCalYear, waterCalMonth + 1, 0).getDate();
-  for (let d = 1; d <= lastDay; d++) {
-    const dateStr = waterCalYear + '-' + String(waterCalMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-    if (dateStr >= todayStr) wateringDates.add(dateStr);
-  }
-  renderWaterCal(); autoSave();
-}
-
-function waterSelectEveryN(n) {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const todayStr = today.toISOString().slice(0,10);
-  const lastDay = new Date(waterCalYear, waterCalMonth + 1, 0).getDate();
-  for (let d = 1; d <= lastDay; d++) {
-    const dateStr = waterCalYear + '-' + String(waterCalMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-    if (dateStr >= todayStr && (d - 1) % n === 0) wateringDates.add(dateStr);
-  }
-  renderWaterCal(); autoSave();
-}
-
-function waterClearMonth() {
-  const prefix = waterCalYear + '-' + String(waterCalMonth + 1).padStart(2, '0') + '-';
-  [...wateringDates].forEach(d => { if (d.startsWith(prefix)) wateringDates.delete(d); });
-  renderWaterCal(); autoSave();
-}
-
-function renderWateringSummary() {
-  const box = document.getElementById('watering-summary');
-  const prefix = waterCalYear + '-' + String(waterCalMonth + 1).padStart(2, '0') + '-';
-  const count = [...wateringDates].filter(d => d.startsWith(prefix)).length;
-  if (!count) {
-    box.classList.add('empty');
-    box.innerHTML = `<i class="fa-regular fa-calendar"></i> ${T('noDaySelected')}`;
-  } else {
-    box.classList.remove('empty');
-    box.innerHTML = `<i class="fa-solid fa-calendar-check"></i> ${count} ${T(count > 1 ? 'daysSelected' : 'daySelected')}`;
-  }
-}
-
-// Génère les tâches à partir des dates cochées de tous les arbres
-function refreshWateringTasks() {
-  tasks = tasks.filter(t => !t.auto);
-  bonsais.forEach(b => {
-    if (b.watering && b.watering.enabled && Array.isArray(b.watering.dates) && b.name) {
-      b.watering.dates.forEach(dateStr => {
-        tasks.push({
-          uid: `water-${b.uid}-${dateStr}`,
-          type: 'arrosage',
-          color: '#3A7A9A',
-          desc: '',
-          tree: b.name,
-          date: dateStr,
-          recurrence: 'custom',
-          auto: true,
-        });
-      });
-    }
-  });
-  saveTasks();
-}
 
 let autoSaveTimer = null;
 function autoSave() {
@@ -1286,7 +1053,7 @@ function renderUpcomingWidget() {
   widget.style.display = 'block'; list.innerHTML = '';
   document.querySelector('.upcoming-title span').textContent = T('upcomingTasks');
   document.querySelector('.upcoming-days-label').textContent = T('next7days');
-  const colors = { arrosage:'#3A7A9A', taille:'#9A5040', fertilisation:'#7A5828', rempotage:'#2E7A48', ligature:'#6A4A9A', autre:'#5A5A6A' };
+  const colors = { taille:'#9A5040', fertilisation:'#7A5828', rempotage:'#2E7A48', ligature:'#6A4A9A', autre:'#5A5A6A' };
   upcoming.forEach(t => {
     const isToday = t.date === new Date().toISOString().slice(0,10);
     const item = document.createElement('div'); item.className = 'upcoming-item';
@@ -1335,13 +1102,6 @@ function resetEditor() {
   // Santé : reset à "untracked"
   selectedHealth = 'untracked';
   document.querySelectorAll('.health-btn').forEach(b => b.classList.toggle('selected', b.dataset.health === 'untracked'));
-  // Arrosage : désactivé + calendrier vide
-  wateringEnabled = false;
-  wateringDates = new Set();
-  waterCalYear = new Date().getFullYear();
-  waterCalMonth = new Date().getMonth();
-  document.getElementById('watering-switch').classList.remove('on');
-  document.getElementById('watering-config').style.display = 'none';
   currentGallery = []; renderGallery(); updateDossier();
   ['pot','cut','fertil','wire'].forEach(k => { document.getElementById('action-'+k).classList.remove('overdue'); document.getElementById('overdue-'+k).style.display = 'none'; });
 }
@@ -1365,14 +1125,6 @@ function openEditor(uid, cat) {
     // Santé manuelle
     selectedHealth = b.healthStatus || 'untracked';
     document.querySelectorAll('.health-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.health === selectedHealth));
-    // Arrosage : charger les dates cochées
-    if (b.watering) {
-      wateringEnabled = !!b.watering.enabled;
-      wateringDates = new Set(Array.isArray(b.watering.dates) ? b.watering.dates : []);
-      document.getElementById('watering-switch').classList.toggle('on', wateringEnabled);
-      document.getElementById('watering-config').style.display = wateringEnabled ? 'block' : 'none';
-      if (wateringEnabled) renderWaterCal();
-    }
   }
   nav('edit');
 }
@@ -1382,14 +1134,8 @@ async function _doSave(goBack = true) {
   if (!name) { showToast(T('nicknameRequired')); return false; }
   const uid = currentUid || Date.now();
   if (!currentUid) currentUid = uid;
-  const wateringConfig = {
-    enabled: wateringEnabled,
-    dates: [...wateringDates].sort(),
-  };
-  await dbApi.put({ uid, name, photo: currentPhotoBase64, species: document.getElementById('edit-species').value, date: document.getElementById('edit-date').value, origin: document.getElementById('edit-origin').value, style: document.getElementById('edit-style').value, substrat: document.getElementById('edit-substrat').value, lastPot: document.getElementById('edit-last-pot').value, lastCut: document.getElementById('edit-last-cut').value, lastFertil: document.getElementById('edit-last-fertil').value, lastWire: document.getElementById('edit-last-wire').value, notes: document.getElementById('edit-notes').value, category: document.getElementById('edit-category').value, gallery: currentGallery, healthStatus: selectedHealth, watering: wateringConfig });
+  await dbApi.put({ uid, name, photo: currentPhotoBase64, species: document.getElementById('edit-species').value, date: document.getElementById('edit-date').value, origin: document.getElementById('edit-origin').value, style: document.getElementById('edit-style').value, substrat: document.getElementById('edit-substrat').value, lastPot: document.getElementById('edit-last-pot').value, lastCut: document.getElementById('edit-last-cut').value, lastFertil: document.getElementById('edit-last-fertil').value, lastWire: document.getElementById('edit-last-wire').value, notes: document.getElementById('edit-notes').value, category: document.getElementById('edit-category').value, gallery: currentGallery, healthStatus: selectedHealth });
   await refresh();
-  refreshWateringTasks();
-  renderUpcomingWidget();
   if (goBack) { nav('list'); showToast(T('registered')); }
   return true;
 }
@@ -1399,7 +1145,7 @@ async function saveBonsai() { await _doSave(true); }
 async function confirmDeleteBonsai() {
   const ok = await showConfirm(T('deleteTree'), T('treeDeleted'), T('confirmDelete'), true);
   if (!ok) return;
-  await dbApi.delete(currentUid); await refresh(); refreshWateringTasks(); renderCalendar(); nav('list'); showToast(T('deleted'));
+  await dbApi.delete(currentUid); await refresh(); nav('list'); showToast(T('deleted'));
 }
 
 async function askAI() {
@@ -1592,8 +1338,8 @@ function renderTasksForDate(dateStr) {
   list.innerHTML = '';
   if (!dayTasks.length) { list.innerHTML = `<div class="cal-empty">${T('noTaskDay')}</div>`; return; }
   dayTasks.forEach(t => {
-    const icons = { arrosage:'fa-droplet', taille:'fa-scissors', fertilisation:'fa-seedling', rempotage:'fa-bucket', ligature:'fa-circle-notch', autre:'fa-pen' };
-    const typeLabel = { arrosage: T('watering'), taille: T('pruning'), fertilisation: T('fertilization'), rempotage: T('repotting'), ligature: T('wiring'), autre: T('other') };
+    const icons = { taille:'fa-scissors', fertilisation:'fa-seedling', rempotage:'fa-bucket', ligature:'fa-circle-notch', autre:'fa-pen' };
+    const typeLabel = { taille: T('pruning'), fertilisation: T('fertilization'), rempotage: T('repotting'), ligature: T('wiring'), autre: T('other') };
     const isOverdue = t.date < today;
     const item = document.createElement('div'); item.className = 'cal-task-item' + (isOverdue ? ' is-overdue' : '');
     item.innerHTML = `<div class="cal-task-color" style="background:${t.color}"></div><div class="cal-task-info"><div class="cal-task-title"><i class="fa-solid ${icons[t.type]||'fa-pen'}" style="color:${t.color};margin-right:7px"></i>${typeLabel[t.type]||t.type}${t.tree?' — '+t.tree:''}${t.recurrence&&t.recurrence!=='none'?` <span style="font-size:0.6rem;opacity:0.6">(${T(t.recurrence)})</span>`:''}</div>${t.desc?`<div class="cal-task-sub">${t.desc}</div>`:''}${isOverdue?`<div class="overdue-label">${T('late')}</div>`:''}</div><button class="cal-task-del" onclick="confirmDeleteTask('${t.uid}')"><i class="fa-solid fa-xmark"></i></button>`;
@@ -1610,7 +1356,7 @@ async function confirmDeleteTask(uid) {
   saveTasks(); renderCalendar(); renderUpcomingWidget();
 }
 
-let selectedTaskType = 'arrosage', selectedTaskColor = '#3A7A9A', selectedRecurrence = 'none';
+let selectedTaskType = 'taille', selectedTaskColor = '#9A5040', selectedRecurrence = 'none';
 
 function selectTaskType(btn) { document.querySelectorAll('.task-type-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); selectedTaskType = btn.dataset.type; selectedTaskColor = btn.dataset.color; }
 function selectRecurrence(btn) { document.querySelectorAll('.recurrence-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); selectedRecurrence = btn.dataset.rec; }
@@ -1648,7 +1394,12 @@ window.onload = () => {
   applyLang();
   buildStyleOptions('');
   document.getElementById('edit-bottom-bar').style.display = 'none';
-  refresh().then(() => { refreshWateringTasks(); renderCalendar(); renderUpcomingWidget(); });
+  // Nettoyage : purge des tâches d'arrosage (auto ou manuelles) — fonctionnalité retirée
+  const before = tasks.length;
+  tasks = tasks.filter(t => !t.auto && t.type !== 'arrosage');
+  if (tasks.length !== before) saveTasks();
+  refresh();
+  renderCalendar();
 };
 </script>
 </body>
