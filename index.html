@@ -116,8 +116,9 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 }
 .urgency-banner.show { display: flex; align-items: center; gap: 10px; }
 .urgency-icon { background: rgba(192,57,43,0.12); color: var(--urgent); width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
-.urgency-text { font-size: 0.78rem; font-weight: 600; color: var(--urgent); flex: 1; }
-.urgency-sub { font-size: 0.66rem; color: #9A3828; font-weight: 400; margin-top: 1px; }
+.urgency-text { font-size: 0.82rem; font-weight: 700; color: var(--urgent); flex: 1; line-height: 1.3; }
+.urgency-sub { font-size: 0.7rem; color: #9A3828; font-weight: 400; margin-top: 3px; line-height: 1.4; }
+.urgency-sub strong { font-weight: 700; color: var(--urgent); }
 
 .upcoming-widget {
   margin: 10px 14px 0; background: #fff; border-radius: var(--radius);
@@ -181,7 +182,18 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 
 .bonsai-card { background: #fff; border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); border: 1px solid var(--border); }
 .bonsai-card:active { transform: scale(0.96); box-shadow: none; }
-.card-photo { width: 100%; aspect-ratio: 1/1; background: var(--card2); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--text-dim); }
+.card-photo { width: 100%; aspect-ratio: 1/1; background: var(--card2); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--text-dim); position: relative; }
+.urgent-dot {
+  position: absolute; top: 8px; right: 8px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--urgent); border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  animation: urgentPulse 1.6s ease-in-out infinite;
+}
+@keyframes urgentPulse {
+  0%, 100% { box-shadow: 0 1px 4px rgba(0,0,0,0.25), 0 0 0 0 rgba(192,57,43,0.6); }
+  50%      { box-shadow: 0 1px 4px rgba(0,0,0,0.25), 0 0 0 6px rgba(192,57,43,0); }
+}
 .card-info { padding: 8px 10px 10px; }
 .card-name { font-weight: 700; font-size: 0.68rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; letter-spacing: 0.04em; color: var(--text); }
 .card-species { font-size: 0.6rem; color: var(--text-sec); font-style: italic; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -444,13 +456,13 @@ input[type="file"] { display: none; }
             <span class="home-count" id="bonsai-count">0 <span data-i18n="trees">arbres</span></span>
         </div>
     </div>
-    <div class="urgency-banner" id="urgency-banner" onclick="nav('calendar')">
+    <div class="urgency-banner" id="urgency-banner" onclick="openFirstUrgentTree()">
         <div class="urgency-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <div>
+        <div style="flex:1;min-width:0">
             <div class="urgency-text" id="urgency-text"></div>
-            <div class="urgency-sub" data-i18n="tapCalendar">Appuyez pour voir le calendrier</div>
+            <div class="urgency-sub" id="urgency-sub"></div>
         </div>
-        <i class="fa-solid fa-chevron-right" style="color:var(--urgent);font-size:0.75rem"></i>
+        <i class="fa-solid fa-chevron-right" style="color:var(--urgent);font-size:0.75rem;flex-shrink:0"></i>
     </div>
     <div class="upcoming-widget" id="upcoming-widget" style="display:none">
         <div class="upcoming-header">
@@ -732,8 +744,14 @@ const TRANSLATIONS = {
     allTrees: '— Tous les arbres —', calTitle: 'Calendrier',
     upcomingTasks: 'Prochaines tâches', next7days: '7 prochains jours',
     tapCalendar: 'Appuyez pour voir le calendrier',
-    urgentTree: 'arbre nécessite une attention urgente',
-    urgentTrees: 'arbres nécessitent une attention urgente',
+    urgentTree: 'arbre nécessite une attention',
+    urgentTrees: 'arbres nécessitent une attention',
+    daysWithout: 'jours sans intervention',
+    dayWithout: 'jour sans intervention',
+    tapToOpen: 'Appuyez pour ouvrir la fiche',
+    andOthers: 'et', other1: 'autre', others1: 'autres',
+    actionPot: 'rempotage', actionCut: 'taille', actionFertil: 'fertilisation', actionWire: 'ligature',
+    lastAction: 'Dernière action',
     noTaskDay: 'Aucune tâche ce jour.\nAppuyez sur + pour en ajouter.',
     taskAdded: '✓ Tâche ajoutée !', deleteTask: 'Supprimer cette tâche ?',
     taskDeleted: 'La tâche sera définitivement supprimée.',
@@ -780,8 +798,14 @@ const TRANSLATIONS = {
     allTrees: '— All trees —', calTitle: 'Calendar',
     upcomingTasks: 'Upcoming tasks', next7days: 'Next 7 days',
     tapCalendar: 'Tap to see the calendar',
-    urgentTree: 'tree needs urgent attention',
-    urgentTrees: 'trees need urgent attention',
+    urgentTree: 'tree needs attention',
+    urgentTrees: 'trees need attention',
+    daysWithout: 'days without action',
+    dayWithout: 'day without action',
+    tapToOpen: 'Tap to open the tree',
+    andOthers: 'and', other1: 'other', others1: 'others',
+    actionPot: 'repotting', actionCut: 'pruning', actionFertil: 'fertilization', actionWire: 'wiring',
+    lastAction: 'Last action',
     noTaskDay: 'No tasks this day.\nTap + to add one.',
     taskAdded: '✓ Task added!', deleteTask: 'Delete this task?',
     taskDeleted: 'The task will be permanently deleted.',
@@ -930,10 +954,27 @@ function isConifer(sp) { if (!sp) return false; const s = sp.toLowerCase(); for 
 function isDec(sp) { if (!sp) return false; const s = sp.toLowerCase(); for (const g of Object.keys(SPECIES_DB).filter(g => !g.includes('Conifères'))) if (SPECIES_DB[g]?.some(x => x === sp)) return true; return DEC_KW.some(k => s.includes(k)); }
 function getCat(b) { if (b.category && b.category !== 'auto') return b.category; if (isConifer(b.species)) return 'conifer'; if (isDec(b.species)) return 'deciduous'; return 'other'; }
 
+// Calcule le détail d'urgence pour un arbre : {days, lastAction}
+function getUrgencyDetails(b) {
+  const actions = [
+    { key: 'lastPot',    labelKey: 'actionPot' },
+    { key: 'lastCut',    labelKey: 'actionCut' },
+    { key: 'lastFertil', labelKey: 'actionFertil' },
+    { key: 'lastWire',   labelKey: 'actionWire' },
+  ];
+  const filled = actions.filter(a => b[a.key]).map(a => ({ ...a, date: new Date(b[a.key]) }));
+  if (!filled.length) return { days: null, lastActionKey: null };
+  filled.sort((x, y) => y.date - x.date);
+  const latest = filled[0];
+  const days = Math.floor((Date.now() - latest.date) / 86400000);
+  return { days, lastActionKey: latest.labelKey };
+}
+
 function makeCard(b) {
   const badge = getBadge(b);
   const card = document.createElement('div'); card.className = 'bonsai-card'; card.onclick = () => openEditor(b.uid);
-  card.innerHTML = `<div class="card-photo" style="background-image:url(${b.photo||''})">${b.photo?'':'<i class="fa-solid fa-tree"></i>'}</div><div class="card-info"><div class="card-name">${b.name||'SANS NOM'}</div><div class="card-species">${b.species||'—'}</div><span class="card-badge ${badge.cls}">${badge.label}</span></div>`;
+  const urgentDot = badge.cls === 'badge-red' ? '<div class="urgent-dot" title="Urgent"></div>' : '';
+  card.innerHTML = `<div class="card-photo" style="background-image:url(${b.photo||''})">${b.photo?'':'<i class="fa-solid fa-tree"></i>'}${urgentDot}</div><div class="card-info"><div class="card-name">${b.name||'SANS NOM'}</div><div class="card-species">${b.species||'—'}</div><span class="card-badge ${badge.cls}">${badge.label}</span></div>`;
   return card;
 }
 function makeAddBtn(cat) {
@@ -988,11 +1029,36 @@ function filterBonsais() {
 function renderUrgencyBanner() {
   const urgentTrees = bonsais.filter(b => getBadge(b).cls === 'badge-red');
   const banner = document.getElementById('urgency-banner');
-  if (urgentTrees.length) {
-    banner.classList.add('show');
-    document.getElementById('urgency-text').textContent = `${urgentTrees.length} ${T(urgentTrees.length > 1 ? 'urgentTrees' : 'urgentTree')}`;
-    document.querySelector('.urgency-sub').textContent = T('tapCalendar');
-  } else banner.classList.remove('show');
+  if (!urgentTrees.length) { banner.classList.remove('show'); return; }
+  banner.classList.add('show');
+
+  const n = urgentTrees.length;
+  document.getElementById('urgency-text').textContent = `${n} ${T(n > 1 ? 'urgentTrees' : 'urgentTree')}`;
+
+  // Détail : nom + jours sans intervention + dernière action, pour le 1er (et 2e si présent)
+  const sub = document.getElementById('urgency-sub');
+  const details = urgentTrees.map(b => {
+    const d = getUrgencyDetails(b);
+    const name = b.name || '—';
+    if (d.days === null) return `<strong>${name}</strong> — ${T('untracked')}`;
+    const dayLabel = d.days > 1 ? T('daysWithout') : T('dayWithout');
+    const actionLabel = d.lastActionKey ? ` (${T(d.lastActionKey)})` : '';
+    return `<strong>${name}</strong> — ${d.days} ${dayLabel}${actionLabel}`;
+  });
+
+  // On affiche au max les 2 premiers, puis "et X autres"
+  let html = details.slice(0, 2).join('<br>');
+  if (details.length > 2) {
+    const rest = details.length - 2;
+    html += `<br>${T('andOthers')} ${rest} ${T(rest > 1 ? 'others1' : 'other1')}…`;
+  }
+  sub.innerHTML = html;
+}
+
+function openFirstUrgentTree() {
+  const urgent = bonsais.filter(b => getBadge(b).cls === 'badge-red');
+  if (!urgent.length) return;
+  openEditor(urgent[0].uid);
 }
 
 function renderUpcomingWidget() {
