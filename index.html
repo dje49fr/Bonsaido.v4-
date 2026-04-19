@@ -582,7 +582,10 @@ input[type="file"] { display: none; }
             <div class="id-tile"><label data-i18n="style">Style</label>
                 <select id="edit-style" onchange="autoSave()"></select>
             </div>
-            <div class="id-tile"><label data-i18n="substrate">Substrat</label><input type="text" id="edit-substrat" placeholder="Ex: Akadama" oninput="autoSave()"></div>
+            <div class="id-tile"><label data-i18n="substrate">Substrat</label>
+                <select id="edit-substrat" onchange="autoSave()"></select>
+                <i class="fa-solid fa-layer-group id-tile-icon"></i>
+            </div>
         </div>
     </div>
     <div class="ai-block">
@@ -705,6 +708,38 @@ const BONSAI_STYLES = [
   { value: 'Sharimiki',  fr: 'Bois mort (Sharimiki)',          en: 'Driftwood (Sharimiki)'          },
   { value: 'Nebari',     fr: 'Racines évasées (Nebari)',       en: 'Surface roots (Nebari)'         },
 ];
+
+// ── SUBSTRATS BONSAÏ — FR / EN ────────────────────────────────────────────
+const SUBSTRATE_OPTIONS = [
+  { value: '',                   fr: '—',                                    en: '—'                                   },
+  { value: 'Akadama',            fr: 'Akadama pur',                          en: 'Pure Akadama'                        },
+  { value: 'Akadama+Pumice',     fr: 'Akadama + Pouzzolane (50/50)',         en: 'Akadama + Pumice (50/50)'            },
+  { value: 'Akadama+Kiryu',      fr: 'Akadama + Kiryu (50/50)',              en: 'Akadama + Kiryu (50/50)'             },
+  { value: 'Akadama+Pumice+Lav', fr: 'Akadama / Pouzzolane / Lave (1/1/1)', en: 'Akadama / Pumice / Lava (1/1/1)'    },
+  { value: 'Pumice',             fr: 'Pouzzolane pure',                      en: 'Pure Pumice'                         },
+  { value: 'Kiryu',              fr: 'Kiryu pur',                            en: 'Pure Kiryu'                          },
+  { value: 'Lava',               fr: 'Roche volcanique pure',                en: 'Pure Lava Rock'                      },
+  { value: 'KantoLoam',          fr: 'Terre de Kanto (Kanto Loam)',          en: 'Kanto Loam'                          },
+  { value: 'Compost+Pumice',     fr: 'Terreau + Pouzzolane',                 en: 'Compost + Pumice'                    },
+  { value: 'Compost+Sand',       fr: 'Terreau + Sable grossier',             en: 'Compost + Coarse Sand'               },
+  { value: 'Turface',            fr: 'Turface (argile calcinée)',             en: 'Turface (calcined clay)'             },
+  { value: 'Kanuma',             fr: 'Kanuma (azalées / rhododendrons)',      en: 'Kanuma (azaleas / rhododendrons)'   },
+  { value: 'Kyodama',            fr: 'Kyodama',                              en: 'Kyodama'                             },
+  { value: 'BonsaiMix',          fr: 'Mélange universel bonsaï',             en: 'Universal Bonsai Mix'                },
+  { value: 'Other',              fr: 'Autre / Personnalisé',                 en: 'Other / Custom'                      },
+];
+
+function buildSubstrateOptions(savedVal) {
+  const sel = document.getElementById('edit-substrat');
+  sel.innerHTML = '';
+  SUBSTRATE_OPTIONS.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.value;
+    opt.textContent = lang === 'en' ? s.en : s.fr;
+    if (s.value === savedVal) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
 
 function buildStyleOptions(savedVal) {
   const sel = document.getElementById('edit-style');
@@ -838,6 +873,7 @@ function toggleLang() {
   localStorage.setItem('bonsai-lang', lang);
   applyLang();
   buildStyleOptions(document.getElementById('edit-style').value);
+  buildSubstrateOptions(document.getElementById('edit-substrat').value);
   renderCalendar(); renderList(bonsais); renderUrgencyBanner(); renderUpcomingWidget();
 }
 
@@ -1104,12 +1140,13 @@ function updateDossier() {
 }
 
 function resetEditor() {
-  ['edit-name','edit-date','edit-substrat','edit-notes'].forEach(id => document.getElementById(id).value = '');
+  ['edit-name','edit-date','edit-notes'].forEach(id => document.getElementById(id).value = '');
   ['edit-last-pot','edit-last-cut','edit-last-fertil','edit-last-wire'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('edit-species').value = '';
   document.getElementById('edit-origin').value = 'Pépinière';
   document.getElementById('edit-category').value = 'auto';
   buildStyleOptions('');
+  buildSubstrateOptions('');
   const txt = document.getElementById('species-display-text'); txt.textContent = T('selectSpecies'); txt.classList.remove('selected');
   document.getElementById('hero-photo').style.backgroundImage = '';
   document.getElementById('hero-icon').style.display = 'block';
@@ -1128,7 +1165,7 @@ function openEditor(uid, cat) {
     const b = bonsais.find(x => x.uid === uid);
     document.getElementById('edit-name').value = b.name || '';
     document.getElementById('edit-date').value = b.date || '';
-    document.getElementById('edit-substrat').value = b.substrat || '';
+    buildSubstrateOptions(b.substrat || '');
     document.getElementById('edit-notes').value = b.notes || '';
     document.getElementById('edit-origin').value = b.origin || 'Pépinière';
     document.getElementById('edit-category').value = b.category || 'auto';
@@ -1405,6 +1442,7 @@ function saveTask() {
 window.onload = () => {
   applyLang();
   buildStyleOptions('');
+  buildSubstrateOptions('');
   document.getElementById('edit-bottom-bar').style.display = 'none';
   // Nettoyage : purge des tâches d'arrosage (auto ou manuelles) — fonctionnalité retirée
   const before = tasks.length;
