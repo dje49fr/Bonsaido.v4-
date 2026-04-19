@@ -381,27 +381,6 @@ input[type="file"] { display: none; }
 .recurrence-row { display: flex; gap: 8px; }
 .recurrence-btn { flex: 1; padding: 9px 4px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--card2); font-family: var(--font); font-size: 0.68rem; font-weight: 600; color: var(--text-sec); cursor: pointer; text-align: center; }
 .recurrence-btn.selected { border-color: var(--green); background: var(--green-light); color: var(--green-text); }
-
-/* ── SANTÉ MANUELLE ── */
-.health-tile { grid-column: span 2; }
-.health-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
-.health-btn {
-  border: 1.5px solid var(--border); border-radius: 10px;
-  padding: 8px 4px; background: var(--card2);
-  font-family: var(--font); font-size: 0.66rem; font-weight: 700;
-  color: var(--text-sec); cursor: pointer; text-align: center;
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  transition: all 0.12s;
-}
-.health-btn i { font-size: 0.9rem; }
-.health-btn.selected.h-healthy  { border-color: #2E7A48; background: #DFF0E4; color: #2E7A48; }
-.health-btn.selected.h-attention{ border-color: #8A6020; background: #FBF0D8; color: #8A6020; }
-.health-btn.selected.h-urgent   { border-color: #9A3828; background: #FADDDA; color: #9A3828; }
-.health-btn.selected.h-untracked{ border-color: var(--text-dim); background: var(--card2); color: var(--text-sec); }
-
-/* Badge de carte — pulsation douce quand urgent */
-.card-badge.badge-red { animation: badgePulse 2.2s ease-in-out infinite; }
-@keyframes badgePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(192,57,43,0); } 50% { box-shadow: 0 0 0 4px rgba(192,57,43,0.15); } }
 </style>
 </head>
 <body>
@@ -592,15 +571,6 @@ input[type="file"] { display: none; }
                 <select id="edit-style" onchange="autoSave()"></select>
             </div>
             <div class="id-tile"><label data-i18n="substrate">Substrat</label><input type="text" id="edit-substrat" placeholder="Ex: Akadama" oninput="autoSave()"></div>
-            <div class="id-tile health-tile">
-                <label data-i18n="healthStatus">État de santé</label>
-                <div class="health-row">
-                    <button type="button" class="health-btn h-healthy"   data-health="healthy"   onclick="selectHealth(this)"><i class="fa-solid fa-leaf"></i><span data-i18n="healthy">En Santé</span></button>
-                    <button type="button" class="health-btn h-attention" data-health="attention" onclick="selectHealth(this)"><i class="fa-solid fa-circle-exclamation"></i><span data-i18n="attention">Attention</span></button>
-                    <button type="button" class="health-btn h-urgent"    data-health="urgent"    onclick="selectHealth(this)"><i class="fa-solid fa-triangle-exclamation"></i><span data-i18n="urgent">Urgent</span></button>
-                    <button type="button" class="health-btn h-untracked selected" data-health="untracked" onclick="selectHealth(this)"><i class="fa-regular fa-circle"></i><span data-i18n="untracked">Non suivi</span></button>
-                </div>
-            </div>
         </div>
     </div>
     <div class="ai-block">
@@ -778,7 +748,6 @@ const TRANSLATIONS = {
     chooseDate: '⚠ Choisissez une date',
     conifers: 'Conifères', deciduous: 'Feuillus', others: 'Autres Bonsaïs',
     healthy: 'En Santé', attention: 'Attention', urgent: 'Urgent', untracked: 'Non suivi',
-    healthStatus: 'État de santé',
     auto: '🔄 Auto', conifer: '🌲 Conifère', other: '🌱 Autre',
     today: "Aujourd'hui",
     months: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
@@ -827,7 +796,6 @@ const TRANSLATIONS = {
     chooseDate: '⚠ Please choose a date',
     conifers: 'Conifers', deciduous: 'Deciduous', others: 'Other Bonsai',
     healthy: 'Healthy', attention: 'Attention', urgent: 'Urgent', untracked: 'Untracked',
-    healthStatus: 'Health status',
     auto: '🔄 Auto', conifer: '🌲 Conifer', other: '🌱 Other',
     today: 'Today',
     months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
@@ -896,15 +864,6 @@ function showConfirm(title, msg, okLabel, isDanger) {
 
 function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2400); }
 
-// ── SANTÉ MANUELLE ────────────────────────────────────────────────────────
-let selectedHealth = 'untracked';
-function selectHealth(btn) {
-  document.querySelectorAll('.health-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  selectedHealth = btn.dataset.health;
-  autoSave();
-}
-
 
 let autoSaveTimer = null;
 function autoSave() {
@@ -956,13 +915,6 @@ function selectSpecies(sp) {
 }
 
 function getBadge(b) {
-  // Priorité : statut manuel saisi par l'utilisateur
-  if (b.healthStatus && b.healthStatus !== 'untracked') {
-    if (b.healthStatus === 'healthy')   return { label: T('healthy'),   cls: 'badge-green'  };
-    if (b.healthStatus === 'attention') return { label: T('attention'), cls: 'badge-yellow' };
-    if (b.healthStatus === 'urgent')    return { label: T('urgent'),    cls: 'badge-red'    };
-  }
-  // Fallback auto : basé sur les dernières interventions
   const a = [b.lastPot, b.lastCut, b.lastFertil, b.lastWire].filter(Boolean);
   if (!a.length) return { label: T('untracked'), cls: 'badge-yellow' };
   const days = Math.floor((Date.now() - Math.max(...a.map(d => new Date(d)))) / 86400000);
@@ -1099,9 +1051,6 @@ function resetEditor() {
   document.getElementById('ai-output').textContent = '';
   document.getElementById('btn-ai').disabled = false;
   document.getElementById('file-input').value = '';
-  // Santé : reset à "untracked"
-  selectedHealth = 'untracked';
-  document.querySelectorAll('.health-btn').forEach(b => b.classList.toggle('selected', b.dataset.health === 'untracked'));
   currentGallery = []; renderGallery(); updateDossier();
   ['pot','cut','fertil','wire'].forEach(k => { document.getElementById('action-'+k).classList.remove('overdue'); document.getElementById('overdue-'+k).style.display = 'none'; });
 }
@@ -1122,9 +1071,6 @@ function openEditor(uid, cat) {
     if (b.species) { document.getElementById('edit-species').value = b.species; const txt = document.getElementById('species-display-text'); txt.textContent = b.species; txt.classList.add('selected'); }
     if (b.photo) { currentPhotoBase64 = b.photo; document.getElementById('hero-photo').style.backgroundImage = `url(${b.photo})`; document.getElementById('hero-icon').style.display = 'none'; }
     currentGallery = b.gallery || []; renderGallery(); updateDossier(); checkOverdue();
-    // Santé manuelle
-    selectedHealth = b.healthStatus || 'untracked';
-    document.querySelectorAll('.health-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.health === selectedHealth));
   }
   nav('edit');
 }
@@ -1134,7 +1080,7 @@ async function _doSave(goBack = true) {
   if (!name) { showToast(T('nicknameRequired')); return false; }
   const uid = currentUid || Date.now();
   if (!currentUid) currentUid = uid;
-  await dbApi.put({ uid, name, photo: currentPhotoBase64, species: document.getElementById('edit-species').value, date: document.getElementById('edit-date').value, origin: document.getElementById('edit-origin').value, style: document.getElementById('edit-style').value, substrat: document.getElementById('edit-substrat').value, lastPot: document.getElementById('edit-last-pot').value, lastCut: document.getElementById('edit-last-cut').value, lastFertil: document.getElementById('edit-last-fertil').value, lastWire: document.getElementById('edit-last-wire').value, notes: document.getElementById('edit-notes').value, category: document.getElementById('edit-category').value, gallery: currentGallery, healthStatus: selectedHealth });
+  await dbApi.put({ uid, name, photo: currentPhotoBase64, species: document.getElementById('edit-species').value, date: document.getElementById('edit-date').value, origin: document.getElementById('edit-origin').value, style: document.getElementById('edit-style').value, substrat: document.getElementById('edit-substrat').value, lastPot: document.getElementById('edit-last-pot').value, lastCut: document.getElementById('edit-last-cut').value, lastFertil: document.getElementById('edit-last-fertil').value, lastWire: document.getElementById('edit-last-wire').value, notes: document.getElementById('edit-notes').value, category: document.getElementById('edit-category').value, gallery: currentGallery });
   await refresh();
   if (goBack) { nav('list'); showToast(T('registered')); }
   return true;
