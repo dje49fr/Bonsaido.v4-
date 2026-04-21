@@ -5,402 +5,608 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>BONSAI-EN · PRO</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:          #F2EFE8;
-  --bg2:         #FFFFFF;
+  /* Palette Washi & Cerisier — clair, organique, raffiné */
+  --bg:          #FAF8F3;        /* ivoire washi */
+  --bg2:         #F5F2EA;        /* ivoire légèrement plus foncé */
   --card:        #FFFFFF;
-  --card2:       #F7F4EE;
-  --green:       #4A7A56;
-  --green-light: #E6EFE8;
-  --green-text:  #3A6A46;
-  --btn-dark:    #2E2A24;
-  --btn-darker:  #1A1712;
-  --border:      #E2DDD4;
-  --border2:     #CFC9BF;
-  --text:        #1A1814;
-  --text-sec:    #6A6258;
-  --text-dim:    #ABA49B;
-  --blue:        #3A7A9A;
-  --red:         #A05040;
-  --amber:       #8A6830;
-  --urgent:      #C0392B;
-  --radius:      16px;
-  --radius-sm:   12px;
-  --shadow:      0 2px 16px rgba(0,0,0,0.08);
-  --shadow-sm:   0 1px 8px rgba(0,0,0,0.05);
-  --font:        'DM Sans', sans-serif;
-  --font-serif:  'Noto Serif JP', serif;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 76px; }
-::-webkit-scrollbar { width: 0; height: 0; }
+  --card2:       #F2EFEA;        /* crème douce */
+  --card3:       #EDE9E0;
 
+  --sage:        #5A7A60;        /* vert sauge profond */
+  --sage-mid:    #7A9A80;
+  --sage-light:  #E8F0EA;        /* vert sauge très pâle */
+  --sage-pale:   #F0F5F1;
+
+  --terra:       #B86B4A;        /* terracotta doux */
+  --terra-light: #F5EAE3;
+  --terra-pale:  #FAF3EF;
+
+  --gold:        #C4973A;        /* or saison */
+  --gold-light:  #FBF3E2;
+
+  --sakura:      #D4768A;        /* rose cerisier */
+  --sakura-light:#FCF0F3;
+
+  --ink:         #2C2820;        /* encre brun-noir */
+  --text:        #2C2820;
+  --text-sec:    #6B6258;
+  --text-dim:    #B0A898;
+  --text-ghost:  #D4CFC6;
+
+  --border:      #E4E0D6;
+  --border2:     #D8D3C8;
+  --urgent:      #C04030;
+  --urgent-bg:   #FEF0EE;
+
+  --radius:      18px;
+  --radius-sm:   12px;
+  --radius-xs:   8px;
+  --shadow:      0 2px 20px rgba(44,40,32,0.07);
+  --shadow-sm:   0 1px 8px rgba(44,40,32,0.05);
+  --shadow-card: 0 4px 24px rgba(44,40,32,0.09);
+
+  --font:        'Outfit', sans-serif;
+  --font-serif:  'Shippori Mincho', serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+  /* texture washi subtile */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar { width: 0; height: 0; }
 .screen { display: none; }
 .screen.active { display: block; }
 
+/* ── TOAST ── */
 #toast {
-  visibility: hidden; position: fixed; bottom: 90px;
-  left: 50%; transform: translateX(-50%) translateY(10px);
-  background: var(--btn-dark); color: #fff; padding: 11px 22px;
-  border-radius: 24px; z-index: 3000; font-size: 0.78rem; font-weight: 600;
-  white-space: nowrap; box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  visibility: hidden; position: fixed; bottom: 94px;
+  left: 50%; transform: translateX(-50%) translateY(8px);
+  background: var(--ink); color: #fff; padding: 10px 22px;
+  border-radius: 50px; z-index: 3000; font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap; box-shadow: 0 6px 28px rgba(44,40,32,0.25);
   transition: visibility 0s, opacity 0.2s, transform 0.2s; opacity: 0;
 }
 #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
 
+/* ── CONFIRM OVERLAY ── */
 #confirm-overlay {
-  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-  z-index: 9000; align-items: center; justify-content: center; padding: 20px;
+  display: none; position: fixed; inset: 0; background: rgba(44,40,32,0.45);
+  z-index: 9000; align-items: center; justify-content: center; padding: 24px;
+  backdrop-filter: blur(4px);
 }
 #confirm-overlay.open { display: flex; }
 .confirm-box {
-  background: #fff; border-radius: 20px; padding: 24px 22px 18px;
-  max-width: 320px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+  background: var(--card); border-radius: 24px; padding: 28px 24px 20px;
+  max-width: 320px; width: 100%;
+  box-shadow: 0 16px 60px rgba(44,40,32,0.2);
+  border: 1px solid var(--border);
   animation: popIn 0.18s ease;
 }
-@keyframes popIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.confirm-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-.confirm-msg { font-size: 0.85rem; color: var(--text-sec); line-height: 1.5; margin-bottom: 20px; }
+@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.confirm-title { font-family: var(--font-serif); font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.confirm-msg { font-size: 0.85rem; color: var(--text-sec); line-height: 1.55; margin-bottom: 22px; }
 .confirm-btns { display: flex; gap: 10px; }
-.confirm-cancel { flex: 1; padding: 13px; border: 1px solid var(--border); border-radius: 50px; background: var(--card2); color: var(--text-sec); font-family: var(--font); font-size: 0.88rem; font-weight: 600; cursor: pointer; }
-.confirm-ok { flex: 1; padding: 13px; border: none; border-radius: 50px; background: var(--btn-dark); color: #fff; font-family: var(--font); font-size: 0.88rem; font-weight: 700; cursor: pointer; }
+.confirm-cancel { flex: 1; padding: 13px; border: 1px solid var(--border2); border-radius: 50px; background: var(--card2); color: var(--text-sec); font-family: var(--font); font-size: 0.88rem; font-weight: 600; cursor: pointer; }
+.confirm-ok { flex: 1; padding: 13px; border: none; border-radius: 50px; background: var(--ink); color: #fff; font-family: var(--font); font-size: 0.88rem; font-weight: 700; cursor: pointer; }
 .confirm-ok.danger { background: var(--urgent); }
 
+/* ── BOTTOM NAV ── */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); height: 72px;
-  display: flex; justify-content: space-around; align-items: flex-start;
+  background: rgba(250,248,243,0.96); backdrop-filter: blur(16px);
+  height: 74px; display: flex; justify-content: space-around; align-items: flex-start;
   padding-top: 10px; border-top: 1px solid var(--border); z-index: 900;
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 -2px 16px rgba(44,40,32,0.06);
 }
 .nav-btn {
   color: var(--text-dim); background: none; border: none;
   display: flex; flex-direction: column; align-items: center;
-  gap: 4px; font-size: 0.57rem; font-weight: 500;
-  font-family: var(--font); cursor: pointer; padding: 0 10px; position: relative;
+  gap: 4px; font-size: 0.56rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  font-family: var(--font); cursor: pointer; padding: 0 12px; position: relative;
+  transition: color 0.2s;
 }
-.nav-btn i { font-size: 1.1rem; }
-.nav-btn.active { color: var(--text); }
+.nav-btn i { font-size: 1.15rem; }
+.nav-btn.active { color: var(--sage); }
+.nav-btn.active i { transform: translateY(-1px); }
 .nav-btn.active::after {
   content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-  width: 20px; height: 2.5px; background: var(--green); border-radius: 2px;
+  width: 24px; height: 2px; background: var(--sage); border-radius: 2px;
 }
 
-#crop-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
+/* ── CROP SCREEN ── */
+#crop-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1A1714; z-index: 2000; flex-direction: column; }
 #crop-viewport { flex: 1; width: 100%; position: relative; overflow: auto; display: flex; align-items: center; justify-content: center; -webkit-overflow-scrolling: touch; }
 #crop-image { max-width: 100%; display: block; }
-#crop-mask { position: absolute; width: 420px; height: 420px; border: 2px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 9999px rgba(0,0,0,0.65); cursor: move; z-index: 2010; touch-action: none; border-radius: 14px; }
-.crop-bar { height: 80px; display: flex; gap: 10px; padding: 14px 20px; background: #111; }
-.btn-crop { flex: 1; border: none; border-radius: var(--radius-sm); font-weight: 700; color: white; cursor: pointer; font-family: var(--font); font-size: 0.9rem; }
+#crop-mask { position: absolute; width: 420px; height: 420px; border: 2px solid rgba(255,255,255,0.85); box-shadow: 0 0 0 9999px rgba(0,0,0,0.6); cursor: move; z-index: 2010; touch-action: none; border-radius: 16px; }
+.crop-bar { height: 84px; display: flex; gap: 12px; padding: 16px 20px; background: #111; }
+.btn-crop { flex: 1; border: none; border-radius: 50px; font-weight: 700; color: white; cursor: pointer; font-family: var(--font); font-size: 0.9rem; }
 .btn-crop-cancel { background: #333; }
-.btn-crop-ok { background: var(--green); }
+.btn-crop-ok { background: var(--sage); }
 
+/* ════════════════════════════════════════
+   ACCUEIL — HOME HEADER
+════════════════════════════════════════ */
 .home-header {
-  background: rgba(255,255,255,0.97); padding: 16px 18px 14px;
+  background: rgba(250,248,243,0.97);
+  padding: 18px 20px 14px;
   position: sticky; top: 0; z-index: 100;
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
   box-shadow: var(--shadow-sm);
 }
-.home-logo { display: flex; align-items: center; gap: 10px; }
-.home-logo-icon { font-size: 2.2rem; color: #C0392B; }
-.home-logo-text { font-family: var(--font-serif); font-size: 1.9rem; font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
-.home-count { font-size: 0.65rem; font-weight: 600; color: var(--text-sec); background: var(--card2); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); }
-
-.urgency-banner {
-  margin: 10px 14px 0; background: #FFF0ED; border-radius: var(--radius-sm);
-  border: 1px solid rgba(192,57,43,0.25); padding: 12px 14px;
-  display: none; cursor: pointer;
+.home-logo { display: flex; align-items: center; gap: 11px; }
+.home-logo-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: var(--sage); display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; color: #fff;
+  box-shadow: 0 2px 10px rgba(90,122,96,0.35);
 }
-.urgency-banner.show { display: flex; align-items: center; gap: 10px; }
-.urgency-icon { background: rgba(192,57,43,0.12); color: var(--urgent); width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.home-logo-text {
+  font-family: var(--font-serif); font-size: 1.55rem; font-weight: 700;
+  color: var(--text); letter-spacing: 0.03em;
+}
+.home-logo-dot { color: var(--terra); }
+.home-count {
+  font-size: 0.62rem; font-weight: 700; color: var(--text-sec);
+  background: var(--card2); padding: 5px 12px; border-radius: 50px;
+  border: 1px solid var(--border); letter-spacing: 0.03em; text-transform: uppercase;
+}
+
+/* ── URGENCY BANNER ── */
+.urgency-banner {
+  margin: 12px 16px 0;
+  background: var(--urgent-bg); border-radius: var(--radius-sm);
+  border: 1px solid rgba(192,64,48,0.2); padding: 13px 15px;
+  display: none; cursor: pointer;
+  box-shadow: 0 2px 12px rgba(192,64,48,0.08);
+}
+.urgency-banner.show { display: flex; align-items: center; gap: 11px; }
+.urgency-icon { background: rgba(192,64,48,0.1); color: var(--urgent); width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.88rem; flex-shrink: 0; }
 .urgency-text { font-size: 0.82rem; font-weight: 700; color: var(--urgent); flex: 1; line-height: 1.3; }
-.urgency-sub { font-size: 0.7rem; color: #9A3828; font-weight: 400; margin-top: 3px; line-height: 1.4; }
+.urgency-sub { font-size: 0.69rem; color: #9A4030; font-weight: 400; margin-top: 3px; line-height: 1.4; }
 .urgency-sub strong { font-weight: 700; color: var(--urgent); }
 
+/* ── UPCOMING WIDGET ── */
 .upcoming-widget {
-  margin: 10px 14px 0; background: #fff; border-radius: var(--radius);
+  margin: 12px 16px 0; background: var(--card); border-radius: var(--radius);
   border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden;
 }
-.upcoming-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px 8px; border-bottom: 1px solid var(--border); }
-.upcoming-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--green-text); letter-spacing: 0.06em; display: flex; align-items: center; gap: 7px; }
-.upcoming-days-label { font-size: 0.62rem; color: var(--text-dim); }
+.upcoming-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px 8px; border-bottom: 1px solid var(--border); }
+.upcoming-title { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--sage); letter-spacing: 0.07em; display: flex; align-items: center; gap: 7px; }
+.upcoming-days-label { font-size: 0.6rem; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
 .upcoming-list { padding: 4px 0; }
-.upcoming-item { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--border); }
+.upcoming-item { display: flex; align-items: center; gap: 10px; padding: 8px 15px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
 .upcoming-item:last-child { border-bottom: none; }
+.upcoming-item:active { background: var(--bg2); }
 .upcoming-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .upcoming-info { flex: 1; }
 .upcoming-task { font-size: 0.78rem; font-weight: 600; color: var(--text); }
-.upcoming-tree { font-size: 0.66rem; color: var(--text-sec); margin-top: 1px; }
-.upcoming-date { font-size: 0.65rem; font-weight: 700; color: var(--text-dim); }
+.upcoming-tree { font-size: 0.65rem; color: var(--text-sec); margin-top: 1px; }
+.upcoming-date { font-size: 0.62rem; font-weight: 700; color: var(--text-dim); }
 
-.search-wrap { padding: 10px 14px 4px; }
-.search-bar { display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 11px 14px; gap: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-.search-bar input { flex: 1; border: none; background: transparent; font-family: var(--font); font-size: 0.88rem; color: var(--text); outline: none; }
-.search-bar input::placeholder { color: var(--text-dim); }
-.search-bar i { color: var(--text-dim); font-size: 0.85rem; }
+/* ── SEARCH ── */
+.search-wrap { padding: 12px 16px 4px; }
+.search-bar {
+  display: flex; align-items: center;
+  background: var(--card); border-radius: var(--radius-sm); padding: 12px 15px;
+  gap: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+}
+.search-bar input { flex: 1; border: none; background: transparent; font-family: var(--font); font-size: 0.9rem; color: var(--text); outline: none; }
+.search-bar input::placeholder { color: var(--text-ghost); }
+.search-bar i { color: var(--text-dim); font-size: 0.88rem; }
 
+/* ── HOME BOTTOM BAR ── */
 .home-bottom-bar {
-  position: fixed; bottom: 72px; left: 0; right: 0;
-  background: rgba(255,255,255,0.97); backdrop-filter: blur(12px);
-  border-top: 1px solid var(--border); padding: 10px 14px;
+  position: fixed; bottom: 74px; left: 0; right: 0;
+  background: rgba(250,248,243,0.97); backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border); padding: 10px 16px;
   display: flex; gap: 8px; z-index: 800;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 -2px 10px rgba(44,40,32,0.04);
 }
 .home-bottom-bar.hidden { display: none; }
-.btn-backup { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fff; color: var(--text-sec); font-family: var(--font); font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: var(--shadow-sm); }
-.btn-import { color: var(--green-text); background: var(--green-light); border-color: rgba(74,122,86,0.25); }
+.btn-backup {
+  flex: 1; padding: 12px; border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  background: var(--card); color: var(--text-sec); font-family: var(--font);
+  font-size: 0.75rem; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  box-shadow: var(--shadow-sm); transition: background 0.15s;
+}
+.btn-backup:active { background: var(--card2); }
+.btn-import { color: var(--sage); background: var(--sage-light); border-color: rgba(90,122,96,0.2); }
 
-.category-section { padding: 0 14px; }
-.category-header { display: flex; align-items: center; gap: 10px; padding: 18px 0 10px; }
+/* ── CATEGORY SECTIONS ── */
+.category-section { padding: 0 16px; }
+.category-header { display: flex; align-items: center; gap: 10px; padding: 20px 0 10px; }
 .category-header-line { flex: 1; height: 1px; background: var(--border); }
-.category-label { display: flex; align-items: center; gap: 7px; font-size: 0.72rem; font-weight: 700; color: var(--text-sec); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.07em; }
-.category-label i { font-size: 0.75rem; }
-.category-label.conifers { color: #3A7A50; }
-.category-label.deciduous { color: #8A6020; }
-.category-label.others { color: #4A6A8A; }
-.category-count { font-size: 0.58rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--card2); color: var(--text-dim); border: 1px solid var(--border); }
+.category-label { display: flex; align-items: center; gap: 7px; font-size: 0.68rem; font-weight: 700; color: var(--text-sec); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.08em; }
+.category-label i { font-size: 0.72rem; }
+.category-label.conifers { color: var(--sage); }
+.category-label.deciduous { color: var(--gold); }
+.category-label.others { color: var(--terra); }
+.category-count { font-size: 0.56rem; font-weight: 700; padding: 3px 9px; border-radius: 50px; background: var(--card2); color: var(--text-dim); border: 1px solid var(--border); }
+
+/* ── CAROUSEL ── */
 .carousel-wrap { position: relative; }
 .category-carousel {
   display: flex; gap: 10px;
   overflow-x: auto; scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch; scrollbar-width: none;
-  padding-bottom: 6px; padding-right: 14px;
+  padding-bottom: 6px; padding-right: 16px;
 }
 .category-carousel::-webkit-scrollbar { display: none; }
 .category-carousel .bonsai-card,
-.category-carousel .card-add {
-  flex: 0 0 calc(33.333% - 7px);
-  min-width: 0;
-  scroll-snap-align: start;
-}
+.category-carousel .card-add { flex: 0 0 calc(33.333% - 7px); min-width: 0; scroll-snap-align: start; }
 .carousel-dots { display: flex; justify-content: center; gap: 5px; padding: 8px 0 2px; }
-.carousel-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: background 0.2s, width 0.2s; cursor: pointer; border: none; padding: 0; }
-.carousel-dot.active { background: var(--green); width: 16px; border-radius: 3px; }
+.carousel-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); transition: background 0.2s, width 0.2s; cursor: pointer; border: none; padding: 0; }
+.carousel-dot.active { background: var(--sage); width: 18px; border-radius: 3px; }
 
-.bonsai-card { background: #fff; border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: var(--shadow); border: 1px solid var(--border); }
-.bonsai-card:active { transform: scale(0.96); box-shadow: none; }
-.card-photo { width: 100%; aspect-ratio: 1/1; background: var(--card2); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--text-dim); position: relative; }
+/* ── BONSAI CARD ── */
+.bonsai-card {
+  background: var(--card); border-radius: var(--radius); overflow: hidden; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: var(--shadow-card); border: 1px solid var(--border);
+}
+.bonsai-card:active { transform: scale(0.96); box-shadow: var(--shadow-sm); }
+.card-photo {
+  width: 100%; aspect-ratio: 1/1;
+  background: var(--card2); background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; color: var(--text-ghost); position: relative;
+}
 .urgent-dot {
   position: absolute; top: 8px; right: 8px;
-  width: 14px; height: 14px; border-radius: 50%;
+  width: 13px; height: 13px; border-radius: 50%;
   background: var(--urgent); border: 2px solid #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-  animation: urgentPulse 1.6s ease-in-out infinite;
+  box-shadow: 0 1px 5px rgba(192,64,48,0.4);
+  animation: urgentPulse 1.8s ease-in-out infinite;
 }
 @keyframes urgentPulse {
-  0%, 100% { box-shadow: 0 1px 4px rgba(0,0,0,0.25), 0 0 0 0 rgba(192,57,43,0.6); }
-  50%      { box-shadow: 0 1px 4px rgba(0,0,0,0.25), 0 0 0 6px rgba(192,57,43,0); }
+  0%, 100% { box-shadow: 0 1px 5px rgba(192,64,48,0.4), 0 0 0 0 rgba(192,64,48,0.5); }
+  50%       { box-shadow: 0 1px 5px rgba(192,64,48,0.4), 0 0 0 6px rgba(192,64,48,0); }
 }
-.card-info { padding: 8px 10px 10px; }
-.card-name { font-weight: 700; font-size: 0.68rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; letter-spacing: 0.04em; color: var(--text); }
-.card-species { font-size: 0.6rem; color: var(--text-sec); font-style: italic; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-badge { display: inline-block; font-size: 0.56rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
-.badge-green  { background: #DFF0E4; color: #2E7A48; }
-.badge-yellow { background: #FBF0D8; color: #8A6020; }
-.badge-red    { background: #FADDDA; color: #9A3828; }
+.card-info { padding: 9px 10px 11px; }
+.card-name { font-weight: 700; font-size: 0.66rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; letter-spacing: 0.05em; color: var(--text); }
+.card-species { font-size: 0.58rem; color: var(--text-sec); font-style: italic; margin-bottom: 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-badge { display: inline-block; font-size: 0.54rem; font-weight: 700; padding: 2px 8px; border-radius: 50px; letter-spacing: 0.02em; }
+.badge-green  { background: #E4F0E8; color: var(--sage); }
+.badge-yellow { background: var(--gold-light); color: #9A7020; }
+.badge-red    { background: var(--terra-light); color: var(--terra); }
 
-.card-add { background: transparent; border: 1.5px dashed var(--border); border-radius: var(--radius); min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; cursor: pointer; transition: 0.15s; }
-.card-add:active { background: var(--green-light); }
-.card-add i { font-size: 1rem; color: var(--green-text); }
-.card-add span { font-size: 0.62rem; font-weight: 700; color: var(--green-text); text-align: center; text-transform: uppercase; line-height: 1.5; letter-spacing: 0.04em; }
+.card-add {
+  background: transparent; border: 1.5px dashed var(--border2);
+  border-radius: var(--radius); min-height: 140px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px;
+  cursor: pointer; transition: 0.15s;
+}
+.card-add:active { background: var(--sage-light); border-color: var(--sage); }
+.card-add i { font-size: 1.1rem; color: var(--sage); }
+.card-add span { font-size: 0.6rem; font-weight: 700; color: var(--sage); text-align: center; text-transform: uppercase; line-height: 1.5; letter-spacing: 0.05em; }
 
-.edit-header { background: rgba(255,255,255,0.97); padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-.btn-back { background: var(--card2); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-sec); cursor: pointer; font-size: 0.8rem; flex-shrink: 0; }
+/* ════════════════════════════════════════
+   FICHE EDIT
+════════════════════════════════════════ */
+.edit-header {
+  background: rgba(250,248,243,0.97); padding: 15px 16px;
+  display: flex; align-items: center; gap: 12px;
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm);
+}
+.btn-back {
+  background: var(--card2); border: 1px solid var(--border); width: 38px; height: 38px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  color: var(--text-sec); cursor: pointer; font-size: 0.8rem; flex-shrink: 0;
+  transition: background 0.15s;
+}
+.btn-back:active { background: var(--card3); }
 .edit-header-info { flex: 1; overflow: hidden; }
-.edit-header-title { font-family: var(--font-serif); font-size: 1rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.edit-header-sub { font-size: 0.65rem; color: var(--text-sec); margin-top: 2px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.edit-autosave { font-size: 0.58rem; color: var(--green-text); display: flex; align-items: center; gap: 4px; opacity: 0; transition: opacity 0.3s; }
+.edit-header-title { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.edit-header-sub { font-size: 0.63rem; color: var(--text-sec); margin-top: 2px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.edit-autosave { font-size: 0.58rem; color: var(--sage); display: flex; align-items: center; gap: 4px; opacity: 0; transition: opacity 0.3s; font-weight: 600; }
 .edit-autosave.show { opacity: 1; }
 
-.hero-photo { width: 100%; height: 240px; background: var(--card2); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: var(--text-dim); position: relative; cursor: pointer; overflow: hidden; }
-.hero-photo-btn { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.45); backdrop-filter: blur(8px); color: white; padding: 7px 14px; border-radius: 20px; font-size: 0.68rem; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+.hero-photo {
+  width: 100%; height: 250px;
+  background: var(--card2); background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3.5rem; color: var(--text-ghost); position: relative; cursor: pointer; overflow: hidden;
+}
+.hero-photo-btn {
+  position: absolute; bottom: 14px; right: 14px;
+  background: rgba(250,248,243,0.92); backdrop-filter: blur(8px);
+  color: var(--text); padding: 7px 16px; border-radius: 50px;
+  font-size: 0.68rem; font-weight: 700; display: flex; align-items: center; gap: 5px;
+  box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+}
 input[type="file"] { display: none; }
 
 .hero-dots { display: flex; justify-content: center; gap: 6px; padding: 10px 0 4px; }
-.hero-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim); }
-.hero-dot.active { background: var(--green); width: 18px; border-radius: 4px; }
+.hero-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-ghost); }
+.hero-dot.active { background: var(--sage); width: 20px; border-radius: 4px; }
 
-.section-hd { padding: 16px 16px 8px; font-size: 0.95rem; font-weight: 700; color: var(--text); }
+.section-hd { padding: 18px 16px 9px; font-size: 0.98rem; font-weight: 700; color: var(--text); font-family: var(--font-serif); }
 
+/* ── ACTION LIST ── */
 .action-list { padding: 0 14px; display: flex; flex-direction: column; gap: 8px; }
-.action-row-item { background: #fff; border-radius: var(--radius-sm); padding: 13px 14px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); position: relative; cursor: pointer; }
-.action-row-item.overdue { border-color: rgba(192,57,43,0.35); background: #FFF5F4; }
-.action-row-item i.arr { position: absolute; right: 14px; color: var(--text-dim); font-size: 0.75rem; }
-.action-icon { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
-.action-icon.blue   { background: #DFF0F5; color: #3A7A9A; }
-.action-icon.red    { background: #F5E8E6; color: #9A5040; }
-.action-icon.amber  { background: #F5EED8; color: #7A5828; }
-.action-icon.green  { background: #DFF0E4; color: #2E7A48; }
+.action-row-item {
+  background: var(--card); border-radius: var(--radius-sm);
+  padding: 13px 14px; display: flex; align-items: center; gap: 12px;
+  box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+  position: relative; cursor: pointer; transition: border-color 0.15s;
+}
+.action-row-item.overdue { border-color: rgba(192,64,48,0.3); background: var(--urgent-bg); }
+.action-row-item i.arr { position: absolute; right: 14px; color: var(--text-ghost); font-size: 0.72rem; }
+.action-icon { width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+.action-icon.blue   { background: #E4F2F8; color: #3A7A9A; }
+.action-icon.red    { background: var(--terra-light); color: var(--terra); }
+.action-icon.amber  { background: var(--gold-light); color: #8A6020; }
+.action-icon.green  { background: var(--sage-light); color: var(--sage); }
 .action-icon.purple { background: #EEE8F8; color: #6A4A9A; }
 .action-icon.teal   { background: #E0F4F0; color: #2A7A6A; }
-.action-icon.rose   { background: #F8E8F0; color: #9A3A6A; }
+.action-icon.rose   { background: var(--sakura-light); color: var(--sakura); }
 .action-icon.olive  { background: #EEF0DC; color: #5A6A2A; }
 .action-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
 .action-sub { font-size: 0.7rem; color: var(--text-sec); margin-top: 2px; }
-.overdue-label { font-size: 0.6rem; font-weight: 700; color: var(--urgent); background: rgba(192,57,43,0.1); padding: 2px 7px; border-radius: 10px; margin-top: 3px; display: inline-block; }
+.overdue-label { font-size: 0.59rem; font-weight: 700; color: var(--urgent); background: rgba(192,64,48,0.1); padding: 2px 8px; border-radius: 50px; margin-top: 4px; display: inline-block; }
 .date-input-row { border: none; background: transparent; font-family: var(--font); font-size: 0.7rem; color: var(--text-sec); outline: none; padding: 0; width: 100%; }
 
+/* ── EDIT BOTTOM BAR ── */
 .edit-bottom-bar {
-  position: fixed; bottom: 72px; left: 0; right: 0;
-  background: rgba(255,255,255,0.97); backdrop-filter: blur(12px);
+  position: fixed; bottom: 74px; left: 0; right: 0;
+  background: rgba(250,248,243,0.97); backdrop-filter: blur(14px);
   border-top: 1px solid var(--border); padding: 10px 14px;
   display: flex; gap: 10px; z-index: 800;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 -2px 10px rgba(44,40,32,0.04);
 }
 .edit-bottom-bar.hidden { display: none; }
-.btn-cta-primary { flex: 1; padding: 15px; border: none; border-radius: 50px; background: var(--btn-dark); color: #fff; font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.btn-cta-delete { padding: 15px 18px; border: none; border-radius: 50px; background: #FADDDA; color: #9A3828; font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+.btn-cta-primary {
+  flex: 1; padding: 15px; border: none; border-radius: 50px;
+  background: var(--sage); color: #fff; font-family: var(--font);
+  font-size: 0.9rem; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 16px rgba(90,122,96,0.3); transition: background 0.15s;
+}
+.btn-cta-primary:active { background: #4A6A50; }
+.btn-cta-delete {
+  padding: 15px 18px; border: none; border-radius: 50px;
+  background: var(--terra-light); color: var(--terra);
+  font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer;
+  border: 1px solid rgba(184,107,74,0.2);
+}
 
-.dossier-band { background: var(--card2); margin: 10px 14px 0; border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); }
-.dossier-icon { background: var(--green-light); color: var(--green-text); width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+/* ── DOSSIER BAND ── */
+.dossier-band {
+  background: var(--card2); margin: 12px 14px 0; border-radius: var(--radius-sm);
+  padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+  border: 1px solid var(--border);
+}
+.dossier-icon { background: var(--sage-light); color: var(--sage); width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
 .dossier-name { font-size: 0.88rem; font-weight: 600; color: var(--text); }
-.dossier-sub { font-size: 0.65rem; color: var(--text-sec); margin-top: 1px; font-style: italic; }
+.dossier-sub { font-size: 0.63rem; color: var(--text-sec); margin-top: 1px; font-style: italic; }
 
+/* ── SECTIONS / ID GRID ── */
 .section { padding: 12px 14px 4px; }
-.section-title { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.section-title {
+  font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 10px;
+  font-family: var(--font-serif);
+}
 .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.id-tile { background: #fff; border-radius: var(--radius-sm); padding: 10px 12px; border: 1px solid var(--border); position: relative; box-shadow: var(--shadow-sm); }
+.id-tile {
+  background: var(--card); border-radius: var(--radius-sm); padding: 11px 13px;
+  border: 1px solid var(--border); position: relative; box-shadow: var(--shadow-sm);
+}
 .id-tile.full { grid-column: span 2; }
-.id-tile > label { display: block; font-size: 0.6rem; font-weight: 700; color: var(--green-text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-.id-tile input[type="text"], .id-tile input[type="date"], .id-tile select { width: 100%; border: none; background: transparent; font-family: var(--font); font-size: 0.85rem; color: var(--text); outline: none; padding: 0; }
+.id-tile > label { display: block; font-size: 0.58rem; font-weight: 700; color: var(--sage); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.id-tile input[type="text"], .id-tile input[type="date"], .id-tile select { width: 100%; border: none; background: transparent; font-family: var(--font); font-size: 0.86rem; color: var(--text); outline: none; padding: 0; }
 .id-tile select option { background: #fff; }
-.id-tile-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.78rem; pointer-events: none; }
+.id-tile-icon { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); color: var(--text-ghost); font-size: 0.78rem; pointer-events: none; }
 
-/* ── ESPÈCE MODAL — FIX CLAVIER MOBILE ── */
+/* ── SPECIES MODAL ── */
 .species-trigger { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
-.species-trigger span { font-size: 0.85rem; color: var(--text-dim); font-style: italic; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.species-trigger span { font-size: 0.86rem; color: var(--text-ghost); font-style: italic; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .species-trigger span.selected { color: var(--text); font-style: normal; }
 .species-trigger i { font-size: 0.7rem; color: var(--text-dim); flex-shrink: 0; margin-left: 6px; }
 
-.species-modal {
-  display: none; position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 5000; background: rgba(0,0,0,0.45);
-  flex-direction: column;
-}
+.species-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; background: rgba(44,40,32,0.4); flex-direction: column; backdrop-filter: blur(4px); }
 .species-modal.open { display: flex; }
-/* Panel ancré en HAUT pour éviter le conflit avec le clavier */
 .species-panel {
-  background: #fff;
-  border-radius: 0 0 24px 24px;
-  width: 100%;
-  max-height: 72vh;
-  display: flex; flex-direction: column;
+  background: var(--card); border-radius: 0 0 24px 24px; width: 100%;
+  max-height: 72vh; display: flex; flex-direction: column;
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  box-shadow: 0 12px 40px rgba(44,40,32,0.18);
   animation: slideDown 0.22s ease;
 }
 @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-.species-panel-header { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
+.species-panel-header { padding: 15px 16px 11px; border-bottom: 1px solid var(--border); flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
 .species-panel-top { display: flex; align-items: center; justify-content: space-between; }
 .species-panel-title { font-family: var(--font-serif); font-size: 1rem; font-weight: 700; color: var(--text); }
 .species-close-btn { background: var(--card2); border: 1px solid var(--border); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-sec); font-size: 0.75rem; flex-shrink: 0; }
-.species-search-bar { display: flex; align-items: center; background: var(--card2); border-radius: 12px; padding: 9px 14px; gap: 8px; border: 1px solid var(--border); }
+.species-search-bar { display: flex; align-items: center; background: var(--bg2); border-radius: 12px; padding: 10px 14px; gap: 8px; border: 1px solid var(--border); }
 .species-search-bar i { color: var(--text-dim); font-size: 0.85rem; }
 .species-search-bar input { flex: 1; border: none; background: transparent; font-family: var(--font); font-size: 0.88rem; color: var(--text); outline: none; }
 #species-list-container { overflow-y: auto; flex: 1 1 auto; min-height: 0; padding: 4px 0; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
-.species-group-header { padding: 8px 16px 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--green-text); background: var(--card2); position: sticky; top: 0; }
+.species-group-header { padding: 8px 16px 4px; font-size: 0.59rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--sage); background: var(--sage-pale); position: sticky; top: 0; }
 .species-item { padding: 12px 18px; font-size: 0.85rem; color: var(--text-sec); cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.1s; }
-.species-item:active { background: var(--green-light); color: var(--text); }
+.species-item:active { background: var(--sage-light); color: var(--text); }
 .species-empty { padding: 24px; text-align: center; color: var(--text-dim); font-size: 0.85rem; font-style: italic; }
 
-.ai-block { margin: 10px 14px 4px; background: var(--green-light); border-radius: var(--radius); padding: 14px 16px; border: 1px solid rgba(74,122,86,0.2); }
+/* ── AI BLOCK ── */
+.ai-block {
+  margin: 12px 14px 4px; background: var(--sage-pale);
+  border-radius: var(--radius); padding: 14px 16px;
+  border: 1px solid rgba(90,122,96,0.18);
+}
 .ai-top { display: flex; align-items: center; justify-content: space-between; }
-.ai-top span { color: var(--green-text); font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; gap: 7px; }
-.btn-ai { background: var(--green); border: none; color: white; padding: 7px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; cursor: pointer; font-family: var(--font); }
+.ai-top span { color: var(--sage); font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; gap: 7px; }
+.btn-ai { background: var(--sage); border: none; color: white; padding: 7px 16px; border-radius: 50px; font-size: 0.74rem; font-weight: 700; cursor: pointer; font-family: var(--font); box-shadow: 0 2px 10px rgba(90,122,96,0.25); }
 .btn-ai:disabled { opacity: 0.6; cursor: not-allowed; }
-#ai-output { background: rgba(255,255,255,0.75); color: var(--text-sec); font-size: 0.8rem; line-height: 1.7; border-radius: 10px; padding: 12px 14px; white-space: pre-wrap; display: none; margin-top: 10px; }
+#ai-output { background: rgba(255,255,255,0.8); color: var(--text-sec); font-size: 0.8rem; line-height: 1.75; border-radius: 10px; padding: 12px 14px; white-space: pre-wrap; display: none; margin-top: 10px; border: 1px solid var(--border); }
 .ai-loading { display: flex; gap: 5px; align-items: center; padding: 4px 0; }
-.ai-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-text); animation: bounce 1.2s infinite; }
+.ai-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sage); animation: bounce 1.2s infinite; }
 .ai-dot:nth-child(2) { animation-delay: 0.2s; }
 .ai-dot:nth-child(3) { animation-delay: 0.4s; }
-@keyframes bounce { 0%,80%,100%{transform:scale(1);opacity:0.5} 40%{transform:scale(1.3);opacity:1} }
+@keyframes bounce { 0%,80%,100%{transform:scale(1);opacity:0.45} 40%{transform:scale(1.35);opacity:1} }
 
-.notes-block { margin: 10px 14px 4px; background: #fff; border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-.notes-block > label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: var(--green-text); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; letter-spacing: 0.05em; }
-.notes-block textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 0.85rem; color: var(--text); outline: none; padding: 10px; resize: none; background: var(--card2); line-height: 1.6; }
-.notes-block textarea::placeholder { color: var(--text-dim); }
+/* ── NOTES BLOCK ── */
+.notes-block { margin: 10px 14px 4px; background: var(--card); border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.notes-block > label { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; color: var(--sage); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; letter-spacing: 0.06em; }
+.notes-block textarea { width: 100%; border: 1px solid var(--border); border-radius: 10px; font-family: var(--font); font-size: 0.86rem; color: var(--text); outline: none; padding: 10px 12px; resize: none; background: var(--bg2); line-height: 1.65; }
+.notes-block textarea:focus { border-color: var(--sage-mid); }
+.notes-block textarea::placeholder { color: var(--text-ghost); }
 
-.gallery-block { margin: 10px 14px 120px; background: #fff; border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+/* ── GALLERY BLOCK ── */
+.gallery-block { margin: 10px 14px 120px; background: var(--card); border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 .gallery-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.gallery-title { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; color: var(--green-text); display: flex; align-items: center; gap: 6px; letter-spacing: 0.05em; }
-.btn-add-gallery-photo { background: var(--green-light); border: none; border-radius: 20px; padding: 6px 12px; font-family: var(--font); font-size: 0.7rem; font-weight: 700; color: var(--green-text); cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.gallery-title { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: var(--sage); display: flex; align-items: center; gap: 6px; letter-spacing: 0.06em; }
+.btn-add-gallery-photo { background: var(--sage-light); border: none; border-radius: 50px; padding: 6px 14px; font-family: var(--font); font-size: 0.7rem; font-weight: 700; color: var(--sage); cursor: pointer; display: flex; align-items: center; gap: 5px; }
 .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.gallery-thumb { aspect-ratio: 1/1; border-radius: 9px; overflow: hidden; position: relative; cursor: pointer; background: var(--card2); }
+.gallery-thumb { aspect-ratio: 1/1; border-radius: 10px; overflow: hidden; position: relative; cursor: pointer; background: var(--card2); }
 .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.gallery-thumb-date { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.65)); color: #fff; font-size: 0.5rem; font-weight: 700; padding: 10px 5px 4px; text-align: center; }
-.gallery-thumb-del { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.45); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s; }
+.gallery-thumb-date { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(44,40,32,0.65)); color: #fff; font-size: 0.5rem; font-weight: 700; padding: 10px 5px 4px; text-align: center; }
+.gallery-thumb-del { position: absolute; top: 4px; right: 4px; background: rgba(44,40,32,0.45); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s; }
 .gallery-thumb:hover .gallery-thumb-del, .gallery-thumb:active .gallery-thumb-del { opacity: 1; }
 .gallery-empty { grid-column: span 3; text-align: center; color: var(--text-dim); font-size: 0.78rem; padding: 18px 0; font-style: italic; }
 
-#gallery-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.93); z-index: 4000; flex-direction: column; align-items: center; justify-content: center; }
+/* ── GALLERY VIEWER ── */
+#gallery-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(28,24,20,0.95); z-index: 4000; flex-direction: column; align-items: center; justify-content: center; }
 #gallery-viewer.open { display: flex; }
-#viewer-img { max-width: 96vw; max-height: 72vh; border-radius: 12px; object-fit: contain; box-shadow: 0 4px 40px rgba(0,0,0,0.5); }
-.viewer-meta { margin-top: 14px; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.78rem; }
-.viewer-meta strong { color: #fff; font-size: 0.9rem; display: block; margin-bottom: 3px; }
-.viewer-nav { display: flex; gap: 12px; margin-top: 14px; }
-.btn-viewer { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 10px 16px; border-radius: 22px; font-family: var(--font); font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+#viewer-img { max-width: 96vw; max-height: 72vh; border-radius: 14px; object-fit: contain; box-shadow: 0 8px 50px rgba(0,0,0,0.5); }
+.viewer-meta { margin-top: 16px; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.78rem; }
+.viewer-meta strong { color: #fff; font-family: var(--font-serif); font-size: 0.95rem; display: block; margin-bottom: 3px; }
+.viewer-nav { display: flex; gap: 12px; margin-top: 16px; }
+.btn-viewer { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 18px; border-radius: 50px; font-family: var(--font); font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
 .btn-viewer-close { background: rgba(255,255,255,0.06); }
-.btn-viewer-del { background: rgba(180,60,50,0.35); border-color: rgba(180,60,50,0.5); }
-.viewer-counter { color: rgba(255,255,255,0.35); font-size: 0.7rem; margin-top: 8px; }
+.btn-viewer-del { background: rgba(184,107,74,0.35); border-color: rgba(184,107,74,0.5); }
+.viewer-counter { color: rgba(255,255,255,0.3); font-size: 0.7rem; margin-top: 8px; }
 
-.cal-header { background: rgba(255,255,255,0.97); padding: 14px 16px 12px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between; }
-.cal-header-title { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; color: var(--text); }
-.btn-add-task { background: var(--green); border: none; border-radius: 50px; padding: 8px 16px; color: #fff; font-family: var(--font); font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+/* ════════════════════════════════════════
+   CALENDRIER
+════════════════════════════════════════ */
+.cal-header {
+  background: rgba(250,248,243,0.97); padding: 15px 16px 12px;
+  position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between;
+}
+.cal-header-title { font-family: var(--font-serif); font-size: 1.45rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.btn-add-task {
+  background: var(--sage); border: none; border-radius: 50px; padding: 9px 18px;
+  color: #fff; font-family: var(--font); font-size: 0.8rem; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  box-shadow: 0 3px 12px rgba(90,122,96,0.28);
+}
 .cal-month-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 8px; }
-.cal-month-label { font-size: 1rem; font-weight: 700; color: var(--text); text-transform: capitalize; }
-.btn-month { background: var(--card2); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-sec); font-size: 0.8rem; }
+.cal-month-label { font-family: var(--font-serif); font-size: 1rem; font-weight: 700; color: var(--text); text-transform: capitalize; }
+.btn-month { background: var(--card2); border: 1px solid var(--border); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-sec); font-size: 0.8rem; transition: background 0.15s; }
+.btn-month:active { background: var(--card3); }
 .cal-grid-wrap { padding: 0 14px 10px; }
 .cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); margin-bottom: 6px; }
-.cal-weekday { text-align: center; font-size: 0.62rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; padding: 4px 0; }
-.cal-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
-.cal-day { aspect-ratio: 1/1; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; font-size: 0.82rem; font-weight: 500; color: var(--text); background: transparent; border: none; font-family: var(--font); transition: background 0.12s; }
+.cal-weekday { text-align: center; font-size: 0.6rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; padding: 4px 0; letter-spacing: 0.04em; }
+.cal-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+.cal-day {
+  aspect-ratio: 1/1; border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; position: relative; font-size: 0.82rem; font-weight: 500;
+  color: var(--text); background: transparent; border: none; font-family: var(--font);
+  transition: background 0.12s;
+}
 .cal-day:active { background: var(--card2); }
-.cal-day.other-month { color: var(--text-dim); }
-.cal-day.today { background: var(--text); color: #fff; font-weight: 700; }
-.cal-day.selected { background: var(--green); color: #fff; font-weight: 700; }
-.cal-day.has-task::after { content: ''; position: absolute; bottom: 3px; width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+.cal-day.other-month { color: var(--text-ghost); }
+.cal-day.today { background: var(--ink); color: #fff; font-weight: 700; }
+.cal-day.selected { background: var(--sage); color: #fff; font-weight: 700; }
+.cal-day.has-task::after { content: ''; position: absolute; bottom: 3px; width: 5px; height: 5px; border-radius: 50%; background: var(--sage); }
 .cal-day.has-overdue::after { background: var(--urgent); }
-.cal-day.today.has-task::after, .cal-day.selected.has-task::after { background: rgba(255,255,255,0.8); }
+.cal-day.today.has-task::after, .cal-day.selected.has-task::after { background: rgba(255,255,255,0.75); }
 .cal-tasks-section { padding: 0 14px 80px; }
-.cal-tasks-date { font-size: 0.88rem; font-weight: 700; color: var(--text); margin: 14px 0 10px; }
-.cal-task-item { background: #fff; border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 8px; position: relative; }
-.cal-task-item.is-overdue { border-color: rgba(192,57,43,0.3); background: #FFF5F4; }
-.cal-task-color { width: 5px; height: 40px; border-radius: 3px; flex-shrink: 0; }
+.cal-tasks-date { font-family: var(--font-serif); font-size: 0.9rem; font-weight: 700; color: var(--text); margin: 14px 0 10px; text-transform: capitalize; }
+.cal-task-item {
+  background: var(--card); border-radius: var(--radius-sm); padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border); margin-bottom: 8px; position: relative;
+}
+.cal-task-item.is-overdue { border-color: rgba(192,64,48,0.3); background: var(--urgent-bg); }
+.cal-task-color { width: 4px; height: 38px; border-radius: 3px; flex-shrink: 0; }
 .cal-task-info { flex: 1; }
 .cal-task-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
 .cal-task-sub { font-size: 0.7rem; color: var(--text-sec); margin-top: 2px; }
 .cal-task-del { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.85rem; padding: 4px; }
-.cal-empty { text-align: center; color: var(--text-dim); font-size: 0.82rem; padding: 24px 0; font-style: italic; }
+.cal-empty { text-align: center; color: var(--text-dim); font-size: 0.82rem; padding: 28px 0; font-style: italic; line-height: 1.6; }
 
-.task-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; background: rgba(0,0,0,0.4); align-items: flex-end; }
+/* ── TASK MODAL ── */
+.task-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; background: rgba(44,40,32,0.4); align-items: flex-end; backdrop-filter: blur(4px); }
 .task-modal.open { display: flex; }
-.task-panel { background: #fff; border-radius: 24px 24px 0 0; width: 100%; padding: 20px 18px 32px; border-top: 1px solid var(--border); max-height: 90vh; overflow-y: auto; }
+.task-panel {
+  background: var(--bg); border-radius: 26px 26px 0 0; width: 100%;
+  padding: 22px 18px 34px; border-top: 1px solid var(--border);
+  max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 -8px 40px rgba(44,40,32,0.15);
+}
 .task-panel-title { font-family: var(--font-serif); font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 16px; }
-.task-field { margin-bottom: 12px; }
-.task-field label { display: block; font-size: 0.62rem; font-weight: 700; color: var(--green-text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
-.task-field input, .task-field select { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; font-family: var(--font); font-size: 0.88rem; color: var(--text); background: var(--card2); outline: none; }
+.task-field { margin-bottom: 13px; }
+.task-field label { display: block; font-size: 0.6rem; font-weight: 700; color: var(--sage); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+.task-field input, .task-field select { width: 100%; border: 1px solid var(--border); border-radius: 11px; padding: 11px 13px; font-family: var(--font); font-size: 0.88rem; color: var(--text); background: var(--card); outline: none; }
+.task-field input:focus, .task-field select:focus { border-color: var(--sage-mid); }
 .task-type-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-.task-type-btn { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 6px; background: var(--card2); font-family: var(--font); font-size: 0.72rem; font-weight: 600; color: var(--text-sec); cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.task-type-btn {
+  border: 1.5px solid var(--border); border-radius: 12px; padding: 11px 6px;
+  background: var(--card); font-family: var(--font); font-size: 0.71rem; font-weight: 600;
+  color: var(--text-sec); cursor: pointer; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.15s;
+}
 .task-type-btn i { font-size: 1.1rem; }
-.task-type-btn.selected { border-color: var(--green); background: var(--green-light); color: var(--green-text); }
-.task-type-btn.t-blue.selected  { border-color: #3A7A9A; background: #DFF0F5; color: #3A7A9A; }
-.task-type-btn.t-red.selected   { border-color: #9A5040; background: #F5E8E6; color: #9A5040; }
-.task-type-btn.t-amber.selected { border-color: #7A5828; background: #F5EED8; color: #7A5828; }
-.task-type-btn.t-green.selected { border-color: #2E7A48; background: #DFF0E4; color: #2E7A48; }
+.task-type-btn.selected { border-color: var(--sage); background: var(--sage-light); color: var(--sage); }
+.task-type-btn.t-blue.selected  { border-color: #3A7A9A; background: #E4F2F8; color: #3A7A9A; }
+.task-type-btn.t-red.selected   { border-color: var(--terra); background: var(--terra-light); color: var(--terra); }
+.task-type-btn.t-amber.selected { border-color: #8A6020; background: var(--gold-light); color: #8A6020; }
+.task-type-btn.t-green.selected { border-color: var(--sage); background: var(--sage-light); color: var(--sage); }
 .task-type-btn.t-purple.selected{ border-color: #6A4A9A; background: #EEE8F8; color: #6A4A9A; }
 .task-type-btn.t-violet.selected{ border-color: #7A4A9A; background: #F0E8F8; color: #7A4A9A; }
 .task-type-btn.t-teal.selected  { border-color: #2A7A6A; background: #E0F4F0; color: #2A7A6A; }
-.task-type-btn.t-rose.selected  { border-color: #9A3A6A; background: #F8E8F0; color: #9A3A6A; }
+.task-type-btn.t-rose.selected  { border-color: var(--sakura); background: var(--sakura-light); color: var(--sakura); }
 .task-type-btn.t-olive.selected { border-color: #5A6A2A; background: #EEF0DC; color: #5A6A2A; }
 .task-type-btn.t-gray.selected  { border-color: #5A5A6A; background: #EEEEF2; color: #5A5A6A; }
-.btn-save-task { width: 100%; padding: 15px; border: none; border-radius: 50px; background: var(--btn-dark); color: #fff; font-family: var(--font); font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-top: 6px; }
+.btn-save-task {
+  width: 100%; padding: 16px; border: none; border-radius: 50px;
+  background: var(--sage); color: #fff; font-family: var(--font);
+  font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-top: 8px;
+  box-shadow: 0 4px 16px rgba(90,122,96,0.28);
+}
 .recurrence-row { display: flex; gap: 8px; }
-.recurrence-btn { flex: 1; padding: 9px 4px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--card2); font-family: var(--font); font-size: 0.68rem; font-weight: 600; color: var(--text-sec); cursor: pointer; text-align: center; }
-.recurrence-btn.selected { border-color: var(--green); background: var(--green-light); color: var(--green-text); }
+.recurrence-btn { flex: 1; padding: 10px 4px; border: 1.5px solid var(--border); border-radius: 11px; background: var(--card); font-family: var(--font); font-size: 0.68rem; font-weight: 600; color: var(--text-sec); cursor: pointer; text-align: center; transition: 0.15s; }
+.recurrence-btn.selected { border-color: var(--sage); background: var(--sage-light); color: var(--sage); }
+
+/* ── ANIMATION D'ENTRÉE ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.screen.active .home-header,
+.screen.active .urgency-banner.show,
+.screen.active .upcoming-widget,
+.screen.active .search-wrap,
+.screen.active .category-section { animation: fadeUp 0.3s ease both; }
+.screen.active .category-section:nth-child(3) { animation-delay: 0.04s; }
+.screen.active .category-section:nth-child(4) { animation-delay: 0.08s; }
+.screen.active .category-section:nth-child(5) { animation-delay: 0.12s; }
+
+/* ── SÉPARATEUR DÉCORATIF ── */
+.category-section::before {
+  content: none;
+}
+
+/* ── BONSAI CARD PHOTO placeholder ── */
+.card-photo .card-photo-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
 </style>
 </head>
 <body>
@@ -436,7 +642,6 @@ input[type="file"] { display: none; }
     </div>
 </div>
 
-<!-- MODAL ESPÈCE — ancré en haut, pas de conflit avec le clavier -->
 <div id="species-modal" class="species-modal" onclick="closeSpeciesModal()">
     <div class="species-panel" onclick="event.stopPropagation()">
         <div class="species-panel-header">
@@ -457,8 +662,8 @@ input[type="file"] { display: none; }
 <div id="screen-list" class="screen active">
     <div class="home-header">
         <div class="home-logo">
-            <span class="home-logo-icon"><i class="fa-solid fa-torii-gate"></i></span>
-            <div class="home-logo-text">BONSAI-EN</div>
+            <div class="home-logo-icon"><i class="fa-solid fa-torii-gate"></i></div>
+            <div class="home-logo-text">BONSAI<span class="home-logo-dot">·</span>EN</div>
         </div>
         <div style="display:flex;align-items:center;gap:0">
             <span class="home-count" id="bonsai-count">0 <span data-i18n="trees">arbres</span></span>
@@ -470,7 +675,7 @@ input[type="file"] { display: none; }
             <div class="urgency-text" id="urgency-text"></div>
             <div class="urgency-sub" id="urgency-sub"></div>
         </div>
-        <i class="fa-solid fa-chevron-right" style="color:var(--urgent);font-size:0.75rem;flex-shrink:0"></i>
+        <i class="fa-solid fa-chevron-right" style="color:var(--urgent);font-size:0.72rem;flex-shrink:0"></i>
     </div>
     <div class="upcoming-widget" id="upcoming-widget" style="display:none">
         <div class="upcoming-header">
@@ -622,7 +827,6 @@ input[type="file"] { display: none; }
                 </select>
                 <i class="fa-solid fa-location-dot id-tile-icon"></i>
             </div>
-            <!-- Style — rempli dynamiquement par JS selon la langue -->
             <div class="id-tile"><label data-i18n="style">Style</label>
                 <select id="edit-style" onchange="autoSave()"></select>
             </div>
@@ -740,7 +944,6 @@ input[type="file"] { display: none; }
 <div id="toast"></div>
 
 <script>
-// ── STYLES BONSAÏ — FR / EN + japonais entre parenthèses ─────────────────
 const BONSAI_STYLES = [
   { value: '',           fr: '—',                              en: '—'                              },
   { value: 'Chokkan',    fr: 'Droit formel (Chokkan)',         en: 'Formal upright (Chokkan)'       },
@@ -756,45 +959,25 @@ const BONSAI_STYLES = [
   { value: 'Sharimiki',  fr: 'Bois mort (Sharimiki)',          en: 'Driftwood (Sharimiki)'          },
   { value: 'Nebari',     fr: 'Racines évasées (Nebari)',       en: 'Surface roots (Nebari)'         },
 ];
-
-// ── SUBSTRATS BONSAÏ — FR / EN ────────────────────────────────────────────
 const SUBSTRATE_OPTIONS = [
   { value: '',        fr: '—',              en: '—'        },
   { value: 'Akadama', fr: 'Akadama',        en: 'Akadama'  },
   { value: 'Pumice',  fr: 'Pouzzolane',     en: 'Pumice'   },
-  { value: 'PumiceEN', fr: 'Pumice',          en: 'Pumice'   },
+  { value: 'PumiceEN', fr: 'Pumice',        en: 'Pumice'   },
   { value: 'Kiryu',   fr: 'Kiryu',          en: 'Kiryu'    },
   { value: 'Kanuma',  fr: 'Kanuma',         en: 'Kanuma'   },
   { value: 'Lava',    fr: 'Roche volcanique', en: 'Lava Rock' },
   { value: 'Compost', fr: 'Terreau',        en: 'Compost'  },
   { value: 'Other',   fr: 'Autre',          en: 'Other'    },
 ];
-
 function buildSubstrateOptions(savedVal) {
-  const sel = document.getElementById('edit-substrat');
-  sel.innerHTML = '';
-  SUBSTRATE_OPTIONS.forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s.value;
-    opt.textContent = lang === 'en' ? s.en : s.fr;
-    if (s.value === savedVal) opt.selected = true;
-    sel.appendChild(opt);
-  });
+  const sel = document.getElementById('edit-substrat'); sel.innerHTML = '';
+  SUBSTRATE_OPTIONS.forEach(s => { const opt = document.createElement('option'); opt.value = s.value; opt.textContent = lang === 'en' ? s.en : s.fr; if (s.value === savedVal) opt.selected = true; sel.appendChild(opt); });
 }
-
 function buildStyleOptions(savedVal) {
-  const sel = document.getElementById('edit-style');
-  sel.innerHTML = '';
-  BONSAI_STYLES.forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s.value;
-    opt.textContent = lang === 'en' ? s.en : s.fr;
-    if (s.value === savedVal) opt.selected = true;
-    sel.appendChild(opt);
-  });
+  const sel = document.getElementById('edit-style'); sel.innerHTML = '';
+  BONSAI_STYLES.forEach(s => { const opt = document.createElement('option'); opt.value = s.value; opt.textContent = lang === 'en' ? s.en : s.fr; if (s.value === savedVal) opt.selected = true; sel.appendChild(opt); });
 }
-
-// ── TRADUCTIONS ───────────────────────────────────────────────────────────
 const TRANSLATIONS = {
   fr: {
     trees: 'arbres', tree: 'arbre', home: 'Accueil', calendar: 'Calendrier',
@@ -820,21 +1003,15 @@ const TRANSLATIONS = {
     allTrees: '— Tous les arbres —', calTitle: 'Calendrier',
     upcomingTasks: 'Prochaines tâches', next7days: '7 prochains jours',
     tapCalendar: 'Appuyez pour voir le calendrier',
-    urgentTree: 'arbre nécessite une attention',
-    urgentTrees: 'arbres nécessitent une attention',
-    daysWithout: 'jours sans intervention',
-    dayWithout: 'jour sans intervention',
+    urgentTree: 'arbre nécessite une attention', urgentTrees: 'arbres nécessitent une attention',
+    daysWithout: 'jours sans intervention', dayWithout: 'jour sans intervention',
     tapToOpen: 'Appuyez pour ouvrir la fiche',
     andOthers: 'et', other1: 'autre', others1: 'autres',
     actionPot: 'rempotage', actionCut: 'taille', actionFertil: 'fertilisation', actionWire: 'ligature',
-    actionDefoil: 'effeuillage', actionDeneedle: 'désaiguillage',
-    actionMekiri: 'mékiri', actionMetsumi: 'metsumi',
-    defoliation: 'Effeuillage', deneedling: 'Désaiguillage',
-    mekiri: 'Mékiri', metsumi: 'Metsumi',
-    lastAction: 'Dernière action',
-    noTaskDay: 'Aucune tâche ce jour.\nAppuyez sur + pour en ajouter.',
-    taskAdded: '✓ Tâche ajoutée !', deleteTask: 'Supprimer cette tâche ?',
-    taskDeleted: 'La tâche sera définitivement supprimée.',
+    actionDefoil: 'effeuillage', actionDeneedle: 'désaiguillage', actionMekiri: 'mékiri', actionMetsumi: 'metsumi',
+    defoliation: 'Effeuillage', deneedling: 'Désaiguillage', mekiri: 'Mékiri', metsumi: 'Metsumi',
+    lastAction: 'Dernière action', noTaskDay: 'Aucune tâche ce jour.\nAppuyez sur + pour en ajouter.',
+    taskAdded: '✓ Tâche ajoutée !', deleteTask: 'Supprimer cette tâche ?', taskDeleted: 'La tâche sera définitivement supprimée.',
     deleteTree: 'Supprimer cet arbre ?', treeDeleted: 'Cette action est irréversible. Toutes les photos seront perdues.',
     deletePhoto: 'Supprimer la photo ?', photoDeleted: 'Cette photo sera définitivement supprimée.',
     importTitle: 'Importer des données ?',
@@ -842,12 +1019,10 @@ const TRANSLATIONS = {
     registered: '✓ Enregistré', deleted: '✓ Supprimé', invalidFile: '⚠ Fichier invalide ou corrompu',
     confirmDelete: 'Supprimer', confirmOk: 'Confirmer', confirmImport: 'Importer',
     adviceSoon: 'Conseils — bientôt', profileSoon: 'Profil — bientôt',
-    speciesRequired: "⚠ Renseignez d'abord l'espèce", noResult: 'Aucun résultat',
-    chooseDate: '⚠ Choisissez une date',
+    speciesRequired: "⚠ Renseignez d'abord l'espèce", noResult: 'Aucun résultat', chooseDate: '⚠ Choisissez une date',
     conifers: 'Conifères', deciduous: 'Feuillus', others: 'Autres Bonsaïs',
     healthy: 'En Santé', attention: 'Attention', urgent: 'Urgent', untracked: 'Non suivi',
-    auto: '🔄 Auto', conifer: '🌲 Conifère', other: '🌱 Autre',
-    today: "Aujourd'hui",
+    auto: '🔄 Auto', conifer: '🌲 Conifère', other: '🌱 Autre', today: "Aujourd'hui",
     months: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
     monthsShort: ['jan.','fév.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'],
     weekdays: ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
@@ -878,21 +1053,15 @@ const TRANSLATIONS = {
     allTrees: '— All trees —', calTitle: 'Calendar',
     upcomingTasks: 'Upcoming tasks', next7days: 'Next 7 days',
     tapCalendar: 'Tap to see the calendar',
-    urgentTree: 'tree needs attention',
-    urgentTrees: 'trees need attention',
-    daysWithout: 'days without action',
-    dayWithout: 'day without action',
+    urgentTree: 'tree needs attention', urgentTrees: 'trees need attention',
+    daysWithout: 'days without action', dayWithout: 'day without action',
     tapToOpen: 'Tap to open the tree',
     andOthers: 'and', other1: 'other', others1: 'others',
     actionPot: 'repotting', actionCut: 'pruning', actionFertil: 'fertilization', actionWire: 'wiring',
-    actionDefoil: 'defoliation', actionDeneedle: 'deneedling',
-    actionMekiri: 'mekiri', actionMetsumi: 'metsumi',
-    defoliation: 'Defoliation', deneedling: 'Deneedling',
-    mekiri: 'Mekiri', metsumi: 'Metsumi',
-    lastAction: 'Last action',
-    noTaskDay: 'No tasks this day.\nTap + to add one.',
-    taskAdded: '✓ Task added!', deleteTask: 'Delete this task?',
-    taskDeleted: 'The task will be permanently deleted.',
+    actionDefoil: 'defoliation', actionDeneedle: 'deneedling', actionMekiri: 'mekiri', actionMetsumi: 'metsumi',
+    defoliation: 'Defoliation', deneedling: 'Deneedling', mekiri: 'Mekiri', metsumi: 'Metsumi',
+    lastAction: 'Last action', noTaskDay: 'No tasks this day.\nTap + to add one.',
+    taskAdded: '✓ Task added!', deleteTask: 'Delete this task?', taskDeleted: 'The task will be permanently deleted.',
     deleteTree: 'Delete this tree?', treeDeleted: 'This action is irreversible. All photos will be lost.',
     deletePhoto: 'Delete photo?', photoDeleted: 'This photo will be permanently deleted.',
     importTitle: 'Import data?',
@@ -900,12 +1069,10 @@ const TRANSLATIONS = {
     registered: '✓ Saved', deleted: '✓ Deleted', invalidFile: '⚠ Invalid or corrupted file',
     confirmDelete: 'Delete', confirmOk: 'Confirm', confirmImport: 'Import',
     adviceSoon: 'Tips — coming soon', profileSoon: 'Profile — coming soon',
-    speciesRequired: '⚠ Please set species first', noResult: 'No results',
-    chooseDate: '⚠ Please choose a date',
+    speciesRequired: '⚠ Please set species first', noResult: 'No results', chooseDate: '⚠ Please choose a date',
     conifers: 'Conifers', deciduous: 'Deciduous', others: 'Other Bonsai',
     healthy: 'Healthy', attention: 'Attention', urgent: 'Urgent', untracked: 'Untracked',
-    auto: '🔄 Auto', conifer: '🌲 Conifer', other: '🌱 Other',
-    today: 'Today',
+    auto: '🔄 Auto', conifer: '🌲 Conifer', other: '🌱 Other', today: 'Today',
     months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
     monthsShort: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
     weekdays: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
@@ -913,10 +1080,8 @@ const TRANSLATIONS = {
     monthsFull: ['January','February','March','April','May','June','July','August','September','October','November','December'],
   }
 };
-
 let lang = localStorage.getItem('bonsai-lang') || 'fr';
 function T(key) { return TRANSLATIONS[lang][key] || TRANSLATIONS['fr'][key] || key; }
-
 function toggleLang() {
   lang = lang === 'fr' ? 'en' : 'fr';
   localStorage.setItem('bonsai-lang', lang);
@@ -925,28 +1090,14 @@ function toggleLang() {
   buildSubstrateOptions(document.getElementById('edit-substrat').value);
   renderCalendar(); renderList(bonsais); renderUrgencyBanner(); renderUpcomingWidget();
 }
-
 function applyLang() {
   document.getElementById('nav-lang-label').textContent = lang === 'fr' ? 'EN' : 'FR';
   document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (T(k)) el.textContent = T(k); });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { const k = el.getAttribute('data-i18n-placeholder'); if (T(k)) el.placeholder = T(k); });
 }
 
-// ── BASE DE DONNÉES ESPÈCES ───────────────────────────────────────────────
-const SPECIES_DB = {
-  "🍁 Acer palmatum — Hybrides": ["Acer palmatum 'Atropurpureum'","Acer palmatum 'Bloodgood'","Acer palmatum 'Deshojo'","Acer palmatum 'Beni Maiko'","Acer palmatum 'Seigen'","Acer palmatum 'Shindeshojo'","Acer palmatum 'Dissectum'","Acer palmatum 'Crimson Queen'","Acer palmatum 'Garnet'","Acer palmatum 'Inaba Shidare'","Acer palmatum 'Viridis'","Acer palmatum 'Seiryu'","Acer palmatum 'Osakazuki'","Acer palmatum 'Katsura'","Acer palmatum 'Sango Kaku'","Acer palmatum 'Shishigashira'","Acer palmatum 'Kotohime'","Acer palmatum 'Kiyohime'","Acer palmatum 'Arakawa'","Acer palmatum 'Nishiki Gawa'","Acer palmatum 'Yatsubusa'","Acer palmatum 'Kashima'","Acer palmatum 'Koto Hime'","Acer palmatum 'Mikawa Yatsubusa'","Acer palmatum 'Murasaki Kiyohime'","Acer palmatum 'Orange Dream'","Acer palmatum 'Butterfly'","Acer palmatum 'Ukigumo'","Acer palmatum 'Beni Hime'","Acer palmatum 'Coonara Pygmy'","Acer palmatum 'Hime Shojo'","Acer palmatum 'Shaina'","Acer palmatum 'Tamukeyama'","Acer palmatum 'Waterfall'","Acer palmatum 'Omurayama'","Acer palmatum 'Aka Shigitatsu Sawa'","Acer palmatum 'Beni Shichihenge'","Acer palmatum 'Chishio Improved'","Acer palmatum 'Ever Red'","Acer palmatum 'Filigree'","Acer palmatum 'Higasayama'","Acer palmatum 'Kagiri Nishiki'","Acer palmatum 'Matsugae'","Acer palmatum 'Moonfire'","Acer palmatum 'Red Dragon'","Acer palmatum 'Red Pygmy'","Acer palmatum 'Sharp's Pygmy'","Acer palmatum 'Tsuma Gaki'","Acer palmatum 'Wilson's Pink Dwarf'"],
-  "🍁 Acer — Autres érables": ["Acer buergerianum (Érable trident)","Acer buergerianum 'Mino Yatsubusa'","Acer buergerianum 'Miyasama Yatsubusa'","Acer campestre (Érable champêtre)","Acer ginnala (Érable du fleuve Amour)","Acer japonicum","Acer japonicum 'Aconitifolium'","Acer japonicum 'Vitifolium'","Acer monspessulanum (Érable de Montpellier)","Acer pseudoplatanus (Érable sycomore)","Acer platanoides (Érable plane)","Acer shirasawanum 'Aureum'","Acer shirasawanum 'Autumn Moon'","Acer truncatum","Acer rubrum","Acer saccharinum","Acer saccharum","Acer tataricum","Acer opalus","Acer negundo","Acer circinatum","Acer davidii","Acer griseum (Érable cannelle)","Acer pensylvanicum","Acer rufinerve"],
-  "🌸 Azalea & Rhododendron": ["Azalea satsuki","Azalea satsuki 'Chinzan'","Azalea satsuki 'Kinsai'","Azalea satsuki 'Nikko'","Azalea satsuki 'Kozan'","Azalea satsuki 'Hakurei'","Azalea satsuki 'Osakazuki'","Azalea satsuki 'Shuko'","Azalea satsuki 'Hakurin'","Azalea satsuki 'Wakaebisu'","Azalea satsuki 'Kaho'","Azalea satsuki 'Kinpai'","Azalea satsuki 'Korin'","Azalea kurume","Azalea kurume 'Hinomayo'","Azalea kurume 'Hinodegiri'","Azalea indica","Azalea japonica","Azalea mollis","Rhododendron indicum","Rhododendron obtusum","Rhododendron simsii","Rhododendron kiusianum","Rhododendron macrosepalum","Rhododendron mucronatum","Rhododendron yedoense"],
-  "🌲 Conifères — Pins": ["Pinus thunbergii (Pin noir du Japon)","Pinus thunbergii 'Kyokko Yatsubusa'","Pinus thunbergii 'Mikawa'","Pinus thunbergii 'Nishiki'","Pinus thunbergii 'Corticosa'","Pinus parviflora (Pin blanc du Japon)","Pinus parviflora 'Kokonoe'","Pinus parviflora 'Zuisho'","Pinus parviflora 'Miyajima'","Pinus parviflora 'Arakawa'","Pinus parviflora 'Goyomatsu'","Pinus sylvestris (Pin sylvestre)","Pinus sylvestris 'Watereri'","Pinus sylvestris 'Beuvronensis'","Pinus mugo (Pin des montagnes)","Pinus mugo 'Pumilio'","Pinus mugo 'Mops'","Pinus densiflora (Pin rouge du Japon)","Pinus densiflora 'Umbraculifera'","Pinus pentaphylla","Pinus halepensis (Pin d'Alep)","Pinus nigra (Pin noir d'Autriche)","Pinus nigra 'Austriaca'","Pinus strobus (Pin blanc d'Amérique)","Pinus pinea (Pin parasol)","Pinus contorta (Pin tordu)","Pinus banksiana","Pinus ponderosa","Pinus aristata (Pin des Rocheuses)","Pinus cembra (Pin cembro)","Pinus uncinata","Pinus radiata","Pinus massoniana","Pinus taeda","Pinus resinosa","Pinus flexilis","Pinus armandii","Pinus bungeana","Pinus koraiensis"],
-  "🌲 Conifères — Genévriers": ["Juniperus chinensis 'Itoigawa'","Juniperus chinensis 'Shimpaku'","Juniperus chinensis 'Kishu'","Juniperus chinensis 'Tohoku'","Juniperus chinensis 'Sargentii'","Juniperus chinensis 'San Jose'","Juniperus chinensis 'Blaauw'","Juniperus chinensis 'Hollywood'","Juniperus chinensis 'Old Gold'","Juniperus chinensis 'Spartan'","Juniperus chinensis 'Stricta'","Juniperus rigida (Genévrier rigide)","Juniperus rigida 'Tosho'","Juniperus procumbens","Juniperus procumbens 'Nana'","Juniperus sabina (Genévrier sabine)","Juniperus communis (Genévrier commun)","Juniperus communis 'Hibernica'","Juniperus horizontalis","Juniperus horizontalis 'Wiltonii'","Juniperus virginiana (Cèdre rouge)","Juniperus californica","Juniperus occidentalis","Juniperus scopulorum (Genévrier des Rocheuses)","Juniperus squamata 'Blue Star'","Juniperus squamata 'Meyeri'","Juniperus phoenicea","Juniperus thurifera (Genévrier thurifère)","Juniperus deppeana","Juniperus osteosperma","Juniperus ashei","Juniperus formosana","Juniperus davurica"],
-  "🌲 Conifères — Autres": ["Cedrus libani (Cèdre du Liban)","Cedrus atlantica (Cèdre de l'Atlas)","Cedrus atlantica 'Glauca'","Cedrus deodara (Cèdre de l'Himalaya)","Cedrus brevifolia","Chamaecyparis obtusa (Hinoki)","Chamaecyparis obtusa 'Nana'","Chamaecyparis obtusa 'Kamarachiba'","Chamaecyparis obtusa 'Sekka'","Chamaecyparis obtusa 'Yatsubusa'","Chamaecyparis pisifera (Sawara)","Chamaecyparis pisifera 'Boulevard'","Chamaecyparis pisifera 'Squarrosa'","Chamaecyparis lawsoniana","Chamaecyparis thyoides","Cryptomeria japonica (Sugi)","Cryptomeria japonica 'Yatsubusa'","Cryptomeria japonica 'Bandai Sugi'","Cryptomeria japonica 'Tansu'","Cupressus sempervirens (Cyprès commun)","Cupressus macrocarpa","Cupressus arizonica","Cupressus × leylandii","Larix decidua (Mélèze d'Europe)","Larix kaempferi (Mélèze du Japon)","Larix laricina (Mélèze tamarack)","Larix gmelinii","Larix sibirica","Picea abies (Épicéa commun)","Picea abies 'Little Gem'","Picea abies 'Nidiformis'","Picea glauca (Épicéa blanc)","Picea glauca 'Conica'","Picea mariana","Picea pungens (Épicéa du Colorado)","Picea orientalis","Picea jezoensis","Picea engelmannii","Picea omorika","Picea sitchensis","Taxus baccata (If commun)","Taxus cuspidata","Taxus × media","Taxus chinensis","Thuja occidentalis (Thuya du Canada)","Thuja occidentalis 'Smaragd'","Thuja plicata","Thuja orientalis","Tsuga canadensis (Pruche du Canada)","Tsuga canadensis 'Jeddeloh'","Tsuga heterophylla","Tsuga diversifolia","Tsuga mertensiana","Abies alba (Sapin pectiné)","Abies balsamea (Sapin baumier)","Abies koreana","Abies lasiocarpa","Abies concolor","Metasequoia glyptostroboides (Séquoia de Chine)","Sequoia sempervirens","Sequoiadendron giganteum","Taxodium distichum (Cyprès chauve)","Taxodium mucronatum","Glyptostrobus pensilis","Cephalotaxus harringtonia","Podocarpus macrophyllus","Podocarpus nivalis","Araucaria araucana","Araucaria heterophylla","Cunninghamia lanceolata","Ginkgo biloba","Pseudotsuga menziesii (Douglas)","Libocedrus decurrens","Calocedrus decurrens","Fokienia hodginsii","Torreya nucifera","Sciadopitys verticillata"],
-  "🌳 Feuillus": ["Betula pendula (Bouleau verruqueux)","Betula pubescens","Betula nigra","Betula papyrifera","Betula utilis","Betula jacquemontii","Carpinus betulus (Charme commun)","Carpinus betulus 'Fastigiata'","Carpinus japonica (Charme du Japon)","Carpinus coreana (Charme de Corée)","Carpinus laxiflora","Carpinus turczaninowii","Carpinus caroliniana","Ostrya carpinifolia","Fagus sylvatica (Hêtre commun)","Fagus sylvatica 'Purpurea'","Fagus sylvatica 'Pendula'","Fagus crenata (Hêtre du Japon)","Fagus grandifolia","Fagus orientalis","Fagus japonica","Ulmus parvifolia (Orme de Chine)","Ulmus parvifolia 'Seiju'","Ulmus parvifolia 'Hokkaido'","Ulmus parvifolia 'Yatsubusa'","Ulmus parvifolia 'Catlin'","Ulmus pumila (Orme de Sibérie)","Ulmus glabra","Ulmus minor","Ulmus americana","Ulmus procera","Ulmus japonica","Ulmus davidiana","Zelkova serrata (Zelkova du Japon)","Zelkova serrata 'Yatsubusa'","Zelkova nire","Zelkova carpinifolia","Buxus sempervirens (Buis commun)","Buxus microphylla (Buis du Japon)","Buxus microphylla 'Kingsville'","Buxus harlandii","Cotoneaster horizontalis","Cotoneaster microphyllus","Cotoneaster dammeri","Cotoneaster franchetii","Cotoneaster apiculatus","Crataegus monogyna (Aubépine à un style)","Crataegus laevigata (Aubépine épineuse)","Crataegus azarolus","Crataegus crus-galli","Ginkgo biloba (Arbre aux quarante écus)","Ilex crenata (Houx crénelé)","Ilex crenata 'Convexa'","Ilex crenata 'Mariesii'","Ilex serrata","Ilex aquifolium","Ilex vomitoria","Ilex verticillata","Lonicera nitida","Lonicera pileata","Lonicera japonica","Salix babylonica (Saule pleureur)","Salix alba","Salix caprea","Salix matsudana","Salix purpurea","Quercus robur (Chêne pédonculé)","Quercus ilex (Chêne vert)","Quercus suber (Chêne-liège)","Quercus petraea","Quercus pubescens","Quercus cerris","Quercus palustris","Quercus rubra","Quercus coccinea","Quercus virginiana","Quercus alba","Quercus agrifolia","Quercus serrata","Quercus myrsinifolia","Quercus glauca","Populus tremula (Tremble)","Populus alba","Populus nigra","Tilia cordata","Tilia platyphyllos","Tilia tomentosa","Fraxinus excelsior","Fraxinus ornus","Fraxinus angustifolia","Alnus glutinosa","Alnus incana","Alnus japonica","Celtis australis (Micocoulier)","Celtis sinensis","Celtis occidentalis","Celtis laevigata","Pterocarya stenoptera","Liquidambar styraciflua (Copalme d'Amérique)","Liriodendron tulipifera (Tulipier de Virginie)","Nothofagus antarctica","Nothofagus obliqua","Hamamelis virginiana","Hamamelis mollis","Hamamelis japonica","Corylus avellana (Noisetier)","Corylus colurna","Castanea sativa (Châtaignier)","Castanopsis cuspidata","Juglans regia","Platanus × acerifolia","Platanus orientalis","Euonymus alatus","Euonymus europaeus","Euonymus japonicus","Nyssa sylvatica","Prunus spinosa","Acer burgerianum","Catalpa bignonioides","Diospyros kaki","Diospyros lotus","Parrotia persica","Styrax japonicus","Stewartia pseudocamellia","Stewartia monadelpha","Tetradium daniellii","Gymnocladus dioicus","Ostrya virginiana","Maclura pomifera","Gleditsia triacanthos"],
-  "🍑 Prunus & Fruitiers": ["Prunus mume (Abricotier du Japon)","Prunus mume 'Beni-chidori'","Prunus mume 'Omoi-no-mama'","Prunus serrulata (Cerisier du Japon)","Prunus serrulata 'Kanzan'","Prunus serrulata 'Shirotae'","Prunus spinosa (Prunellier)","Prunus subhirtella","Prunus incisa (Cerisier du mont Fuji)","Prunus avium (Merisier)","Prunus cerasifera (Prunier myrobolan)","Prunus cerasifera 'Nigra'","Prunus domestica","Prunus persica (Pêcher)","Prunus armeniaca (Abricotier)","Prunus dulcis (Amandier)","Prunus laurocerasus","Prunus lusitanica","Prunus padus","Prunus serotina","Prunus tomentosa","Prunus triloba","Prunus glandulosa","Prunus sargentii","Prunus yedoensis","Malus floribunda","Malus sylvestris (Pommier sauvage)","Malus domestica","Malus halliana","Malus baccata","Malus sieboldii","Malus 'Zumi'","Malus toringo","Malus sargentii","Malus 'Red Jewel'","Malus 'Evereste'","Pyrus communis (Poirier)","Pyrus calleryana","Pyrus pyrifolia","Pyrus salicifolia","Cydonia oblonga (Cognassier)","Chaenomeles japonica (Cognassier du Japon)","Chaenomeles speciosa","Chaenomeles 'Toyo Nishiki'","Punica granatum (Grenadier)","Punica granatum 'Nana'","Pyracantha angustifolia","Pyracantha coccinea","Pyracantha crenulata","Pyracantha fortuneana","Sorbus aucuparia (Sorbier des oiseleurs)","Sorbus domestica","Sorbus torminalis","Sorbus aria","Mespilus germanica (Néflier commun)","Morus alba (Mûrier blanc)","Morus nigra (Mûrier noir)","Morus rubra","Olea europaea (Olivier)","Olea europaea sylvestris (Oléastre)","Ficus carica (Figuier)","Citrus limon (Citronnier)","Citrus sinensis","Citrus reticulata","Citrus aurantium","Citrus × myrtifolia","Fortunella margarita (Kumquat)","Diospyros kaki (Plaqueminier)","Diospyros virginiana","Vitis vinifera (Vigne)","Feijoa sellowiana","Psidium guajava","Carica papaya","Arbutus unedo (Arbousier)","Arbutus andrachne","Eriobotrya japonica (Néflier du Japon)","Hovenia dulcis","Ziziphus jujuba (Jujubier)","Rosa rugosa","Berberis thunbergii","Berberis vulgaris","Amelanchier canadensis","Amelanchier lamarckii"],
-  "🌴 Tropicaux & Intérieur": ["Ficus microcarpa","Ficus microcarpa 'Ginseng'","Ficus microcarpa 'Tigerbark'","Ficus benjamina","Ficus ginseng","Ficus retusa","Ficus religiosa","Ficus benghalensis","Ficus natalensis","Ficus rubiginosa","Ficus salicifolia","Ficus nerifolia","Ficus panda","Ficus pumila","Ficus lyrata","Ficus elastica","Ficus virens","Ficus palmeri","Bougainvillea glabra","Bougainvillea spectabilis","Bougainvillea 'Barbara Karst'","Carmona retusa (Fukien Tea)","Carmona microphylla","Crassula ovata (Arbre de Jade)","Crassula arborescens","Crassula sarcocaulis","Portulacaria afra (Arbre à éléphant)","Portulacaria afra 'Variegata'","Sageretia theezans (Thé de Chine)","Schefflera arboricola","Schefflera actinophylla","Serissa foetida (Arbre aux mille étoiles)","Serissa japonica","Murraya paniculata (Oranger jessamine)","Murraya koenigii","Duranta erecta","Duranta repens","Premna microphylla","Premna obtusifolia","Ehretia microphylla","Ehretia buxifolia","Wrightia religiosa (Water Jasmine)","Wrightia antidysenterica","Tamarindus indica (Tamarinier)","Adenium obesum (Rose du désert)","Adenium arabicum","Adansonia digitata (Baobab)","Bucida spinosa (Black Olive)","Bucida buceras","Conocarpus erectus","Pemphis acidula","Lagerstroemia indica (Lilas des Indes)","Lagerstroemia speciosa","Celtis sinensis","Zanthoxylum piperitum","Zanthoxylum beecheyanum","Operculicarya decaryi","Operculicarya pachypus","Commiphora mukul","Commiphora africana","Boswellia sacra","Bursera fagaroides","Bursera microphylla","Pachira aquatica","Pachypodium lamerei","Dracaena draco","Eugenia uniflora","Eugenia myrtifolia","Jacaranda mimosifolia","Erythrina crista-galli","Casuarina equisetifolia","Callistemon citrinus","Leptospermum scoparium","Melaleuca alternifolia","Syzygium paniculatum","Acacia dealbata","Acacia baileyana","Mimosa pudica","Jatropha podagrica","Plumeria rubra","Ixora coccinea","Gardenia jasminoides","Hibiscus rosa-sinensis","Bauhinia variegata","Cassia fistula","Delonix regia","Tabebuia impetiginosa","Pistacia lentiscus","Terminalia catappa","Cordia sebestena","Triphasia trifolia"],
-  "🌿 Divers": ["Wisteria sinensis (Glycine de Chine)","Wisteria floribunda (Glycine du Japon)","Wisteria floribunda 'Macrobotrys'","Wisteria frutescens","Wisteria venusta","Camellia japonica","Camellia sasanqua","Camellia sinensis (Théier)","Camellia reticulata","Camellia hiemalis","Forsythia suspensa","Forsythia × intermedia","Forsythia viridissima","Nandina domestica (Bambou céleste)","Nandina domestica 'Nana'","Rosa chinensis (Rosier de Chine)","Rosa banksiae","Rosa multiflora","Rosa canina","Rosa rugosa","Spiraea japonica","Spiraea thunbergii","Spiraea nipponica","Tamarix ramosissima (Tamaris)","Tamarix gallica","Tamarix parviflora","Hibiscus syriacus (Althéa)","Hibiscus sinosyriacus","Magnolia stellata","Magnolia kobus","Magnolia liliiflora","Magnolia × soulangeana","Magnolia grandiflora","Weigela florida","Weigela hortensis","Philadelphus coronarius (Seringat)","Deutzia gracilis","Deutzia crenata","Kerria japonica","Kolkwitzia amabilis","Cercis siliquastrum (Arbre de Judée)","Cercis canadensis","Cercis chinensis","Cornus mas (Cornouiller mâle)","Cornus florida","Cornus kousa","Cornus alba","Cornus sanguinea","Cornus officinalis","Cornus controversa","Viburnum opulus","Viburnum tinus","Viburnum plicatum","Viburnum farreri","Sambucus nigra (Sureau noir)","Sambucus racemosa","Lonicera fragrantissima","Lonicera caerulea","Lonicera xylosteum","Syringa vulgaris (Lilas)","Syringa meyeri","Syringa microphylla","Ligustrum ovalifolium (Troène)","Ligustrum sinense","Ligustrum japonicum","Ligustrum obtusifolium","Ligustrum vulgare","Jasminum nudiflorum","Jasminum officinale","Jasminum sambac","Lagerstroemia indica","Callicarpa japonica","Callicarpa bodinieri","Cytisus scoparius","Genista tinctoria","Laburnum anagyroides","Robinia pseudoacacia","Caragana arborescens","Hedera helix","Parthenocissus tricuspidata","Vitis coignetiae","Clematis montana","Clematis armandii","Rhamnus alaternus","Rhamnus frangula","Frangula alnus","Myrtus communis (Myrte)","Laurus nobilis (Laurier noble)","Nerium oleander (Laurier-rose)","Vitex agnus-castus (Gattilier)","Chimonanthus praecox","Ribes sanguineum","Ribes alpinum","Sarcococca confusa","Skimmia japonica","Pieris japonica","Kalmia latifolia","Enkianthus campanulatus","Erica arborea","Calluna vulgaris","Vaccinium corymbosum","Vaccinium vitis-idaea","Ericameria laricifolia","Larrea tridentata","Artemisia absinthium","Santolina chamaecyparissus","Rosmarinus officinalis","Thymus vulgaris","Salvia officinalis","Lavandula angustifolia","Buddleja davidii","Hydrangea paniculata","Hydrangea macrophylla","Hydrangea petiolaris","Cephalanthus occidentalis","Clerodendrum trichotomum","Fuchsia magellanica","Ribes aureum","Euphorbia pulcherrima"],
-};
+const SPECIES_DB = {"🍁 Acer palmatum — Hybrides":["Acer palmatum 'Atropurpureum'","Acer palmatum 'Bloodgood'","Acer palmatum 'Deshojo'","Acer palmatum 'Beni Maiko'","Acer palmatum 'Seigen'","Acer palmatum 'Shindeshojo'","Acer palmatum 'Dissectum'","Acer palmatum 'Crimson Queen'","Acer palmatum 'Garnet'","Acer palmatum 'Inaba Shidare'","Acer palmatum 'Viridis'","Acer palmatum 'Seiryu'","Acer palmatum 'Osakazuki'","Acer palmatum 'Katsura'","Acer palmatum 'Sango Kaku'","Acer palmatum 'Shishigashira'","Acer palmatum 'Kotohime'","Acer palmatum 'Kiyohime'","Acer palmatum 'Arakawa'","Acer palmatum 'Nishiki Gawa'"],"🍁 Acer — Autres érables":["Acer buergerianum (Érable trident)","Acer campestre (Érable champêtre)","Acer ginnala (Érable du fleuve Amour)","Acer japonicum","Acer monspessulanum (Érable de Montpellier)","Acer pseudoplatanus (Érable sycomore)","Acer griseum (Érable cannelle)"],"🌸 Azalea & Rhododendron":["Azalea satsuki","Azalea satsuki 'Chinzan'","Azalea satsuki 'Kinsai'","Azalea satsuki 'Nikko'","Azalea kurume","Rhododendron indicum","Rhododendron obtusum"],"🌲 Conifères — Pins":["Pinus thunbergii (Pin noir du Japon)","Pinus parviflora (Pin blanc du Japon)","Pinus sylvestris (Pin sylvestre)","Pinus mugo (Pin des montagnes)","Pinus densiflora (Pin rouge du Japon)","Pinus halepensis (Pin d'Alep)","Pinus nigra (Pin noir d'Autriche)"],"🌲 Conifères — Genévriers":["Juniperus chinensis 'Itoigawa'","Juniperus chinensis 'Shimpaku'","Juniperus chinensis 'Kishu'","Juniperus rigida (Genévrier rigide)","Juniperus procumbens","Juniperus procumbens 'Nana'","Juniperus communis (Genévrier commun)"],"🌲 Conifères — Autres":["Cedrus libani (Cèdre du Liban)","Cedrus atlantica (Cèdre de l'Atlas)","Chamaecyparis obtusa (Hinoki)","Cryptomeria japonica (Sugi)","Larix decidua (Mélèze d'Europe)","Larix kaempferi (Mélèze du Japon)","Picea abies (Épicéa commun)","Taxus baccata (If commun)","Ginkgo biloba"],"🌳 Feuillus":["Betula pendula (Bouleau verruqueux)","Carpinus betulus (Charme commun)","Carpinus japonica (Charme du Japon)","Fagus sylvatica (Hêtre commun)","Ulmus parvifolia (Orme de Chine)","Zelkova serrata (Zelkova du Japon)","Buxus sempervirens (Buis commun)","Quercus robur (Chêne pédonculé)","Quercus ilex (Chêne vert)","Salix babylonica (Saule pleureur)"],"🍑 Prunus & Fruitiers":["Prunus mume (Abricotier du Japon)","Prunus serrulata (Cerisier du Japon)","Prunus spinosa (Prunellier)","Malus floribunda","Malus sylvestris (Pommier sauvage)","Pyrus communis (Poirier)","Chaenomeles japonica (Cognassier du Japon)","Punica granatum (Grenadier)","Pyracantha coccinea","Olea europaea (Olivier)","Ficus carica (Figuier)"],"🌴 Tropicaux & Intérieur":["Ficus microcarpa","Ficus microcarpa 'Ginseng'","Ficus benjamina","Ficus religiosa","Bougainvillea glabra","Carmona retusa (Fukien Tea)","Crassula ovata (Arbre de Jade)","Portulacaria afra (Arbre à éléphant)","Sageretia theezans (Thé de Chine)","Serissa foetida (Arbre aux mille étoiles)","Adenium obesum (Rose du désert)"],"🌿 Divers":["Wisteria sinensis (Glycine de Chine)","Wisteria floribunda (Glycine du Japon)","Camellia japonica","Camellia sinensis (Théier)","Nandina domestica (Bambou céleste)","Rosa chinensis (Rosier de Chine)","Cercis siliquastrum (Arbre de Judée)","Cornus mas (Cornouiller mâle)","Magnolia stellata","Myrtus communis (Myrte)","Laurus nobilis (Laurier noble)"]};
 
-// ── INDEXEDDB ─────────────────────────────────────────────────────────────
 const DB_NAME = 'BonsaiMasterPro', STORE_NAME = 'trees';
 let bonsais = [], currentUid = null, currentPhotoBase64 = null;
 const dbApi = {
@@ -970,9 +1121,7 @@ function showConfirm(title, msg, okLabel, isDanger) {
     document.getElementById('confirm-cancel-btn').onclick = () => close(false);
   });
 }
-
 function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2400); }
-
 
 let autoSaveTimer = null;
 function autoSave() {
@@ -996,12 +1145,10 @@ function nav(screen) {
   window.scrollTo(0, 0);
 }
 
-// ── ESPÈCES — modal ancré en haut ─────────────────────────────────────────
 function openSpeciesModal() {
   document.getElementById('species-search').value = '';
   renderSpeciesList('');
   document.getElementById('species-modal').classList.add('open');
-  // Focus décalé pour laisser le modal s'afficher avant que le clavier s'ouvre
   setTimeout(() => document.getElementById('species-search').focus(), 300);
 }
 function closeSpeciesModal() { document.getElementById('species-modal').classList.remove('open'); }
@@ -1036,20 +1183,15 @@ const CONIFER_GROUPS = ['🌲 Conifères — Pins','🌲 Conifères — Genévri
 const CONIFER_KW = ['pinus','pin ','juniperus','genévrier','cedrus','cèdre','cedar','chamaecyparis','cryptomeria','cupressus','cyprès','larix','mélèze','picea','épicéa','taxus','thuja','tsuga','abies','sapin'];
 const DEC_KW = ['acer','érable','azalea','rhododendron','betula','bouleau','carpinus','charme','quercus','chêne','fagus','hêtre','ulmus','orme','zelkova','buxus','cotoneaster','crataegus','ficus','malus','morus','olea','olivier','prunus','pyracantha','punica','salix','sorbus','wisteria','camellia','forsythia','rosa','nandina','spiraea','bougainvillea','carmona','crassula','portulacaria','sageretia'];
 function isConifer(sp) { if (!sp) return false; const s = sp.toLowerCase(); for (const g of CONIFER_GROUPS) if (SPECIES_DB[g]?.some(x => x === sp)) return true; return CONIFER_KW.some(k => s.includes(k)); }
-function isDec(sp) { if (!sp) return false; const s = sp.toLowerCase(); for (const g of Object.keys(SPECIES_DB).filter(g => !g.includes('Conifères'))) if (SPECIES_DB[g]?.some(x => x === sp)) return true; return DEC_KW.some(k => s.includes(k)); }
+function isDec(sp) { if (!sp) return false; const s = sp.toLowerCase(); return DEC_KW.some(k => s.includes(k)); }
 function getCat(b) { if (b.category && b.category !== 'auto') return b.category; if (isConifer(b.species)) return 'conifer'; if (isDec(b.species)) return 'deciduous'; return 'other'; }
 
-// Calcule le détail d'urgence pour un arbre : {days, lastAction}
 function getUrgencyDetails(b) {
   const actions = [
-    { key: 'lastPot',      labelKey: 'actionPot' },
-    { key: 'lastCut',      labelKey: 'actionCut' },
-    { key: 'lastFertil',   labelKey: 'actionFertil' },
-    { key: 'lastWire',     labelKey: 'actionWire' },
-    { key: 'lastDefoil',   labelKey: 'actionDefoil' },
-    { key: 'lastDeneedle', labelKey: 'actionDeneedle' },
-    { key: 'lastMekiri',   labelKey: 'actionMekiri' },
-    { key: 'lastMetsumi',  labelKey: 'actionMetsumi' },
+    { key: 'lastPot', labelKey: 'actionPot' }, { key: 'lastCut', labelKey: 'actionCut' },
+    { key: 'lastFertil', labelKey: 'actionFertil' }, { key: 'lastWire', labelKey: 'actionWire' },
+    { key: 'lastDefoil', labelKey: 'actionDefoil' }, { key: 'lastDeneedle', labelKey: 'actionDeneedle' },
+    { key: 'lastMekiri', labelKey: 'actionMekiri' }, { key: 'lastMetsumi', labelKey: 'actionMetsumi' },
   ];
   const filled = actions.filter(a => b[a.key]).map(a => ({ ...a, date: new Date(b[a.key]) }));
   if (!filled.length) return { days: null, lastActionKey: null };
@@ -1062,7 +1204,7 @@ function getUrgencyDetails(b) {
 function makeCard(b) {
   const badge = getBadge(b);
   const card = document.createElement('div'); card.className = 'bonsai-card'; card.onclick = () => openEditor(b.uid);
-  const urgentDot = badge.cls === 'badge-red' ? '<div class="urgent-dot" title="Urgent"></div>' : '';
+  const urgentDot = badge.cls === 'badge-red' ? '<div class="urgent-dot"></div>' : '';
   card.innerHTML = `<div class="card-photo" style="background-image:url(${b.photo||''})">${b.photo?'':'<i class="fa-solid fa-tree"></i>'}${urgentDot}</div><div class="card-info"><div class="card-name">${b.name||'SANS NOM'}</div><div class="card-species">${b.species||'—'}</div><span class="card-badge ${badge.cls}">${badge.label}</span></div>`;
   return card;
 }
@@ -1120,47 +1262,36 @@ function renderUrgencyBanner() {
   const banner = document.getElementById('urgency-banner');
   if (!urgentTrees.length) { banner.classList.remove('show'); return; }
   banner.classList.add('show');
-
   const n = urgentTrees.length;
   document.getElementById('urgency-text').textContent = `${n} ${T(n > 1 ? 'urgentTrees' : 'urgentTree')}`;
-
-  // Détail : nom + jours sans intervention + dernière action, pour le 1er (et 2e si présent)
   const sub = document.getElementById('urgency-sub');
   const details = urgentTrees.map(b => {
-    const d = getUrgencyDetails(b);
-    const name = b.name || '—';
+    const d = getUrgencyDetails(b); const name = b.name || '—';
     if (d.days === null) return `<strong>${name}</strong> — ${T('untracked')}`;
     const dayLabel = d.days > 1 ? T('daysWithout') : T('dayWithout');
     const actionLabel = d.lastActionKey ? ` (${T(d.lastActionKey)})` : '';
     return `<strong>${name}</strong> — ${d.days} ${dayLabel}${actionLabel}`;
   });
-
-  // On affiche au max les 2 premiers, puis "et X autres"
   let html = details.slice(0, 2).join('<br>');
-  if (details.length > 2) {
-    const rest = details.length - 2;
-    html += `<br>${T('andOthers')} ${rest} ${T(rest > 1 ? 'others1' : 'other1')}…`;
-  }
+  if (details.length > 2) { const rest = details.length - 2; html += `<br>${T('andOthers')} ${rest} ${T(rest > 1 ? 'others1' : 'other1')}…`; }
   sub.innerHTML = html;
 }
 
 function openFirstUrgentTree() {
   const urgent = bonsais.filter(b => getBadge(b).cls === 'badge-red');
-  if (!urgent.length) return;
-  openEditor(urgent[0].uid);
+  if (!urgent.length) return; openEditor(urgent[0].uid);
 }
 
 function renderUpcomingWidget() {
   const today = new Date(); today.setHours(0,0,0,0);
   const in7 = new Date(today); in7.setDate(in7.getDate() + 7);
   const upcoming = tasks.filter(t => { const d = new Date(t.date + 'T00:00:00'); return d >= today && d <= in7; }).sort((a,b) => a.date.localeCompare(b.date)).slice(0, 5);
-  const widget = document.getElementById('upcoming-widget');
-  const list = document.getElementById('upcoming-list');
+  const widget = document.getElementById('upcoming-widget'); const list = document.getElementById('upcoming-list');
   if (!upcoming.length) { widget.style.display = 'none'; return; }
   widget.style.display = 'block'; list.innerHTML = '';
   document.querySelector('.upcoming-title span').textContent = T('upcomingTasks');
   document.querySelector('.upcoming-days-label').textContent = T('next7days');
-  const colors = { taille:'#9A5040', fertilisation:'#7A5828', rempotage:'#2E7A48', ligature:'#6A4A9A', effeuillage:'#7A4A9A', desaiguillage:'#2A7A6A', mekiri:'#9A3A6A', metsumi:'#5A6A2A', autre:'#5A5A6A' };
+  const colors = { taille:'#B86B4A', fertilisation:'#C4973A', rempotage:'#5A7A60', ligature:'#6A4A9A', effeuillage:'#7A4A9A', desaiguillage:'#2A7A6A', mekiri:'#D4768A', metsumi:'#5A6A2A', autre:'#5A5A6A' };
   upcoming.forEach(t => {
     const isToday = t.date === new Date().toISOString().slice(0,10);
     const item = document.createElement('div'); item.className = 'upcoming-item';
@@ -1173,8 +1304,7 @@ function checkOverdue() {
   const today = Date.now();
   [['pot',730],['cut',365],['fertil',90],['wire',180],['defoil',365],['deneedle',365],['mekiri',365],['metsumi',365]].forEach(([key, limit]) => {
     const val = document.getElementById('edit-last-'+key).value;
-    const row = document.getElementById('action-'+key);
-    const label = document.getElementById('overdue-'+key);
+    const row = document.getElementById('action-'+key); const label = document.getElementById('overdue-'+key);
     if (val) {
       const days = Math.floor((today - new Date(val)) / 86400000);
       if (days > limit) { row.classList.add('overdue'); label.style.display = 'block'; label.querySelector('span').textContent = T('late'); }
@@ -1184,8 +1314,7 @@ function checkOverdue() {
 }
 
 function updateDossier() {
-  const name = document.getElementById('edit-name').value;
-  const sp = document.getElementById('edit-species').value;
+  const name = document.getElementById('edit-name').value; const sp = document.getElementById('edit-species').value;
   document.getElementById('edit-header-title').textContent = name || T('newTree');
   document.getElementById('edit-header-sub').textContent = sp || T('myCollection');
   document.getElementById('dossier-name').textContent = name ? `${lang==='fr'?'Dossier':'Folder'} — ${name}` : T('globalFolder');
@@ -1198,15 +1327,11 @@ function resetEditor() {
   document.getElementById('edit-species').value = '';
   document.getElementById('edit-origin').value = 'Pépinière';
   document.getElementById('edit-category').value = 'auto';
-  buildStyleOptions('');
-  buildSubstrateOptions('');
+  buildStyleOptions(''); buildSubstrateOptions('');
   const txt = document.getElementById('species-display-text'); txt.textContent = T('selectSpecies'); txt.classList.remove('selected');
-  document.getElementById('hero-photo').style.backgroundImage = '';
-  document.getElementById('hero-icon').style.display = 'block';
-  document.getElementById('ai-output').style.display = 'none';
-  document.getElementById('ai-output').textContent = '';
-  document.getElementById('btn-ai').disabled = false;
-  document.getElementById('file-input').value = '';
+  document.getElementById('hero-photo').style.backgroundImage = ''; document.getElementById('hero-icon').style.display = 'block';
+  document.getElementById('ai-output').style.display = 'none'; document.getElementById('ai-output').textContent = '';
+  document.getElementById('btn-ai').disabled = false; document.getElementById('file-input').value = '';
   currentGallery = []; renderGallery(); updateDossier();
   ['pot','cut','fertil','wire','defoil','deneedle','mekiri','metsumi'].forEach(k => { document.getElementById('action-'+k).classList.remove('overdue'); document.getElementById('overdue-'+k).style.display = 'none'; });
 }
@@ -1218,8 +1343,7 @@ function openEditor(uid, cat) {
     const b = bonsais.find(x => x.uid === uid);
     document.getElementById('edit-name').value = b.name || '';
     document.getElementById('edit-date').value = b.date || '';
-    buildSubstrateOptions(b.substrat || '');
-    document.getElementById('edit-notes').value = b.notes || '';
+    buildSubstrateOptions(b.substrat || ''); document.getElementById('edit-notes').value = b.notes || '';
     document.getElementById('edit-origin').value = b.origin || 'Pépinière';
     document.getElementById('edit-category').value = b.category || 'auto';
     buildStyleOptions(b.style || '');
@@ -1241,7 +1365,6 @@ async function _doSave(goBack = true) {
   if (goBack) { nav('list'); showToast(T('registered')); }
   return true;
 }
-
 async function saveBonsai() { await _doSave(true); }
 
 async function confirmDeleteBonsai() {
@@ -1253,8 +1376,7 @@ async function confirmDeleteBonsai() {
 async function askAI() {
   const sp = document.getElementById('edit-species').value;
   if (!sp) { showToast(T('speciesRequired')); return; }
-  const out = document.getElementById('ai-output');
-  const btn = document.getElementById('btn-ai');
+  const out = document.getElementById('ai-output'); const btn = document.getElementById('btn-ai');
   out.style.display = 'block';
   out.innerHTML = '<div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
   btn.disabled = true;
@@ -1311,12 +1433,10 @@ function confirmCrop() {
 }
 
 let currentGallery = [], viewerIndex = 0;
-
 function startGalleryCrop(input) {
   if (!input.files[0]) return; galleryMode = true;
   const r = new FileReader(); r.onload = e => { cropImg.onload = () => { document.getElementById('crop-screen').style.display = 'flex'; maskPos = { x: (cropView.clientWidth-420)/2, y: 80 }; applyMask(); }; cropImg.src = e.target.result; }; r.readAsDataURL(input.files[0]); input.value = '';
 }
-
 function renderGallery() {
   const grid = document.getElementById('gallery-grid'); grid.innerHTML = '';
   if (!currentGallery.length) { grid.innerHTML = `<div class="gallery-empty">${T('noPhoto')}</div>`; return; }
@@ -1329,12 +1449,10 @@ function renderGallery() {
     grid.appendChild(thumb);
   });
 }
-
 async function confirmDeleteGallery(idx) {
   const ok = await showConfirm(T('deletePhoto'), T('photoDeleted'), T('confirmDelete'), true);
   if (!ok) return; currentGallery.splice(idx, 1); renderGallery(); autoSave();
 }
-
 function openViewer(idx) { viewerIndex = idx; refreshViewer(); document.getElementById('gallery-viewer').classList.add('open'); }
 function closeViewer() { document.getElementById('gallery-viewer').classList.remove('open'); }
 function refreshViewer() {
@@ -1353,7 +1471,6 @@ async function viewerDelete() {
   if (!currentGallery.length) { closeViewer(); return; }
   viewerIndex = Math.min(viewerIndex, currentGallery.length-1); refreshViewer();
 }
-
 function formatDate(d) {
   if (!d) return '';
   const dt = new Date(d + 'T00:00:00');
@@ -1369,7 +1486,6 @@ async function exportData() {
   const a = document.createElement('a'); a.href = url; a.download = 'bonsai-backup-' + new Date().toISOString().slice(0,10) + '.json'; a.click();
   URL.revokeObjectURL(url); showToast(T('exported'));
 }
-
 async function importData(input) {
   if (!input.files[0]) return;
   const r = new FileReader();
@@ -1394,7 +1510,6 @@ let calMonth = new Date().getMonth();
 let calSelectedDate = new Date().toISOString().slice(0,10);
 let tasks = JSON.parse(localStorage.getItem('bonsai-tasks') || '[]');
 tasks = tasks.map(t => t.uid ? t : { ...t, uid: Date.now() + Math.random() });
-
 function saveTasks() { localStorage.setItem('bonsai-tasks', JSON.stringify(tasks)); }
 
 function changeMonth(dir) {
@@ -1411,7 +1526,7 @@ function renderCalendar() {
   const lastDay = new Date(calYear, calMonth+1, 0);
   let startDow = firstDay.getDay(); startDow = startDow === 0 ? 6 : startDow - 1;
   const wdEl = document.getElementById('cal-weekdays'); wdEl.innerHTML = '';
-  T('weekdays').forEach((wd, i) => { const d = document.createElement('div'); d.className = 'cal-weekday'; if (i >= 5) d.style.color = '#C0392B'; d.textContent = wd; wdEl.appendChild(d); });
+  T('weekdays').forEach((wd, i) => { const d = document.createElement('div'); d.className = 'cal-weekday'; if (i >= 5) d.style.color = 'var(--terra)'; d.textContent = wd; wdEl.appendChild(d); });
   const daysEl = document.getElementById('cal-days'); daysEl.innerHTML = '';
   const prevLast = new Date(calYear, calMonth, 0).getDate();
   for (let i = startDow-1; i >= 0; i--) { const d = document.createElement('button'); d.className = 'cal-day other-month'; d.textContent = prevLast - i; daysEl.appendChild(d); }
@@ -1444,7 +1559,7 @@ function renderTasksForDate(dateStr) {
     const typeLabel = { taille: T('pruning'), fertilisation: T('fertilization'), rempotage: T('repotting'), ligature: T('wiring'), effeuillage: T('defoliation'), desaiguillage: T('deneedling'), mekiri: T('mekiri'), metsumi: T('metsumi'), autre: T('other') };
     const isOverdue = t.date < today;
     const item = document.createElement('div'); item.className = 'cal-task-item' + (isOverdue ? ' is-overdue' : '');
-    item.innerHTML = `<div class="cal-task-color" style="background:${t.color}"></div><div class="cal-task-info"><div class="cal-task-title"><i class="fa-solid ${icons[t.type]||'fa-pen'}" style="color:${t.color};margin-right:7px"></i>${typeLabel[t.type]||t.type}${t.tree?' — '+t.tree:''}${t.recurrence&&t.recurrence!=='none'?` <span style="font-size:0.6rem;opacity:0.6">(${T(t.recurrence)})</span>`:''}</div>${t.desc?`<div class="cal-task-sub">${t.desc}</div>`:''}${isOverdue?`<div class="overdue-label">${T('late')}</div>`:''}</div><button class="cal-task-del" onclick="confirmDeleteTask('${t.uid}')"><i class="fa-solid fa-xmark"></i></button>`;
+    item.innerHTML = `<div class="cal-task-color" style="background:${t.color}"></div><div class="cal-task-info"><div class="cal-task-title"><i class="fa-solid ${icons[t.type]||'fa-pen'}" style="color:${t.color};margin-right:7px"></i>${typeLabel[t.type]||t.type}${t.tree?' — '+t.tree:''}${t.recurrence&&t.recurrence!=='none'?` <span style="font-size:0.6rem;opacity:0.55">(${T(t.recurrence)})</span>`:''}</div>${t.desc?`<div class="cal-task-sub">${t.desc}</div>`:''}${isOverdue?`<div class="overdue-label">${T('late')}</div>`:''}</div><button class="cal-task-del" onclick="confirmDeleteTask('${t.uid}')"><i class="fa-solid fa-xmark"></i></button>`;
     list.appendChild(item);
   });
 }
@@ -1459,7 +1574,6 @@ async function confirmDeleteTask(uid) {
 }
 
 let selectedTaskType = 'taille', selectedTaskColor = '#9A5040', selectedRecurrence = 'none';
-
 function selectTaskType(btn) { document.querySelectorAll('.task-type-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); selectedTaskType = btn.dataset.type; selectedTaskColor = btn.dataset.color; }
 function selectRecurrence(btn) { document.querySelectorAll('.recurrence-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); selectedRecurrence = btn.dataset.rec; }
 
@@ -1497,7 +1611,6 @@ window.onload = () => {
   buildStyleOptions('');
   buildSubstrateOptions('');
   document.getElementById('edit-bottom-bar').style.display = 'none';
-  // Nettoyage : purge des tâches d'arrosage (auto ou manuelles) — fonctionnalité retirée
   const before = tasks.length;
   tasks = tasks.filter(t => !t.auto && t.type !== 'arrosage');
   if (tasks.length !== before) saveTasks();
