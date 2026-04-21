@@ -1,8 +1,7 @@
 {
-  "name": "Bonsai Do",
-  "short_name": "Bonsai Do",
-  "start_url": "./index.html",
-  "display": "standalone",
+  "name": "Bonsai en",
+  "short_name": "Bonsai en",
+  "start_url": "./
   "background_color": "#EBE7D9",
   "theme_color": "#74A9C4",
   "orientation": "portrait",
