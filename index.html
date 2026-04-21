@@ -355,6 +355,7 @@ input[type="file"] { display: none; }
 .action-icon.teal   { background: #E0F4F0; color: #2A7A6A; }
 .action-icon.rose   { background: var(--sakura-light); color: var(--sakura); }
 .action-icon.olive  { background: #EEF0DC; color: #5A6A2A; }
+.action-icon.violet { background: #F0E8F8; color: #7A4A9A; }
 .action-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
 .action-sub { font-size: 0.7rem; color: var(--text-sec); margin-top: 2px; }
 .overdue-label { font-size: 0.59rem; font-weight: 700; color: var(--urgent); background: rgba(192,64,48,0.1); padding: 2px 8px; border-radius: 50px; margin-top: 4px; display: inline-block; }
@@ -662,7 +663,7 @@ input[type="file"] { display: none; }
 <div id="screen-list" class="screen active">
     <div class="home-header">
         <div class="home-logo">
-            <div class="home-logo-icon"><i class="fa-solid fa-torii-gate"></i></div>
+            <div class="home-logo-icon"><i class="fa-solid fa-leaf"></i></div>
             <div class="home-logo-text">BONSAI<span class="home-logo-dot">·</span>EN</div>
         </div>
         <div style="display:flex;align-items:center;gap:0">
@@ -756,7 +757,7 @@ input[type="file"] { display: none; }
             <i class="fa-solid fa-chevron-right arr"></i>
         </div>
         <div class="action-row-item" id="action-defoil">
-            <div class="action-icon purple"><i class="fa-solid fa-leaf-heart"></i></div>
+            <div class="action-icon violet"><i class="fa-solid fa-leaf-maple"></i></div>
             <div style="flex:1">
                 <div class="action-title" data-i18n="defoliation">Effeuillage</div>
                 <div class="action-sub"><input type="date" id="edit-last-defoil" class="date-input-row" onchange="checkOverdue();autoSave()"></div>
@@ -909,7 +910,7 @@ input[type="file"] { display: none; }
                 <button class="task-type-btn t-amber" data-type="fertilisation" data-color="#7A5828" onclick="selectTaskType(this)"><i class="fa-solid fa-seedling"></i><span data-i18n="fertilization">Fertilisation</span></button>
                 <button class="task-type-btn t-green" data-type="rempotage" data-color="#2E7A48" onclick="selectTaskType(this)"><i class="fa-solid fa-bucket"></i><span data-i18n="repotting">Rempotage</span></button>
                 <button class="task-type-btn t-purple" data-type="ligature" data-color="#6A4A9A" onclick="selectTaskType(this)"><i class="fa-solid fa-circle-notch"></i><span data-i18n="wiring">Ligature</span></button>
-                <button class="task-type-btn t-violet" data-type="effeuillage" data-color="#7A4A9A" onclick="selectTaskType(this)"><i class="fa-solid fa-leaf-heart"></i><span data-i18n="defoliation">Effeuillage</span></button>
+                <button class="task-type-btn t-violet" data-type="effeuillage" data-color="#7A4A9A" onclick="selectTaskType(this)"><i class="fa-solid fa-leaf"></i><span data-i18n="defoliation">Effeuillage</span></button>
                 <button class="task-type-btn t-teal" data-type="desaiguillage" data-color="#2A7A6A" onclick="selectTaskType(this)"><i class="fa-solid fa-spa"></i><span data-i18n="deneedling">Désaiguillage</span></button>
                 <button class="task-type-btn t-rose" data-type="mekiri" data-color="#9A3A6A" onclick="selectTaskType(this)"><i class="fa-solid fa-cut"></i><span data-i18n="mekiri">Mékiri</span></button>
                 <button class="task-type-btn t-olive" data-type="metsumi" data-color="#5A6A2A" onclick="selectTaskType(this)"><i class="fa-solid fa-hand-scissors"></i><span data-i18n="metsumi">Metsumi</span></button>
@@ -1555,7 +1556,7 @@ function renderTasksForDate(dateStr) {
   list.innerHTML = '';
   if (!dayTasks.length) { list.innerHTML = `<div class="cal-empty">${T('noTaskDay')}</div>`; return; }
   dayTasks.forEach(t => {
-    const icons = { taille:'fa-scissors', fertilisation:'fa-seedling', rempotage:'fa-bucket', ligature:'fa-circle-notch', effeuillage:'fa-leaf-heart', desaiguillage:'fa-spa', mekiri:'fa-cut', metsumi:'fa-hand-scissors', autre:'fa-pen' };
+    const icons = { taille:'fa-scissors', fertilisation:'fa-seedling', rempotage:'fa-bucket', ligature:'fa-circle-notch', effeuillage:'fa-leaf', desaiguillage:'fa-spa', mekiri:'fa-cut', metsumi:'fa-hand-scissors', autre:'fa-pen' };
     const typeLabel = { taille: T('pruning'), fertilisation: T('fertilization'), rempotage: T('repotting'), ligature: T('wiring'), effeuillage: T('defoliation'), desaiguillage: T('deneedling'), mekiri: T('mekiri'), metsumi: T('metsumi'), autre: T('other') };
     const isOverdue = t.date < today;
     const item = document.createElement('div'); item.className = 'cal-task-item' + (isOverdue ? ' is-overdue' : '');
