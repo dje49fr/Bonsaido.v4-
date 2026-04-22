@@ -1,20 +1,24 @@
 {
-  "name": "Bonsai en",
-  "short_name": "Bonsai en",
-  "start_url": "./
-  "background_color": "#EBE7D9",
-  "theme_color": "#74A9C4",
+  "name": "BONSAI-EN · PRO",
+  "short_name": "Bonsaï Pro",
+  "description": "Application professionnelle de gestion et soins des bonsaïs",
+  "start_url": "./index.html",
+  "display": "standalone",
   "orientation": "portrait",
+  "background_color": "#FAF8F3",
+  "theme_color": "#5A7A60",
   "icons": [
     {
-      "src": "icon.jpg",
+      "src": "icon.png",
       "sizes": "192x192",
-      "type": "image/jpeg"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon.jpg",
+      "src": "icon.png",
       "sizes": "512x512",
-      "type": "image/jpeg"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
