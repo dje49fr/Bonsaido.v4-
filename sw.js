@@ -1,6 +1,6 @@
 {
-  "name": "Bonsai Do",
-  "short_name": "Bonsai Do",
+  "name": "Bonsai En",
+  "short_name": "Bonsai En",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#D5D1C0",
