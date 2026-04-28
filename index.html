@@ -2,7 +2,342 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BONSAI-EN · PRO</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:          #FAF8F3;
+  --bg2:         #F5F2EA;
+  --card:        #FFFFFF;
+  --card2:       #F2EFEA;
+  --card3:       #EDE9E0;
+  --sage:        #5A7A60;
+  --sage-mid:    #7A9A80;
+  --sage-light:  #E8F0EA;
+  --sage-pale:   #F0F5F1;
+  --terra:       #B86B4A;
+  --terra-light: #F5EAE3;
+  --terra-pale:  #FAF3EF;
+  --gold:        #C4973A;
+  --gold-light:  #FBF3E2;
+  --sakura:      #D4768A;
+  --sakura-light:#FCF0F3;
+  --ink:         #2C2820;
+  --text:        #2C2820;
+  --text-sec:    #6B6258;
+  --text-dim:    #B0A898;
+  --text-ghost:  #D4CFC6;
+  --border:      #E4E0D6;
+  --border2:     #D8D3C8;
+  --urgent:      #C04030;
+  --urgent-bg:   #FEF0EE;
+  --radius:      18px;
+  --radius-sm:   12px;
+  --radius-xs:   8px;
+  --shadow:      0 2px 20px rgba(44,40,32,0.07);
+  --shadow-sm:   0 1px 8px rgba(44,40,32,0.05);
+  --shadow-card: 0 4px 24px rgba(44,40,32,0.09);
+  --font:        'Outfit', sans-serif;
+  --font-serif:  'Shippori Mincho', serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar { width: 0; height: 0; }
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── TOAST ── */
+#toast {
+  visibility: hidden; position: fixed; bottom: 94px;
+  left: 50%; transform: translateX(-50%) translateY(8px);
+  background: var(--ink); color: #fff; padding: 10px 22px;
+  border-radius: 50px; z-index: 3000; font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap; box-shadow: 0 6px 28px rgba(44,40,32,0.25);
+  transition: visibility 0s, opacity 0.2s, transform 0.2s; opacity: 0;
+}
+#toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── CONFIRM OVERLAY ── */
+#confirm-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(44,40,32,0.45);
+  z-index: 9000; align-items: center; justify-content: center; padding: 24px;
+  backdrop-filter: blur(4px);
+}
+#confirm-overlay.open { display: flex; }
+.confirm-box {
+  background: var(--card); border-radius: 24px; padding: 28px 24px 20px;
+  max-width: 320px; width: 100%;
+  box-shadow: 0 16px 60px rgba(44,40,32,0.2);
+  border: 1px solid var(--border);
+  animation: popIn 0.18s ease;
+}
+@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.confirm-title { font-family: var(--font-serif); font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.confirm-msg { font-size: 0.85rem; color: var(--text-sec); line-height: 1.55; margin-bottom: 22px; }
+.confirm-btns { display: flex; gap: 10px; }
+.confirm-cancel { flex: 1; padding: 13px; border: 1px solid var(--border2); border-radius: 50px; background: var(--card2); color: var(--text-sec); font-family: var(--font); font-size: 0.88rem; font-weight: 600; cursor: pointer; }
+.confirm-ok { flex: 1; padding: 13px; border: none; border-radius: 50px; background: var(--ink); color: #fff; font-family: var(--font); font-size: 0.88rem; font-weight: 700; cursor: pointer; }
+.confirm-ok.danger { background: var(--urgent); }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(250,248,243,0.96); backdrop-filter: blur(16px);
+  height: 74px; display: flex; justify-content: space-around; align-items: flex-start;
+  padding-top: 10px; border-top: 1px solid var(--border); z-index: 900;
+  box-shadow: 0 -2px 16px rgba(44,40,32,0.06);
+}
+.nav-btn {
+  color: var(--text-dim); background: none; border: none;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; font-size: 0.56rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  font-family: var(--font); cursor: pointer; padding: 0 12px; position: relative;
+  transition: color 0.2s;
+}
+.nav-btn i { font-size: 1.15rem; }
+.nav-btn.active { color: var(--sage); }
+.nav-btn.active i { transform: translateY(-1px); }
+.nav-btn.active::after {
+  content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+  width: 24px; height: 2px; background: var(--sage); border-radius: 2px;
+}
+
+/* ── ACCUEIL : SEARCH & WEATHER HUB ── */
+.search-wrap { padding: 12px 16px 4px; }
+.search-bar {
+  display: flex; align-items: center;
+  background: var(--card); border-radius: var(--radius-sm); padding: 12px 15px;
+  gap: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+}
+.search-bar input { flex: 1; border: none; background: transparent; font-family: var(--font); font-size: 0.9rem; color: var(--text); outline: none; }
+.search-bar input::placeholder { color: var(--text-ghost); }
+.search-bar i { color: var(--text-dim); font-size: 0.88rem; }
+
+#weather-hub {
+    width: 110px; 
+    background: var(--card); 
+    border-radius: var(--radius-sm); 
+    border: 1px solid var(--border); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; 
+    cursor: pointer; 
+    position: relative;
+    box-shadow: var(--shadow-sm);
+}
+
+.weather-alert-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--urgent);
+    animation: urgentPulse 1.5s infinite;
+}
+
+/* ── CATEGORY SECTIONS ── */
+.category-section { padding: 0 16px; }
+.category-header { display: flex; align-items: center; gap: 10px; padding: 20px 0 10px; }
+.category-header-line { flex: 1; height: 1px; background: var(--border); }
+.category-label { display: flex; align-items: center; gap: 7px; font-size: 0.68rem; font-weight: 700; color: var(--text-sec); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.08em; }
+.category-label.conifers { color: var(--sage); }
+.category-label.deciduous { color: var(--gold); }
+.category-label.others { color: var(--terra); }
+.category-count { font-size: 0.56rem; font-weight: 700; padding: 3px 9px; border-radius: 50px; background: var(--card2); color: var(--text-dim); border: 1px solid var(--border); }
+
+/* ── BONSAI CARD ── */
+.bonsai-card {
+  background: var(--card); border-radius: var(--radius); overflow: hidden; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: var(--shadow-card); border: 1px solid var(--border);
+}
+.card-photo {
+  width: 100%; aspect-ratio: 1/1;
+  background: var(--card2); background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; color: var(--text-ghost); position: relative;
+}
+@keyframes urgentPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(192,64,48,0.5); }
+  50%       { box-shadow: 0 0 0 6px rgba(192,64,48,0); }
+}
+
+/* ── FICHE EDIT ── */
+.hero-photo {
+  width: 100%; height: 250px;
+  background: var(--card2); background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3.5rem; color: var(--text-ghost); position: relative; cursor: pointer; overflow: hidden;
+}
+
+.id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.id-tile {
+  background: var(--card); border-radius: var(--radius-sm); padding: 11px 13px;
+  border: 1px solid var(--border); position: relative; box-shadow: var(--shadow-sm);
+}
+.id-tile.full { grid-column: span 2; }
+.id-tile > label { display: block; font-size: 0.58rem; font-weight: 700; color: var(--sage); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.id-tile input, .id-tile select { width: 100%; border: none; background: transparent; font-family: var(--font); font-size: 0.86rem; color: var(--text); outline: none; }
+
+/* Styles additionnels omis pour la brièveté, ils sont identiques à ta version précédente */
+/* ... (Carousel, Gallery, Task Modal, Advice etc.) ... */
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+<div id="confirm-overlay"><div class="confirm-box"><div class="confirm-title" id="confirm-title"></div><div class="confirm-msg" id="confirm-msg"></div><div class="confirm-btns"><button class="confirm-cancel" id="confirm-cancel-btn">Annuler</button><button class="confirm-ok" id="confirm-ok-btn">Confirmer</button></div></div></div>
+
+<div id="screen-list" class="screen active">
+    <div class="home-header" style="background: rgba(250,248,243,0.97); padding: 18px 20px 14px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
+        <div class="home-logo" style="display: flex; align-items: center; gap: 11px;">
+            <div class="home-logo-icon" style="width: 40px; height: 40px; border-radius: 12px; background: var(--terra-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">⛩</div>
+            <div class="home-logo-text" style="font-family: var(--font-serif); font-size: 1.55rem; font-weight: 700;">BONSAI<span style="color: #D0202A;">·</span>EN</div>
+        </div>
+        <span class="home-count" id="bonsai-count" style="font-size: 0.62rem; font-weight: 700; background: var(--card2); padding: 5px 12px; border-radius: 50px; border: 1px solid var(--border);">0 arbres</span>
+    </div>
+
+    <div class="search-wrap">
+        <div style="display: flex; gap: 10px; align-items: stretch;">
+            <div class="search-bar" style="flex: 1; margin-bottom: 0;">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-input" data-i18n-placeholder="searchPlaceholder" placeholder="Rechercher..." oninput="filterBonsais()">
+            </div>
+            
+            <div id="weather-hub" onclick="refreshWeather()">
+                <div id="weather-loading" style="font-size: 0.7rem; color: var(--text-dim);"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
+                <div id="weather-display" style="display: none; align-items: center; gap: 6px;">
+                    <i id="weather-icon" class="fa-solid fa-sun" style="font-size: 0.95rem; color: var(--gold);"></i>
+                    <span id="weather-temp" style="font-size: 0.9rem; font-weight: 700;">--°</span>
+                </div>
+                <div id="weather-alert-dot" class="weather-alert-dot" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="list-container"></div>
+</div>
+
+<div id="screen-edit" class="screen">
+    </div>
+
+<div class="bottom-nav">
+    <button class="nav-btn active" id="nav-collection" onclick="nav('list')"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
+    <button class="nav-btn" onclick="nav('calendar')"><i class="fa-regular fa-calendar"></i><span>Calendrier</span></button>
+    <button class="nav-btn" onclick="nav('advice')"><i class="fa-regular fa-lightbulb"></i><span>Conseils</span></button>
+    <button class="nav-btn" onclick="toggleLang()"><i class="fa-solid fa-earth-europe"></i><span id="nav-lang-label">EN</span></button>
+</div>
+
+<script>
+// --- CONFIGURATION MÉTÉO ---
+const WeatherEngine = {
+    thresholds: { cold: -1, hot: 30, wind: 40 },
+
+    async update() {
+        const display = document.getElementById('weather-display');
+        const loading = document.getElementById('weather-loading');
+        const tempEl = document.getElementById('weather-temp');
+        const iconEl = document.getElementById('weather-icon');
+        const alertDot = document.getElementById('weather-alert-dot');
+
+        try {
+            // Simulation API (Remplacer par un vrai fetch si besoin)
+            const mockData = {
+                temp: 31, // Test Canicule
+                condition: 'Thunderstorm', // Test Orage
+                wind: 15
+            };
+
+            loading.style.display = 'none';
+            display.style.display = 'flex';
+            tempEl.textContent = `${Math.round(mockData.temp)}°`;
+
+            let hasAlert = false;
+            let msg = "";
+
+            // Alertes Température
+            if (mockData.temp <= this.thresholds.cold) {
+                hasAlert = true;
+                iconEl.className = "fa-solid fa-snowflake";
+                iconEl.style.color = "#3A7A9A";
+                msg = "GEL : Protégez les racines !";
+            } else if (mockData.temp >= this.thresholds.hot) {
+                hasAlert = true;
+                iconEl.className = "fa-solid fa-fire-flame-curved";
+                iconEl.style.color = "var(--urgent)";
+                msg = "CANICULE : Arrosage fréquent !";
+            } else {
+                iconEl.className = "fa-solid fa-sun";
+                iconEl.style.color = "var(--gold)";
+            }
+
+            // Alertes Intempéries
+            if (mockData.condition.includes('Thunderstorm')) {
+                hasAlert = true;
+                iconEl.className = "fa-solid fa-cloud-bolt";
+                iconEl.style.color = "var(--text)";
+                msg = "ORAGE : Attention aux chutes !";
+            }
+
+            if (hasAlert) {
+                alertDot.style.display = 'block';
+                if(msg) showToast(msg);
+            } else {
+                alertDot.style.display = 'none';
+            }
+        } catch (e) {
+            loading.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+        }
+    }
+};
+
+function refreshWeather() { WeatherEngine.update(); }
+
+// --- LOGIQUE CORE (INDEXEDDB, NAV, ETC) ---
+// (Garder ici l'intégralité de ton script original pour la gestion des arbres)
+
+let bonsais = [];
+const dbApi = { /* ... ta logique dbApi ... */ };
+
+window.onload = () => {
+    // Initialisation
+    WeatherEngine.update();
+    // charger les arbres, etc.
+};
+
+function nav(screen) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + screen).classList.add('active');
+    // ...
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ... Reste de tes fonctions (filterBonsais, renderList, etc.)
+</script>
+</body>
+</html>
+
 <title>BONSAI-EN · PRO</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
