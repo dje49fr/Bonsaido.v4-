@@ -2,342 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BONSAI-EN · PRO</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:          #FAF8F3;
-  --bg2:         #F5F2EA;
-  --card:        #FFFFFF;
-  --card2:       #F2EFEA;
-  --card3:       #EDE9E0;
-  --sage:        #5A7A60;
-  --sage-mid:    #7A9A80;
-  --sage-light:  #E8F0EA;
-  --sage-pale:   #F0F5F1;
-  --terra:       #B86B4A;
-  --terra-light: #F5EAE3;
-  --terra-pale:  #FAF3EF;
-  --gold:        #C4973A;
-  --gold-light:  #FBF3E2;
-  --sakura:      #D4768A;
-  --sakura-light:#FCF0F3;
-  --ink:         #2C2820;
-  --text:        #2C2820;
-  --text-sec:    #6B6258;
-  --text-dim:    #B0A898;
-  --text-ghost:  #D4CFC6;
-  --border:      #E4E0D6;
-  --border2:     #D8D3C8;
-  --urgent:      #C04030;
-  --urgent-bg:   #FEF0EE;
-  --radius:      18px;
-  --radius-sm:   12px;
-  --radius-xs:   8px;
-  --shadow:      0 2px 20px rgba(44,40,32,0.07);
-  --shadow-sm:   0 1px 8px rgba(44,40,32,0.05);
-  --shadow-card: 0 4px 24px rgba(44,40,32,0.09);
-  --font:        'Outfit', sans-serif;
-  --font-serif:  'Shippori Mincho', serif;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-body {
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding-bottom: 80px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-}
-::-webkit-scrollbar { width: 0; height: 0; }
-.screen { display: none; }
-.screen.active { display: block; }
-
-/* ── TOAST ── */
-#toast {
-  visibility: hidden; position: fixed; bottom: 94px;
-  left: 50%; transform: translateX(-50%) translateY(8px);
-  background: var(--ink); color: #fff; padding: 10px 22px;
-  border-radius: 50px; z-index: 3000; font-size: 0.78rem; font-weight: 600;
-  letter-spacing: 0.02em;
-  white-space: nowrap; box-shadow: 0 6px 28px rgba(44,40,32,0.25);
-  transition: visibility 0s, opacity 0.2s, transform 0.2s; opacity: 0;
-}
-#toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* ── CONFIRM OVERLAY ── */
-#confirm-overlay {
-  display: none; position: fixed; inset: 0; background: rgba(44,40,32,0.45);
-  z-index: 9000; align-items: center; justify-content: center; padding: 24px;
-  backdrop-filter: blur(4px);
-}
-#confirm-overlay.open { display: flex; }
-.confirm-box {
-  background: var(--card); border-radius: 24px; padding: 28px 24px 20px;
-  max-width: 320px; width: 100%;
-  box-shadow: 0 16px 60px rgba(44,40,32,0.2);
-  border: 1px solid var(--border);
-  animation: popIn 0.18s ease;
-}
-@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.confirm-title { font-family: var(--font-serif); font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-.confirm-msg { font-size: 0.85rem; color: var(--text-sec); line-height: 1.55; margin-bottom: 22px; }
-.confirm-btns { display: flex; gap: 10px; }
-.confirm-cancel { flex: 1; padding: 13px; border: 1px solid var(--border2); border-radius: 50px; background: var(--card2); color: var(--text-sec); font-family: var(--font); font-size: 0.88rem; font-weight: 600; cursor: pointer; }
-.confirm-ok { flex: 1; padding: 13px; border: none; border-radius: 50px; background: var(--ink); color: #fff; font-family: var(--font); font-size: 0.88rem; font-weight: 700; cursor: pointer; }
-.confirm-ok.danger { background: var(--urgent); }
-
-/* ── BOTTOM NAV ── */
-.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(250,248,243,0.96); backdrop-filter: blur(16px);
-  height: 74px; display: flex; justify-content: space-around; align-items: flex-start;
-  padding-top: 10px; border-top: 1px solid var(--border); z-index: 900;
-  box-shadow: 0 -2px 16px rgba(44,40,32,0.06);
-}
-.nav-btn {
-  color: var(--text-dim); background: none; border: none;
-  display: flex; flex-direction: column; align-items: center;
-  gap: 4px; font-size: 0.56rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
-  font-family: var(--font); cursor: pointer; padding: 0 12px; position: relative;
-  transition: color 0.2s;
-}
-.nav-btn i { font-size: 1.15rem; }
-.nav-btn.active { color: var(--sage); }
-.nav-btn.active i { transform: translateY(-1px); }
-.nav-btn.active::after {
-  content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-  width: 24px; height: 2px; background: var(--sage); border-radius: 2px;
-}
-
-/* ── ACCUEIL : SEARCH & WEATHER HUB ── */
-.search-wrap { padding: 12px 16px 4px; }
-.search-bar {
-  display: flex; align-items: center;
-  background: var(--card); border-radius: var(--radius-sm); padding: 12px 15px;
-  gap: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
-}
-.search-bar input { flex: 1; border: none; background: transparent; font-family: var(--font); font-size: 0.9rem; color: var(--text); outline: none; }
-.search-bar input::placeholder { color: var(--text-ghost); }
-.search-bar i { color: var(--text-dim); font-size: 0.88rem; }
-
-#weather-hub {
-    width: 110px; 
-    background: var(--card); 
-    border-radius: var(--radius-sm); 
-    border: 1px solid var(--border); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 8px; 
-    cursor: pointer; 
-    position: relative;
-    box-shadow: var(--shadow-sm);
-}
-
-.weather-alert-dot {
-    position: absolute; top: 6px; right: 6px;
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--urgent);
-    animation: urgentPulse 1.5s infinite;
-}
-
-/* ── CATEGORY SECTIONS ── */
-.category-section { padding: 0 16px; }
-.category-header { display: flex; align-items: center; gap: 10px; padding: 20px 0 10px; }
-.category-header-line { flex: 1; height: 1px; background: var(--border); }
-.category-label { display: flex; align-items: center; gap: 7px; font-size: 0.68rem; font-weight: 700; color: var(--text-sec); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.08em; }
-.category-label.conifers { color: var(--sage); }
-.category-label.deciduous { color: var(--gold); }
-.category-label.others { color: var(--terra); }
-.category-count { font-size: 0.56rem; font-weight: 700; padding: 3px 9px; border-radius: 50px; background: var(--card2); color: var(--text-dim); border: 1px solid var(--border); }
-
-/* ── BONSAI CARD ── */
-.bonsai-card {
-  background: var(--card); border-radius: var(--radius); overflow: hidden; cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: var(--shadow-card); border: 1px solid var(--border);
-}
-.card-photo {
-  width: 100%; aspect-ratio: 1/1;
-  background: var(--card2); background-size: cover; background-position: center;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.8rem; color: var(--text-ghost); position: relative;
-}
-@keyframes urgentPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(192,64,48,0.5); }
-  50%       { box-shadow: 0 0 0 6px rgba(192,64,48,0); }
-}
-
-/* ── FICHE EDIT ── */
-.hero-photo {
-  width: 100%; height: 250px;
-  background: var(--card2); background-size: cover; background-position: center;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 3.5rem; color: var(--text-ghost); position: relative; cursor: pointer; overflow: hidden;
-}
-
-.id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.id-tile {
-  background: var(--card); border-radius: var(--radius-sm); padding: 11px 13px;
-  border: 1px solid var(--border); position: relative; box-shadow: var(--shadow-sm);
-}
-.id-tile.full { grid-column: span 2; }
-.id-tile > label { display: block; font-size: 0.58rem; font-weight: 700; color: var(--sage); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
-.id-tile input, .id-tile select { width: 100%; border: none; background: transparent; font-family: var(--font); font-size: 0.86rem; color: var(--text); outline: none; }
-
-/* Styles additionnels omis pour la brièveté, ils sont identiques à ta version précédente */
-/* ... (Carousel, Gallery, Task Modal, Advice etc.) ... */
-</style>
-</head>
-<body>
-
-<div id="toast"></div>
-<div id="confirm-overlay"><div class="confirm-box"><div class="confirm-title" id="confirm-title"></div><div class="confirm-msg" id="confirm-msg"></div><div class="confirm-btns"><button class="confirm-cancel" id="confirm-cancel-btn">Annuler</button><button class="confirm-ok" id="confirm-ok-btn">Confirmer</button></div></div></div>
-
-<div id="screen-list" class="screen active">
-    <div class="home-header" style="background: rgba(250,248,243,0.97); padding: 18px 20px 14px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
-        <div class="home-logo" style="display: flex; align-items: center; gap: 11px;">
-            <div class="home-logo-icon" style="width: 40px; height: 40px; border-radius: 12px; background: var(--terra-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">⛩</div>
-            <div class="home-logo-text" style="font-family: var(--font-serif); font-size: 1.55rem; font-weight: 700;">BONSAI<span style="color: #D0202A;">·</span>EN</div>
-        </div>
-        <span class="home-count" id="bonsai-count" style="font-size: 0.62rem; font-weight: 700; background: var(--card2); padding: 5px 12px; border-radius: 50px; border: 1px solid var(--border);">0 arbres</span>
-    </div>
-
-    <div class="search-wrap">
-        <div style="display: flex; gap: 10px; align-items: stretch;">
-            <div class="search-bar" style="flex: 1; margin-bottom: 0;">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="search-input" data-i18n-placeholder="searchPlaceholder" placeholder="Rechercher..." oninput="filterBonsais()">
-            </div>
-            
-            <div id="weather-hub" onclick="refreshWeather()">
-                <div id="weather-loading" style="font-size: 0.7rem; color: var(--text-dim);"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
-                <div id="weather-display" style="display: none; align-items: center; gap: 6px;">
-                    <i id="weather-icon" class="fa-solid fa-sun" style="font-size: 0.95rem; color: var(--gold);"></i>
-                    <span id="weather-temp" style="font-size: 0.9rem; font-weight: 700;">--°</span>
-                </div>
-                <div id="weather-alert-dot" class="weather-alert-dot" style="display:none;"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="list-container"></div>
-</div>
-
-<div id="screen-edit" class="screen">
-    </div>
-
-<div class="bottom-nav">
-    <button class="nav-btn active" id="nav-collection" onclick="nav('list')"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
-    <button class="nav-btn" onclick="nav('calendar')"><i class="fa-regular fa-calendar"></i><span>Calendrier</span></button>
-    <button class="nav-btn" onclick="nav('advice')"><i class="fa-regular fa-lightbulb"></i><span>Conseils</span></button>
-    <button class="nav-btn" onclick="toggleLang()"><i class="fa-solid fa-earth-europe"></i><span id="nav-lang-label">EN</span></button>
-</div>
-
-<script>
-// --- CONFIGURATION MÉTÉO ---
-const WeatherEngine = {
-    thresholds: { cold: -1, hot: 30, wind: 40 },
-
-    async update() {
-        const display = document.getElementById('weather-display');
-        const loading = document.getElementById('weather-loading');
-        const tempEl = document.getElementById('weather-temp');
-        const iconEl = document.getElementById('weather-icon');
-        const alertDot = document.getElementById('weather-alert-dot');
-
-        try {
-            // Simulation API (Remplacer par un vrai fetch si besoin)
-            const mockData = {
-                temp: 31, // Test Canicule
-                condition: 'Thunderstorm', // Test Orage
-                wind: 15
-            };
-
-            loading.style.display = 'none';
-            display.style.display = 'flex';
-            tempEl.textContent = `${Math.round(mockData.temp)}°`;
-
-            let hasAlert = false;
-            let msg = "";
-
-            // Alertes Température
-            if (mockData.temp <= this.thresholds.cold) {
-                hasAlert = true;
-                iconEl.className = "fa-solid fa-snowflake";
-                iconEl.style.color = "#3A7A9A";
-                msg = "GEL : Protégez les racines !";
-            } else if (mockData.temp >= this.thresholds.hot) {
-                hasAlert = true;
-                iconEl.className = "fa-solid fa-fire-flame-curved";
-                iconEl.style.color = "var(--urgent)";
-                msg = "CANICULE : Arrosage fréquent !";
-            } else {
-                iconEl.className = "fa-solid fa-sun";
-                iconEl.style.color = "var(--gold)";
-            }
-
-            // Alertes Intempéries
-            if (mockData.condition.includes('Thunderstorm')) {
-                hasAlert = true;
-                iconEl.className = "fa-solid fa-cloud-bolt";
-                iconEl.style.color = "var(--text)";
-                msg = "ORAGE : Attention aux chutes !";
-            }
-
-            if (hasAlert) {
-                alertDot.style.display = 'block';
-                if(msg) showToast(msg);
-            } else {
-                alertDot.style.display = 'none';
-            }
-        } catch (e) {
-            loading.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-        }
-    }
-};
-
-function refreshWeather() { WeatherEngine.update(); }
-
-// --- LOGIQUE CORE (INDEXEDDB, NAV, ETC) ---
-// (Garder ici l'intégralité de ton script original pour la gestion des arbres)
-
-let bonsais = [];
-const dbApi = { /* ... ta logique dbApi ... */ };
-
-window.onload = () => {
-    // Initialisation
-    WeatherEngine.update();
-    // charger les arbres, etc.
-};
-
-function nav(screen) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('screen-' + screen).classList.add('active');
-    // ...
-}
-
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-// ... Reste de tes fonctions (filterBonsais, renderList, etc.)
-</script>
-</body>
-</html>
-
 <title>BONSAI-EN · PRO</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -486,6 +151,138 @@ body {
   font-size: 0.62rem; font-weight: 700; color: var(--text-sec);
   background: var(--card2); padding: 5px 12px; border-radius: 50px;
   border: 1px solid var(--border); letter-spacing: 0.03em; text-transform: uppercase;
+}
+
+/* ════════════════════════════════════════
+   MÉTÉO WIDGET — NOUVEAU
+════════════════════════════════════════ */
+.weather-widget {
+  margin: 12px 16px 0;
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  animation: fadeUp 0.3s ease both;
+  animation-delay: 0.02s;
+}
+
+/* Barre d'alerte météo (critique bonsaï) */
+.weather-alert-bar {
+  display: none;
+  padding: 9px 14px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+.weather-alert-bar:active { filter: brightness(0.95); }
+.weather-alert-bar.show { display: flex; }
+.weather-alert-bar.frost   { background: #EAF0FF; color: #2A50C0; }
+.weather-alert-bar.heat    { background: #FFF3E0; color: #C05800; }
+.weather-alert-bar.storm   { background: #FFF8E0; color: #A07000; }
+.weather-alert-bar.wind    { background: #F0F4F8; color: #3A5A7A; }
+.weather-alert-icon { font-size: 1rem; flex-shrink: 0; }
+.weather-alert-text { flex: 1; line-height: 1.35; }
+.weather-alert-sub  { font-size: 0.62rem; font-weight: 400; opacity: 0.8; margin-top: 1px; }
+
+/* Corps principal météo */
+.weather-body {
+  padding: 13px 15px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.weather-icon-wrap {
+  width: 52px; height: 52px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 14px;
+  font-size: 1.8rem;
+  position: relative;
+}
+.weather-icon-wrap.sunny   { background: #FFF8E0; }
+.weather-icon-wrap.cloudy  { background: #F0F4F8; }
+.weather-icon-wrap.rainy   { background: #EAF0FF; }
+.weather-icon-wrap.snowy   { background: #EAF4FF; }
+.weather-icon-wrap.stormy  { background: #FFF8D0; }
+.weather-icon-wrap.foggy   { background: #F4F4F0; }
+.weather-icon-wrap.night   { background: #1E2040; }
+
+/* Petite animation pulse pour les alertes dans l'icône */
+.weather-icon-wrap.alert-pulse {
+  animation: wPulse 2s ease-in-out infinite;
+}
+@keyframes wPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(192,64,48,0); }
+  50%       { box-shadow: 0 0 0 6px rgba(192,64,48,0.12); }
+}
+
+.weather-main { flex: 1; min-width: 0; }
+.weather-temp-row { display: flex; align-items: baseline; gap: 6px; }
+.weather-temp-now { font-family: var(--font-serif); font-size: 1.9rem; font-weight: 700; color: var(--text); line-height: 1; }
+.weather-temp-unit { font-size: 0.8rem; color: var(--text-sec); font-weight: 600; }
+.weather-desc { font-size: 0.72rem; color: var(--text-sec); margin-top: 2px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.weather-location { font-size: 0.6rem; color: var(--text-dim); display: flex; align-items: center; gap: 4px; margin-top: 3px; }
+.weather-location i { font-size: 0.55rem; }
+
+.weather-side { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+.weather-minmax { display: flex; gap: 7px; align-items: center; }
+.weather-min { font-size: 0.75rem; font-weight: 700; color: #3A7AAA; background: #EAF0FF; padding: 3px 9px; border-radius: 50px; }
+.weather-max { font-size: 0.75rem; font-weight: 700; color: #C05800; background: #FFF3E0; padding: 3px 9px; border-radius: 50px; }
+.weather-extra { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.weather-pill {
+  font-size: 0.58rem; font-weight: 700; padding: 3px 8px; border-radius: 50px;
+  display: flex; align-items: center; gap: 4px; white-space: nowrap;
+}
+.weather-pill.wind-pill  { background: #EEF4F8; color: #3A5A7A; border: 1px solid #D4E0EC; }
+.weather-pill.rain-pill  { background: #EAF0FF; color: #2A50C0; border: 1px solid #C4D4F0; }
+.weather-pill.humid-pill { background: var(--sage-pale); color: var(--sage); border: 1px solid rgba(90,122,96,0.2); }
+
+/* Forecast strip — prochaines heures */
+.weather-forecast {
+  display: flex;
+  border-top: 1px solid var(--border);
+  overflow-x: auto; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 4px;
+}
+.weather-forecast::-webkit-scrollbar { display: none; }
+.weather-hour {
+  flex: 0 0 auto;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 9px 12px 10px; gap: 4px;
+  border-right: 1px solid var(--border);
+  min-width: 58px;
+  transition: background 0.15s; cursor: default;
+}
+.weather-hour:last-child { border-right: none; }
+.weather-hour-time { font-size: 0.59rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.04em; }
+.weather-hour-icon { font-size: 1.05rem; line-height: 1; }
+.weather-hour-temp { font-size: 0.75rem; font-weight: 700; color: var(--text); }
+.weather-hour-rain { font-size: 0.55rem; color: #3A70C0; font-weight: 600; }
+.weather-hour.now .weather-hour-time { color: var(--sage); }
+.weather-hour.now { background: var(--sage-pale); }
+
+/* État chargement / erreur */
+.weather-loading {
+  padding: 18px 15px; display: flex; align-items: center; gap: 10px;
+  color: var(--text-dim); font-size: 0.8rem; font-style: italic;
+}
+.weather-loading i { font-size: 1rem; animation: spin 1.2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.weather-error {
+  padding: 13px 15px; display: flex; align-items: center; gap: 10px;
+  font-size: 0.78rem; color: var(--text-sec);
+}
+.weather-error i { color: var(--text-dim); }
+.btn-weather-retry {
+  background: none; border: 1px solid var(--border2); border-radius: 50px;
+  padding: 5px 13px; font-family: var(--font); font-size: 0.7rem; font-weight: 700;
+  color: var(--sage); cursor: pointer; margin-left: auto; flex-shrink: 0;
 }
 
 /* ── URGENCY BANNER ── */
@@ -927,6 +724,7 @@ input[type="file"] { display: none; }
 .card-photo .card-photo-placeholder {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
 }
+
 /* ════════════════════════════════════════
    CONSEILS — ADVICE SCREEN
 ════════════════════════════════════════ */
@@ -1090,6 +888,26 @@ input[type="file"] { display: none; }
             <span class="home-count" id="bonsai-count">0 <span data-i18n="trees">arbres</span></span>
         </div>
     </div>
+
+    <!-- ══ WIDGET MÉTÉO ══ -->
+    <div class="weather-widget" id="weather-widget">
+      <!-- Barre d'alerte (cachée par défaut) -->
+      <div class="weather-alert-bar" id="weather-alert-bar">
+        <span class="weather-alert-icon" id="weather-alert-icon"></span>
+        <div>
+          <div class="weather-alert-text" id="weather-alert-text"></div>
+          <div class="weather-alert-sub" id="weather-alert-sub"></div>
+        </div>
+      </div>
+      <!-- Corps météo -->
+      <div id="weather-content">
+        <div class="weather-loading" id="weather-loading">
+          <i class="fa-solid fa-circle-notch"></i>
+          <span id="weather-loading-text">Localisation en cours…</span>
+        </div>
+      </div>
+    </div>
+
     <div class="urgency-banner" id="urgency-banner" onclick="openFirstUrgentTree()">
         <div class="urgency-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
         <div style="flex:1;min-width:0">
@@ -1129,7 +947,6 @@ input[type="file"] { display: none; }
         <div class="edit-autosave" id="autosave-indicator"><i class="fa-solid fa-check"></i> <span data-i18n="saved">Sauvegardé</span></div>
     </div>
 
-    <!-- PHOTO HERO -->
     <div class="hero-photo" id="hero-photo" onclick="document.getElementById('file-input').click()">
         <i class="fa-solid fa-tree" id="hero-icon"></i>
         <div class="hero-photo-btn"><i class="fa-solid fa-camera"></i> <span data-i18n="edit">Modifier</span></div>
@@ -1141,11 +958,9 @@ input[type="file"] { display: none; }
         <div class="hero-dot"></div>
     </div>
 
-    <!-- ══ FICHE D'IDENTITÉ — juste sous la photo ══ -->
     <div class="section">
         <div class="section-title" data-i18n="idCard">Fiche d'Identité</div>
         <div class="id-grid">
-            <!-- Espèce — pleine largeur -->
             <div class="id-tile full">
                 <label data-i18n="species">Espèce</label>
                 <div class="species-trigger" onclick="openSpeciesModal()">
@@ -1154,9 +969,7 @@ input[type="file"] { display: none; }
                 </div>
                 <input type="hidden" id="edit-species">
             </div>
-            <!-- Surnom -->
             <div class="id-tile"><label data-i18n="nickname">Surnom</label><input type="text" id="edit-name" placeholder="Ex: Seishin" oninput="updateDossier();autoSave()"></div>
-            <!-- Catégorie -->
             <div class="id-tile"><label data-i18n="category">Catégorie</label>
                 <select id="edit-category" onchange="autoSave()">
                     <option value="auto">🔄 Auto</option>
@@ -1166,15 +979,12 @@ input[type="file"] { display: none; }
                 </select>
                 <i class="fa-solid fa-tags id-tile-icon"></i>
             </div>
-            <!-- Taille de l'arbre — pleine largeur -->
             <div class="id-tile full">
                 <label data-i18n="size">Taille de l'arbre</label>
                 <select id="edit-size" onchange="autoSave()"></select>
                 <i class="fa-solid fa-ruler-vertical id-tile-icon"></i>
             </div>
-            <!-- Acquisition -->
             <div class="id-tile"><label data-i18n="acquisition">Acquisition</label><input type="date" id="edit-date" onchange="autoSave()"></div>
-            <!-- Origine -->
             <div class="id-tile"><label data-i18n="origin">Origine</label>
                 <select id="edit-origin" onchange="autoSave()">
                     <option value="Pépinière">Pépinière 🪴</option>
@@ -1184,11 +994,9 @@ input[type="file"] { display: none; }
                 </select>
                 <i class="fa-solid fa-location-dot id-tile-icon"></i>
             </div>
-            <!-- Style -->
             <div class="id-tile"><label data-i18n="style">Style</label>
                 <select id="edit-style" onchange="autoSave()"></select>
             </div>
-            <!-- Substrat -->
             <div class="id-tile"><label data-i18n="substrate">Substrat</label>
                 <select id="edit-substrat" onchange="autoSave()"></select>
                 <i class="fa-solid fa-layer-group id-tile-icon"></i>
@@ -1196,13 +1004,11 @@ input[type="file"] { display: none; }
         </div>
     </div>
 
-    <!-- Dossier band -->
     <div class="dossier-band">
         <div class="dossier-icon"><i class="fa-solid fa-folder-open"></i></div>
         <div><div class="dossier-name" id="dossier-name"><span data-i18n="globalFolder">Dossier Global</span></div><div class="dossier-sub" id="dossier-sub">—</div></div>
     </div>
 
-    <!-- Prochaines Actions -->
     <div class="section-hd" data-i18n="nextActions">Prochaines Actions</div>
     <div class="action-list" id="action-list">
         <div class="action-row-item" id="action-pot">
@@ -1446,7 +1252,6 @@ const SUBSTRATE_OPTIONS = [
   { value: 'Other',   fr: 'Autre',          en: 'Other'    },
 ];
 
-/* ── TAILLES DE BONSAÏ ── */
 const SIZE_OPTIONS = [
   { value: '',         fr: '— Taille non renseignée —',          en: '— Size not set —'               },
   { value: 'Shito',    fr: 'Miniature — Shito / Mame  (< 15 cm)', en: 'Miniature — Shito / Mame  (< 15 cm)' },
@@ -1540,6 +1345,25 @@ const TRANSLATIONS = {
     weekdays: ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
     days: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
     monthsFull: ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'],
+    weatherLocating: 'Localisation en cours…',
+    weatherLoading: 'Chargement météo…',
+    weatherDenied: 'Localisation refusée',
+    weatherError: 'Météo indisponible',
+    weatherRetry: 'Réessayer',
+    weatherFrost: '❄️ Risque de gel',
+    weatherFrostSub: 'Rentrez vos bonsaïs sensibles au gel ce soir.',
+    weatherHeat: '🌡️ Vague de chaleur',
+    weatherHeatSub: 'Arrosage matin et soir · ombre l\'après-midi.',
+    weatherStorm: '⛈ Orage prévu',
+    weatherStormSub: 'Abritez vos bonsaïs délicats.',
+    weatherWind: '💨 Vent fort',
+    weatherWindSub: 'Risque de dessèchement · arrosage supplémentaire conseillé.',
+    weatherSnow: '🌨 Neige prévue',
+    weatherSnowSub: 'Protégez les bonsaïs tropicaux et de pépinière.',
+    weatherUpdated: 'Mis à jour',
+    weatherHumidity: 'humidité',
+    weatherWind2: 'vent',
+    weatherRain: 'pluie',
   },
   en: {
     trees: 'trees', tree: 'tree', home: 'Home', calendar: 'Calendar',
@@ -1593,6 +1417,25 @@ const TRANSLATIONS = {
     weekdays: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
     days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
     monthsFull: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    weatherLocating: 'Getting location…',
+    weatherLoading: 'Loading weather…',
+    weatherDenied: 'Location denied',
+    weatherError: 'Weather unavailable',
+    weatherRetry: 'Retry',
+    weatherFrost: '❄️ Frost risk',
+    weatherFrostSub: 'Bring frost-sensitive bonsai inside tonight.',
+    weatherHeat: '🌡️ Heat wave',
+    weatherHeatSub: 'Water morning and evening · shade in afternoon.',
+    weatherStorm: '⛈ Storm forecast',
+    weatherStormSub: 'Shelter your delicate bonsai.',
+    weatherWind: '💨 Strong wind',
+    weatherWindSub: 'Drying risk · extra watering recommended.',
+    weatherSnow: '🌨 Snow forecast',
+    weatherSnowSub: 'Protect tropical and nursery bonsai.',
+    weatherUpdated: 'Updated',
+    weatherHumidity: 'humidity',
+    weatherWind2: 'wind',
+    weatherRain: 'rain',
   }
 };
 
@@ -1609,6 +1452,7 @@ function toggleLang() {
   renderCalendar(); renderList(bonsais); renderUrgencyBanner(); renderUpcomingWidget();
   document.querySelectorAll('.advice-filter-btn [data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (T(k)) el.textContent = T(k); });
   if (document.getElementById('screen-advice').classList.contains('active')) renderAdvice();
+  if (weatherCache) renderWeather(weatherCache);
 }
 
 function applyLang() {
@@ -1679,6 +1523,273 @@ function nav(screen) {
   if (screen === 'calendar') { document.getElementById('nav-calendar').classList.add('active'); renderCalendar(); }
   if (screen === 'advice') { document.getElementById('nav-advice').classList.add('active'); renderAdvice(); }
   window.scrollTo(0, 0);
+}
+
+/* ══════════════════════════════════════════
+   MÉTÉO — OPEN-METEO (gratuit, sans clé)
+══════════════════════════════════════════ */
+let weatherCache = null;
+let weatherLastFetch = 0;
+const WEATHER_TTL = 30 * 60 * 1000; // 30 min
+
+// Codes WMO → {icon emoji, classe CSS, description fr/en}
+const WMO_CODES = {
+  0:  { icon: '☀️',  cls: 'sunny',  fr: 'Ciel dégagé',        en: 'Clear sky'         },
+  1:  { icon: '🌤️', cls: 'sunny',  fr: 'Peu nuageux',         en: 'Mostly clear'      },
+  2:  { icon: '⛅',  cls: 'cloudy', fr: 'Partiellement nuageux',en: 'Partly cloudy'     },
+  3:  { icon: '☁️',  cls: 'cloudy', fr: 'Couvert',             en: 'Overcast'          },
+  45: { icon: '🌫️', cls: 'foggy',  fr: 'Brouillard',          en: 'Fog'               },
+  48: { icon: '🌫️', cls: 'foggy',  fr: 'Brouillard givrant',  en: 'Icy fog'           },
+  51: { icon: '🌦️', cls: 'rainy',  fr: 'Bruine légère',       en: 'Light drizzle'     },
+  53: { icon: '🌦️', cls: 'rainy',  fr: 'Bruine',              en: 'Drizzle'           },
+  55: { icon: '🌧️', cls: 'rainy',  fr: 'Bruine dense',        en: 'Dense drizzle'     },
+  61: { icon: '🌧️', cls: 'rainy',  fr: 'Pluie légère',        en: 'Light rain'        },
+  63: { icon: '🌧️', cls: 'rainy',  fr: 'Pluie modérée',       en: 'Moderate rain'     },
+  65: { icon: '🌧️', cls: 'rainy',  fr: 'Pluie forte',         en: 'Heavy rain'        },
+  71: { icon: '🌨️', cls: 'snowy',  fr: 'Neige légère',        en: 'Light snow'        },
+  73: { icon: '❄️',  cls: 'snowy',  fr: 'Neige modérée',       en: 'Moderate snow'     },
+  75: { icon: '❄️',  cls: 'snowy',  fr: 'Neige abondante',     en: 'Heavy snow'        },
+  77: { icon: '🌨️', cls: 'snowy',  fr: 'Grésil',              en: 'Snow grains'       },
+  80: { icon: '🌦️', cls: 'rainy',  fr: 'Averses légères',     en: 'Light showers'     },
+  81: { icon: '🌧️', cls: 'rainy',  fr: 'Averses',             en: 'Rain showers'      },
+  82: { icon: '🌧️', cls: 'rainy',  fr: 'Averses fortes',      en: 'Heavy showers'     },
+  85: { icon: '🌨️', cls: 'snowy',  fr: 'Averses de neige',    en: 'Snow showers'      },
+  86: { icon: '❄️',  cls: 'snowy',  fr: 'Fortes averses neige',en: 'Heavy snow showers'},
+  95: { icon: '⛈️', cls: 'stormy', fr: 'Orage',               en: 'Thunderstorm'      },
+  96: { icon: '⛈️', cls: 'stormy', fr: 'Orage avec grêle',    en: 'Thunderstorm + hail'},
+  99: { icon: '⛈️', cls: 'stormy', fr: 'Orage violent + grêle',en: 'Violent thunderstorm'},
+};
+
+function getWMO(code) {
+  return WMO_CODES[code] || { icon: '🌡️', cls: 'cloudy', fr: 'Conditions inconnues', en: 'Unknown conditions' };
+}
+
+function checkWeatherAlerts(data) {
+  const alerts = [];
+  const { tempMin, tempMax, windMax, wmo, hourly } = data;
+
+  // Gel : min prévue < 2°C (dangereux pour bonsaïs en pot)
+  if (tempMin <= 2) {
+    alerts.push({
+      type: 'frost',
+      priority: 3,
+      title: T('weatherFrost'),
+      sub: `${T('weatherFrostSub')} (${tempMin}°C min)`,
+    });
+  }
+  // Canicule : max > 35°C
+  if (tempMax >= 35) {
+    alerts.push({
+      type: 'heat',
+      priority: 2,
+      title: T('weatherHeat'),
+      sub: `${T('weatherHeatSub')} (${tempMax}°C max)`,
+    });
+  }
+  // Orage
+  const hasStorm = hourly && hourly.wmo && hourly.wmo.some(c => c >= 95);
+  if (hasStorm) {
+    alerts.push({
+      type: 'storm',
+      priority: 2,
+      title: T('weatherStorm'),
+      sub: T('weatherStormSub'),
+    });
+  }
+  // Vent fort > 50 km/h
+  if (windMax >= 50) {
+    alerts.push({
+      type: 'wind',
+      priority: 1,
+      title: T('weatherWind'),
+      sub: `${T('weatherWindSub')} (${windMax} km/h)`,
+    });
+  }
+  // Neige
+  const hasSnow = wmo >= 71 && wmo <= 77 || wmo === 85 || wmo === 86;
+  if (hasSnow && !alerts.find(a => a.type === 'frost')) {
+    alerts.push({
+      type: 'snow',
+      priority: 2,
+      title: T('weatherSnow'),
+      sub: T('weatherSnowSub'),
+    });
+  }
+
+  return alerts.sort((a, b) => b.priority - a.priority);
+}
+
+function renderWeather(data) {
+  const content = document.getElementById('weather-content');
+  const wmo = getWMO(data.wmo);
+
+  // Vérifier les heures pour prévision
+  const now = new Date();
+  const hour = now.getHours();
+
+  // Construire le forecast strip (prochaines 6h)
+  let forecastHTML = '';
+  if (data.hourly) {
+    const { times, temps, wmos, rains } = data.hourly;
+    let count = 0;
+    for (let i = 0; i < times.length && count < 7; i++) {
+      const t = new Date(times[i]);
+      const h = t.getHours();
+      const tHour = t.getTime();
+      const nowHour = new Date(); nowHour.setMinutes(0,0,0);
+      if (tHour < nowHour.getTime()) continue;
+      const isNow = count === 0;
+      const hw = getWMO(wmos[i]);
+      const rainStr = rains[i] > 0 ? `${rains[i].toFixed(1)}mm` : '';
+      const timeLabel = isNow ? (lang === 'fr' ? 'Maint.' : 'Now') : `${String(h).padStart(2,'0')}h`;
+      forecastHTML += `<div class="weather-hour${isNow?' now':''}"><div class="weather-hour-time">${timeLabel}</div><div class="weather-hour-icon">${hw.icon}</div><div class="weather-hour-temp">${Math.round(temps[i])}°</div>${rainStr?`<div class="weather-hour-rain">${rainStr}</div>`:''}</div>`;
+      count++;
+    }
+  }
+
+  // Température colorisée
+  let tempColor = 'var(--text)';
+  if (data.tempNow <= 2) tempColor = '#2A50C0';
+  else if (data.tempNow >= 35) tempColor = '#C05800';
+
+  const updatedStr = data.updatedAt ? `${T('weatherUpdated')} ${new Date(data.updatedAt).toLocaleTimeString(lang==='fr'?'fr-FR':'en-GB', {hour:'2-digit',minute:'2-digit'})}` : '';
+
+  content.innerHTML = `
+    <div class="weather-body">
+      <div class="weather-icon-wrap ${wmo.cls}${checkWeatherAlerts(data).length?' alert-pulse':''}">
+        <span style="font-size:1.9rem;line-height:1">${wmo.icon}</span>
+      </div>
+      <div class="weather-main">
+        <div class="weather-temp-row">
+          <div class="weather-temp-now" style="color:${tempColor}">${Math.round(data.tempNow)}</div>
+          <div class="weather-temp-unit">°C</div>
+        </div>
+        <div class="weather-desc">${wmo[lang]}</div>
+        <div class="weather-location"><i class="fa-solid fa-location-dot"></i>${data.city || ''}${updatedStr?` · <span style="font-size:0.55rem;color:var(--text-ghost)">${updatedStr}</span>`:''}</div>
+      </div>
+      <div class="weather-side">
+        <div class="weather-minmax">
+          <span class="weather-min">↓ ${Math.round(data.tempMin)}°</span>
+          <span class="weather-max">↑ ${Math.round(data.tempMax)}°</span>
+        </div>
+        <div class="weather-extra">
+          ${data.windSpeed != null ? `<span class="weather-pill wind-pill"><i class="fa-solid fa-wind"></i> ${Math.round(data.windSpeed)} km/h</span>` : ''}
+          ${data.humidity != null ? `<span class="weather-pill humid-pill"><i class="fa-solid fa-droplet"></i> ${data.humidity}%</span>` : ''}
+          ${data.rainToday != null && data.rainToday > 0 ? `<span class="weather-pill rain-pill"><i class="fa-solid fa-cloud-rain"></i> ${data.rainToday.toFixed(1)}mm</span>` : ''}
+        </div>
+      </div>
+    </div>
+    ${forecastHTML ? `<div class="weather-forecast">${forecastHTML}</div>` : ''}
+  `;
+
+  // Barre d'alerte
+  const alerts = checkWeatherAlerts(data);
+  const alertBar = document.getElementById('weather-alert-bar');
+  if (alerts.length) {
+    const top = alerts[0];
+    const alertClasses = { frost: 'frost', heat: 'heat', storm: 'storm', wind: 'wind', snow: 'frost' };
+    const alertIcons = { frost: '❄️', heat: '🌡️', storm: '⛈️', wind: '💨', snow: '🌨️' };
+    alertBar.className = `weather-alert-bar show ${alertClasses[top.type] || ''}`;
+    document.getElementById('weather-alert-icon').textContent = alertIcons[top.type] || '⚠️';
+    document.getElementById('weather-alert-text').textContent = top.title;
+    document.getElementById('weather-alert-sub').textContent = top.sub;
+  } else {
+    alertBar.classList.remove('show');
+  }
+}
+
+async function reverseGeocode(lat, lon) {
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`, {
+      headers: { 'Accept-Language': lang === 'fr' ? 'fr' : 'en' }
+    });
+    const d = await r.json();
+    return d.address?.city || d.address?.town || d.address?.village || d.address?.municipality || '';
+  } catch { return ''; }
+}
+
+async function fetchWeather(lat, lon) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weathercode,windspeed_10m,precipitation&hourly=temperature_2m,weathercode,precipitation&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max&forecast_days=2&timezone=auto`;
+  const r = await fetch(url);
+  const d = await r.json();
+  const cur = d.current;
+  const daily = d.daily;
+  const hourly = d.hourly;
+
+  return {
+    tempNow: cur.temperature_2m,
+    tempMin: daily.temperature_2m_min[0],
+    tempMax: daily.temperature_2m_max[0],
+    windSpeed: cur.windspeed_10m,
+    windMax: daily.windspeed_10m_max[0],
+    humidity: cur.relative_humidity_2m,
+    rainToday: cur.precipitation,
+    wmo: cur.weathercode,
+    hourly: {
+      times: hourly.time,
+      temps: hourly.temperature_2m,
+      wmos: hourly.weathercode,
+      rains: hourly.precipitation,
+    },
+    updatedAt: Date.now(),
+  };
+}
+
+async function initWeather() {
+  const loadEl = document.getElementById('weather-loading');
+  if (loadEl) {
+    document.getElementById('weather-loading-text').textContent = T('weatherLocating');
+  }
+
+  // Essayer le cache localStorage d'abord
+  try {
+    const cached = JSON.parse(localStorage.getItem('bonsai-weather') || 'null');
+    if (cached && Date.now() - cached.updatedAt < WEATHER_TTL) {
+      weatherCache = cached;
+      renderWeather(cached);
+      return;
+    }
+  } catch {}
+
+  if (!navigator.geolocation) {
+    showWeatherError(T('weatherDenied'));
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async pos => {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      try {
+        document.getElementById('weather-loading-text').textContent = T('weatherLoading');
+        const [weatherData, city] = await Promise.all([
+          fetchWeather(lat, lon),
+          reverseGeocode(lat, lon)
+        ]);
+        weatherData.city = city;
+        weatherData.lat = lat;
+        weatherData.lon = lon;
+        weatherCache = weatherData;
+        localStorage.setItem('bonsai-weather', JSON.stringify(weatherData));
+        renderWeather(weatherData);
+      } catch(e) {
+        showWeatherError(T('weatherError'));
+      }
+    },
+    err => {
+      showWeatherError(err.code === 1 ? T('weatherDenied') : T('weatherError'));
+    },
+    { timeout: 10000, maximumAge: WEATHER_TTL }
+  );
+}
+
+function showWeatherError(msg) {
+  document.getElementById('weather-content').innerHTML = `
+    <div class="weather-error">
+      <i class="fa-solid fa-cloud-slash"></i>
+      <span>${msg}</span>
+      <button class="btn-weather-retry" onclick="initWeather()">${T('weatherRetry')}</button>
+    </div>
+  `;
 }
 
 /* ══════════════════════════════════════════
@@ -2363,42 +2474,4 @@ function renderAdvice() {
     }
     cards.forEach((a, i) => {
       const card = document.createElement('div'); card.className = 'advice-card'; card.style.animationDelay = (i * 0.05) + 's';
-      card.innerHTML = `<div class="advice-card-accent" style="background:${a.accent}"></div><div class="advice-card-body"><div class="advice-card-top"><div class="advice-card-left"><div class="advice-card-tag" style="color:${a.accent}">${a.tag[lang]}</div><div class="advice-card-title">${a.title[lang]}</div><div class="advice-card-subtitle">${a.subtitle[lang]}</div><div class="advice-card-desc">${a.desc[lang]}</div></div><div class="advice-card-icon" style="background:${a.iconBg};color:${a.iconColor}"><i class="fa-solid ${a.icon}"></i></div></div><div class="advice-card-footer"><div class="advice-card-meta"><span class="advice-card-badge"><i class="fa-regular fa-clock" style="margin-right:4px"></i>${a.season[lang]}</span><span class="advice-card-badge">${a.level[lang]}</span></div><i class="fa-solid fa-chevron-right advice-card-arrow"></i></div></div>`;
-      card.addEventListener('click', () => openAdviceModal(a));
-      list.appendChild(card);
-    });
-  });
-}
-
-function filterAdvice(btn) {
-  document.querySelectorAll('.advice-filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active'); currentAdviceCat = btn.dataset.cat; renderAdvice();
-}
-
-function openAdviceModal(a) {
-  document.getElementById('modal-tag').textContent = a.tag[lang];
-  document.getElementById('modal-tag').style.color = a.accent;
-  document.getElementById('modal-title').textContent = a.title[lang];
-  document.getElementById('modal-body').innerHTML = a.body[lang];
-  document.getElementById('advice-modal').classList.add('open');
-}
-function closeAdviceModal() { document.getElementById('advice-modal').classList.remove('open'); }
-
-/* ══════════════════════════════════════════
-   INIT
-══════════════════════════════════════════ */
-window.onload = () => {
-  applyLang();
-  buildStyleOptions('');
-  buildSubstrateOptions('');
-  buildSizeOptions('');
-  document.getElementById('edit-bottom-bar').style.display = 'none';
-  const before = tasks.length;
-  tasks = tasks.filter(t => !t.auto && t.type !== 'arrosage');
-  if (tasks.length !== before) saveTasks();
-  refresh();
-  renderCalendar();
-};
-</script>
-</body>
-</html>
+      card.innerHTML = `<div class="advice-card-accent" style="background:${a.accent}"></div><div class="advice-card-body"><div class="advice-card-top"><div class="advice-card-left"><div class="advice-card-tag" style="color:${a.accent}">${a.tag[lang]}</div><div class="advice-card-title">${a.title[lang]}</div><div class="advice-card-subtitle">${a.subtitle[lang]}</div><div class="advice-card-desc">${a.desc[lang]}</div></div><div class="advice-card-icon" style="background:${a.iconBg};color:${a.iconColor}"><i class="fa-solid ${a.icon}"></i></div></div><div class="advice-card-footer"><div class="advice-card-meta"><span class="advice-card-badge"><i class="fa-regular fa-clock" style="margin-right:4px"></i>${a.season[lang]}</span><span class="advice-card-badge">${a.level[lang]}</span></div><i class="fa-solid fa-chevron-right advice-card-arrow"></i
