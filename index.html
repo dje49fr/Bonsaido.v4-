@@ -171,11 +171,47 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .upcoming-task{font-size:0.78rem;font-weight:600;color:var(--text);}
 .upcoming-tree{font-size:0.65rem;color:var(--text-sec);margin-top:1px;}
 .upcoming-date{font-size:0.62rem;font-weight:700;color:var(--text-dim);}
-.search-wrap{padding:12px 16px 4px;}
-.search-bar{display:flex;align-items:center;background:var(--card);border-radius:var(--radius-sm);padding:12px 15px;gap:10px;border:1px solid var(--border);box-shadow:var(--shadow-sm);}
-.search-bar input{flex:1;border:none;background:transparent;font-family:var(--font);font-size:0.9rem;color:var(--text);outline:none;}
+.search-wrap{padding:10px 16px 4px;}
+.search-weather-row{display:flex;gap:8px;align-items:stretch;}
+.search-bar{display:flex;align-items:center;background:var(--card);border-radius:var(--radius-sm);padding:10px 13px;gap:8px;border:1px solid var(--border);box-shadow:var(--shadow-sm);flex:1;}
+.search-bar input{flex:1;border:none;background:transparent;font-family:var(--font);font-size:0.85rem;color:var(--text);outline:none;}
 .search-bar input::placeholder{color:var(--text-ghost);}
-.search-bar i{color:var(--text-dim);font-size:0.88rem;}
+.search-bar i{color:var(--text-dim);font-size:0.82rem;flex-shrink:0;}
+/* ── Mini weather strip ── */
+.weather-strip{flex:1;display:flex;align-items:center;gap:8px;background:var(--card);border-radius:var(--radius-sm);padding:10px 13px;border:1px solid var(--border);box-shadow:var(--shadow-sm);cursor:pointer;overflow:hidden;min-width:0;transition:background 0.15s;}
+.weather-strip:active{background:var(--card2);}
+.weather-strip-icon{font-size:1.3rem;line-height:1;flex-shrink:0;}
+.weather-strip-info{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1;}
+.weather-strip-temp{font-family:var(--font-serif);font-size:1rem;font-weight:700;color:var(--text);line-height:1;}
+.weather-strip-desc{font-size:0.58rem;color:var(--text-sec);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.weather-strip-alert{width:8px;height:8px;border-radius:50%;flex-shrink:0;animation:urgentPulse 1.8s ease-in-out infinite;}
+/* ── Prévisions nav button ── */
+.nav-btn-forecast-badge{position:absolute;top:3px;right:6px;font-size:0.75rem;line-height:1;}
+/* ── Forecast panel (slide-up depuis nav) ── */
+.forecast-panel{position:fixed;bottom:74px;left:0;right:0;background:rgba(250,248,243,0.98);backdrop-filter:blur(16px);border-top:1px solid var(--border);box-shadow:0 -8px 32px rgba(44,40,32,0.12);z-index:850;transform:translateY(100%);transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);padding:14px 16px 16px;}
+.forecast-panel.open{transform:translateY(0);}
+.forecast-panel-handle{width:36px;height:3px;border-radius:2px;background:var(--border2);margin:0 auto 12px;}
+.forecast-panel-title{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-sec);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.forecast-panel-title i{color:var(--sage);}
+.forecast-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}
+.forecast-row::-webkit-scrollbar{display:none;}
+.forecast-chip{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 11px 10px;background:var(--card);border-radius:12px;border:1px solid var(--border);min-width:54px;}
+.forecast-chip.now{background:var(--sage-pale);border-color:rgba(90,122,96,0.25);}
+.forecast-chip-time{font-size:0.57rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.03em;}
+.forecast-chip.now .forecast-chip-time{color:var(--sage);}
+.forecast-chip-icon{font-size:1.05rem;line-height:1;}
+.forecast-chip-temp{font-size:0.72rem;font-weight:700;color:var(--text);}
+.forecast-chip-rain{font-size:0.52rem;color:#3A70C0;font-weight:600;min-height:0.75rem;}
+.forecast-alerts{margin-top:12px;display:flex;flex-direction:column;gap:6px;}
+.forecast-alert-item{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:10px;padding:9px 12px;border:1px solid var(--border);font-size:0.76rem;}
+.forecast-alert-item.frost{background:#EAF0FF;border-color:rgba(42,80,192,0.2);color:#2A50C0;}
+.forecast-alert-item.heat{background:#FFF3E0;border-color:rgba(192,88,0,0.2);color:#C05800;}
+.forecast-alert-item.storm{background:#FFF8E0;border-color:rgba(160,112,0,0.2);color:#A07000;}
+.forecast-alert-item.wind{background:#F0F4F8;border-color:rgba(58,90,122,0.2);color:#3A5A7A;}
+.forecast-alert-item.snow{background:#EAF0FF;border-color:rgba(42,80,192,0.2);color:#2A50C0;}
+.forecast-alert-icon{font-size:1rem;flex-shrink:0;}
+.forecast-alert-text{flex:1;font-weight:600;}
+.forecast-alert-sub{font-size:0.63rem;font-weight:400;opacity:0.8;}
 .home-bottom-bar{position:fixed;bottom:74px;left:0;right:0;background:rgba(250,248,243,0.97);backdrop-filter:blur(14px);border-top:1px solid var(--border);padding:10px 16px;display:flex;gap:8px;z-index:800;box-shadow:0 -2px 10px rgba(44,40,32,0.04);}
 .btn-backup{flex:1;padding:12px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--card);color:var(--text-sec);font-family:var(--font);font-size:0.75rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:var(--shadow-sm);transition:background 0.15s;}
 .btn-backup:active{background:var(--card2);}
@@ -497,23 +533,7 @@ input[type="file"]{display:none;}
         </div>
         <span class="home-count" id="bonsai-count">0 <span data-i18n="trees">arbres</span></span>
     </div>
-    <!-- ══ WIDGET MÉTÉO ══ -->
-    <div class="weather-widget" id="weather-widget">
-      <div class="weather-alert-bar" id="weather-alert-bar">
-        <span class="weather-alert-icon" id="weather-alert-icon"></span>
-        <div style="flex:1;min-width:0">
-          <div class="weather-alert-text" id="weather-alert-text"></div>
-          <div class="weather-alert-sub"  id="weather-alert-sub"></div>
-        </div>
-        <i class="fa-solid fa-chevron-right" style="font-size:0.65rem;flex-shrink:0;opacity:0.5"></i>
-      </div>
-      <div id="weather-content">
-        <div class="weather-loading" id="weather-loading">
-          <i class="fa-solid fa-circle-notch"></i>
-          <span id="weather-loading-text">Localisation en cours…</span>
-        </div>
-      </div>
-    </div>
+    
 
     <div class="urgency-banner" id="urgency-banner" onclick="openFirstUrgentTree()">
         <div class="urgency-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
@@ -531,9 +551,19 @@ input[type="file"]{display:none;}
         <div class="upcoming-list" id="upcoming-list"></div>
     </div>
     <div class="search-wrap">
-        <div class="search-bar">
+        <div class="search-weather-row">
+          <div class="search-bar">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="search-input" placeholder="Rechercher espèce, nom, origine…" oninput="filterBonsais()">
+            <input type="text" id="search-input" placeholder="Espèce, nom…" oninput="filterBonsais()">
+          </div>
+          <div class="weather-strip" id="weather-strip" onclick="toggleForecastPanel()">
+            <span class="weather-strip-icon" id="ws-icon">🌡️</span>
+            <div class="weather-strip-info">
+              <div class="weather-strip-temp" id="ws-temp">—</div>
+              <div class="weather-strip-desc" id="ws-desc">Météo…</div>
+            </div>
+            <span class="weather-strip-alert" id="ws-alert" style="display:none"></span>
+          </div>
         </div>
     </div>
     <div id="list-container"></div>
@@ -618,10 +648,23 @@ input[type="file"]{display:none;}
 </div>
 
 <!-- NAV -->
+<!-- FORECAST PANEL -->
+<div class="forecast-panel" id="forecast-panel">
+  <div class="forecast-panel-handle"></div>
+  <div class="forecast-panel-title"><i class="fa-solid fa-cloud-sun"></i> <span id="fp-city"></span></div>
+  <div class="forecast-row" id="fp-row"></div>
+  <div class="forecast-alerts" id="fp-alerts"></div>
+</div>
+
 <div class="bottom-nav">
     <button class="nav-btn active" id="nav-collection" onclick="nav('list')"><i class="fa-solid fa-house"></i><span data-i18n="home">Accueil</span></button>
     <button class="nav-btn" id="nav-calendar" onclick="nav('calendar')"><i class="fa-regular fa-calendar"></i><span data-i18n="calendar">Calendrier</span></button>
     <button class="nav-btn" id="nav-advice" onclick="nav('advice')"><i class="fa-regular fa-lightbulb"></i><span data-i18n="advice">Conseils</span></button>
+    <button class="nav-btn" id="nav-forecast" onclick="toggleForecastPanel()" style="position:relative">
+      <i class="fa-solid fa-cloud-sun"></i>
+      <span id="nav-forecast-label">Météo</span>
+      <span class="nav-btn-forecast-badge" id="nav-forecast-badge" style="display:none"></span>
+    </button>
     <button class="nav-btn" id="nav-lang" onclick="toggleLang()"><i class="fa-solid fa-earth-europe"></i><span id="nav-lang-label">EN</span></button>
 </div>
 
@@ -1287,93 +1330,129 @@ function checkWeatherAlerts(data) {
   return alerts.sort((a, b) => b.priority - a.priority);
 }
 
+let forecastPanelOpen = false;
+function toggleForecastPanel() {
+  const panel = document.getElementById('forecast-panel');
+  forecastPanelOpen = !forecastPanelOpen;
+  panel.classList.toggle('open', forecastPanelOpen);
+  const btn = document.getElementById('nav-forecast');
+  if (btn) btn.classList.toggle('active', forecastPanelOpen);
+  // Close on outside tap
+  if (forecastPanelOpen) {
+    setTimeout(() => {
+      document.addEventListener('click', closeForecastOnOutside, { once: true });
+    }, 50);
+  }
+}
+function closeForecastOnOutside(e) {
+  const panel = document.getElementById('forecast-panel');
+  const strip = document.getElementById('weather-strip');
+  const navBtn = document.getElementById('nav-forecast');
+  if (panel && !panel.contains(e.target) && e.target !== strip && !strip?.contains(e.target) && e.target !== navBtn && !navBtn?.contains(e.target)) {
+    forecastPanelOpen = false;
+    panel.classList.remove('open');
+    if (navBtn) navBtn.classList.remove('active');
+  }
+}
+
 function renderWeather(data) {
-  const content = document.getElementById('weather-content');
   const wmo = getWMO(data.wmo);
   const alerts = checkWeatherAlerts(data);
 
-  // Forecast strip (7 prochaines heures)
-  let forecastHTML = '';
-  if (data.hourly) {
+  // ── STRIP (barre recherche) ──
+  const wsIcon = document.getElementById('ws-icon');
+  const wsTemp = document.getElementById('ws-temp');
+  const wsDesc = document.getElementById('ws-desc');
+  const wsAlert = document.getElementById('ws-alert');
+  if (wsIcon) wsIcon.textContent = wmo.icon;
+  if (wsTemp) {
+    let tColor = 'var(--text)';
+    if (data.tempNow <= 2) tColor = '#2A50C0';
+    else if (data.tempNow >= 35) tColor = '#C05800';
+    wsTemp.innerHTML = `<span style="color:${tColor}">${Math.round(data.tempNow)}°</span><span style="font-size:0.62rem;color:var(--text-dim);font-weight:500;margin-left:4px">↓${Math.round(data.tempMin)}° ↑${Math.round(data.tempMax)}°</span>`;
+  }
+  if (wsDesc) wsDesc.textContent = (data.city ? data.city + ' · ' : '') + (wmo[lang] || wmo.fr);
+  if (wsAlert) {
+    const alertColorMap = { frost:'#2A50C0', heat:'#C05800', storm:'#A07000', wind:'#3A5A7A', snow:'#2A50C0' };
+    if (alerts.length) {
+      wsAlert.style.display = 'block';
+      wsAlert.style.background = alertColorMap[alerts[0].type] || 'var(--urgent)';
+    } else {
+      wsAlert.style.display = 'none';
+    }
+  }
+
+  // ── NAV BADGE ──
+  const badge = document.getElementById('nav-forecast-badge');
+  if (badge) {
+    if (alerts.length) {
+      const alertIconMap = { frost:'❄️', heat:'🌡️', storm:'⛈️', wind:'💨', snow:'🌨️' };
+      badge.style.display = 'block';
+      badge.textContent = alertIconMap[alerts[0].type] || '⚠️';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  // ── FORECAST PANEL ──
+  const fpCity = document.getElementById('fp-city');
+  const fpRow  = document.getElementById('fp-row');
+  const fpAlerts = document.getElementById('fp-alerts');
+  if (fpCity) fpCity.textContent = data.city || (lang==='fr' ? 'Prévisions' : 'Forecast');
+
+  if (fpRow && data.hourly) {
     const { times, temps, wmos, rains } = data.hourly;
-    const nowMs = new Date(); nowMs.setMinutes(0,0,0); const nowTs = nowMs.getTime();
+    const nowMs = new Date(); nowMs.setMinutes(0,0,0);
+    const nowTs = nowMs.getTime();
+    let chips = '';
     let count = 0;
-    for (let i = 0; i < times.length && count < 7; i++) {
+    for (let i = 0; i < times.length && count < 8; i++) {
       const t = new Date(times[i]);
       if (t.getTime() < nowTs) continue;
       const isNow = count === 0;
       const hw = getWMO(wmos[i]);
-      const h = t.getHours();
-      const rainStr = rains[i] > 0.1 ? `${rains[i].toFixed(1)}mm` : '';
-      const timeLabel = isNow ? (lang==='fr'?'Maint.':'Now') : `${String(h).padStart(2,'0')}h`;
-      // Alert colors for hourly temps
-      let tColor = '#2C2820';
+      const timeLabel = isNow ? (lang==='fr'?'Maint.':'Now') : `${String(t.getHours()).padStart(2,'0')}h`;
+      let tColor = 'var(--text)';
       if (temps[i] <= 2) tColor = '#2A50C0';
       else if (temps[i] >= 35) tColor = '#C05800';
-      forecastHTML += `<div class="weather-hour${isNow?' now':''}">
-        <div class="weather-hour-time">${timeLabel}</div>
-        <div class="weather-hour-icon">${hw.icon}</div>
-        <div class="weather-hour-temp" style="color:${tColor}">${Math.round(temps[i])}°</div>
-        ${rainStr ? `<div class="weather-hour-rain">${rainStr}</div>` : '<div class="weather-hour-rain"></div>'}
+      const rainStr = rains[i] > 0.1 ? `${rains[i].toFixed(1)}mm` : '';
+      chips += `<div class="forecast-chip${isNow?' now':''}">
+        <div class="forecast-chip-time">${timeLabel}</div>
+        <div class="forecast-chip-icon">${hw.icon}</div>
+        <div class="forecast-chip-temp" style="color:${tColor}">${Math.round(temps[i])}°</div>
+        <div class="forecast-chip-rain">${rainStr}</div>
       </div>`;
       count++;
     }
+    fpRow.innerHTML = chips;
   }
 
-  // Temp color
-  let tempColor = 'var(--text)';
-  if (data.tempNow <= 2) tempColor = '#2A50C0';
-  else if (data.tempNow >= 35) tempColor = '#C05800';
-
-  const updatedStr = data.updatedAt
-    ? new Date(data.updatedAt).toLocaleTimeString(lang==='fr'?'fr-FR':'en-GB', {hour:'2-digit',minute:'2-digit'})
-    : '';
-
-  content.innerHTML = `
-    <div class="weather-body">
-      <div class="weather-icon-wrap ${wmo.cls}${alerts.length?' alert-pulse':''}">
-        <span style="font-size:1.9rem;line-height:1">${wmo.icon}</span>
-      </div>
-      <div class="weather-main">
-        <div class="weather-temp-row">
-          <div class="weather-temp-now" style="color:${tempColor}">${Math.round(data.tempNow)}</div>
-          <div class="weather-temp-unit">°C</div>
-        </div>
-        <div class="weather-desc">${wmo[lang] || wmo.fr}</div>
-        <div class="weather-location">
-          <i class="fa-solid fa-location-dot"></i>
-          ${data.city || ''}
-          ${updatedStr ? `<span class="weather-updated"> · ${T('weatherUpdated')} ${updatedStr}</span>` : ''}
-        </div>
-      </div>
-      <div class="weather-side">
-        <div class="weather-minmax">
-          <span class="weather-min">↓ ${Math.round(data.tempMin)}°</span>
-          <span class="weather-max">↑ ${Math.round(data.tempMax)}°</span>
-        </div>
-        <div class="weather-extra">
-          ${data.windSpeed != null ? `<span class="weather-pill wind-pill"><i class="fa-solid fa-wind"></i> ${Math.round(data.windSpeed)} km/h</span>` : ''}
-          ${data.humidity != null ? `<span class="weather-pill humid-pill"><i class="fa-solid fa-droplet"></i> ${data.humidity}%</span>` : ''}
-          ${data.rainToday > 0 ? `<span class="weather-pill rain-pill"><i class="fa-solid fa-cloud-rain"></i> ${data.rainToday.toFixed(1)}mm</span>` : ''}
-        </div>
-      </div>
-    </div>
-    ${forecastHTML ? `<div class="weather-forecast">${forecastHTML}</div>` : ''}
-  `;
-
-  // Alert bar
-  const alertBar = document.getElementById('weather-alert-bar');
-  const alertClsMap  = { frost:'frost', heat:'heat', storm:'storm', wind:'wind', snow:'frost' };
-  const alertIconMap = { frost:'❄️', heat:'🌡️', storm:'⛈️', wind:'💨', snow:'🌨️' };
-  if (alerts.length) {
-    const top = alerts[0];
-    alertBar.className = `weather-alert-bar show ${alertClsMap[top.type]||''}`;
-    document.getElementById('weather-alert-icon').textContent = alertIconMap[top.type]||'⚠️';
-    document.getElementById('weather-alert-text').textContent = top.title;
-    document.getElementById('weather-alert-sub').textContent  = top.sub;
-  } else {
-    alertBar.className = 'weather-alert-bar';
+  if (fpAlerts) {
+    const alertClsMap  = { frost:'frost', heat:'heat', storm:'storm', wind:'wind', snow:'snow' };
+    const alertIconMap = { frost:'❄️', heat:'🌡️', storm:'⛈️', wind:'💨', snow:'🌨️' };
+    if (alerts.length) {
+      fpAlerts.innerHTML = alerts.map(a => `
+        <div class="forecast-alert-item ${alertClsMap[a.type]||''}">
+          <span class="forecast-alert-icon">${alertIconMap[a.type]||'⚠️'}</span>
+          <div>
+            <div class="forecast-alert-text">${a.title}</div>
+            <div class="forecast-alert-sub">${a.sub}</div>
+          </div>
+        </div>`).join('');
+    } else {
+      const okMsg = lang==='fr' ? '✅ Aucune alerte — conditions favorables pour vos bonsaïs.' : '✅ No alerts — conditions are good for your bonsai.';
+      fpAlerts.innerHTML = `<div style="font-size:0.78rem;color:var(--text-sec);padding:6px 2px">${okMsg}</div>`;
+    }
   }
+}
+
+function showWeatherError(msg) {
+  const wsDesc = document.getElementById('ws-desc');
+  const wsIcon = document.getElementById('ws-icon');
+  if (wsIcon) wsIcon.textContent = '🌫️';
+  if (wsDesc) wsDesc.textContent = msg;
+  const fpRow = document.getElementById('fp-row');
+  if (fpRow) fpRow.innerHTML = `<div style="font-size:0.8rem;color:var(--text-dim);padding:8px 2px;font-style:italic">${msg} — <span style="color:var(--sage);cursor:pointer;font-weight:700" onclick="initWeather()">${T('weatherRetry')}</span></div>`;
 }
 
 async function reverseGeocode(lat, lon) {
@@ -1406,15 +1485,6 @@ async function fetchWeather(lat, lon) {
     hourly:    { times: hourly.time, temps: hourly.temperature_2m, wmos: hourly.weathercode, rains: hourly.precipitation },
     updatedAt: Date.now(),
   };
-}
-
-function showWeatherError(msg) {
-  document.getElementById('weather-content').innerHTML = `
-    <div class="weather-error">
-      <i class="fa-solid fa-cloud-slash"></i>
-      <span>${msg}</span>
-      <button class="btn-weather-retry" onclick="initWeather()">${T('weatherRetry')}</button>
-    </div>`;
 }
 
 async function initWeather() {
