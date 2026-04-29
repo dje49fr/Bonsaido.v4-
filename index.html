@@ -58,100 +58,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .home-logo-text{font-family:var(--font-serif);font-size:1.55rem;font-weight:700;color:var(--text);letter-spacing:0.03em;}
 .home-logo-dot{color:#D0202A;}
 .home-count{font-size:0.62rem;font-weight:700;color:var(--text-sec);background:var(--card2);padding:5px 12px;border-radius:50px;border:1px solid var(--border);letter-spacing:0.03em;text-transform:uppercase;}
-/* ════ MÉTÉO WIDGET ════ */
-.weather-widget {
-  margin: 12px 16px 0;
-  background: var(--card);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-  animation: fadeUp 0.3s ease both;
-  animation-delay: 0.02s;
-}
-.weather-alert-bar {
-  display: none; padding: 9px 14px; font-size: 0.74rem; font-weight: 700;
-  align-items: center; gap: 8px; border-bottom: 1px solid rgba(0,0,0,0.06);
-  cursor: pointer; transition: filter 0.15s;
-}
-.weather-alert-bar:active { filter: brightness(0.95); }
-.weather-alert-bar.show   { display: flex; }
-.weather-alert-bar.frost  { background: #EAF0FF; color: #2A50C0; }
-.weather-alert-bar.heat   { background: #FFF3E0; color: #C05800; }
-.weather-alert-bar.storm  { background: #FFF8E0; color: #A07000; }
-.weather-alert-bar.wind   { background: #F0F4F8; color: #3A5A7A; }
-.weather-alert-icon { font-size: 1rem; flex-shrink: 0; }
-.weather-alert-text { flex: 1; line-height: 1.35; }
-.weather-alert-sub  { font-size: 0.62rem; font-weight: 400; opacity: 0.8; margin-top: 1px; }
-.weather-body {
-  padding: 13px 15px 12px; display: flex; align-items: center; gap: 12px;
-}
-.weather-icon-wrap {
-  width: 52px; height: 52px; flex-shrink: 0; display: flex; align-items: center;
-  justify-content: center; border-radius: 14px; font-size: 1.8rem; position: relative;
-}
-.weather-icon-wrap.sunny  { background: #FFF8E0; }
-.weather-icon-wrap.cloudy { background: #F0F4F8; }
-.weather-icon-wrap.rainy  { background: #EAF0FF; }
-.weather-icon-wrap.snowy  { background: #EAF4FF; }
-.weather-icon-wrap.stormy { background: #FFF8D0; }
-.weather-icon-wrap.foggy  { background: #F4F4F0; }
-.weather-icon-wrap.alert-pulse { animation: wPulse 2s ease-in-out infinite; }
-@keyframes wPulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(192,64,48,0); }
-  50%     { box-shadow: 0 0 0 6px rgba(192,64,48,0.12); }
-}
-.weather-main { flex: 1; min-width: 0; }
-.weather-temp-row { display: flex; align-items: baseline; gap: 5px; }
-.weather-temp-now { font-family: var(--font-serif); font-size: 1.9rem; font-weight: 700; color: var(--text); line-height: 1; }
-.weather-temp-unit { font-size: 0.8rem; color: var(--text-sec); font-weight: 600; }
-.weather-desc { font-size: 0.72rem; color: var(--text-sec); margin-top: 2px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.weather-location { font-size: 0.59rem; color: var(--text-dim); display: flex; align-items: center; gap: 4px; margin-top: 3px; flex-wrap: wrap; }
-.weather-location i { font-size: 0.55rem; }
-.weather-updated { font-size: 0.55rem; color: var(--text-ghost); }
-.weather-side { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
-.weather-minmax { display: flex; gap: 6px; }
-.weather-min { font-size: 0.73rem; font-weight: 700; color: #3A7AAA; background: #EAF0FF; padding: 3px 8px; border-radius: 50px; }
-.weather-max { font-size: 0.73rem; font-weight: 700; color: #C05800; background: #FFF3E0; padding: 3px 8px; border-radius: 50px; }
-.weather-extra { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
-.weather-pill { font-size: 0.57rem; font-weight: 700; padding: 3px 7px; border-radius: 50px; display: flex; align-items: center; gap: 3px; white-space: nowrap; }
-.weather-pill.wind-pill  { background: #EEF4F8; color: #3A5A7A; border: 1px solid #D4E0EC; }
-.weather-pill.rain-pill  { background: #EAF0FF; color: #2A50C0; border: 1px solid #C4D4F0; }
-.weather-pill.humid-pill { background: var(--sage-pale); color: var(--sage); border: 1px solid rgba(90,122,96,0.2); }
-.weather-forecast {
-  display: flex; border-top: 1px solid var(--border);
-  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
-}
-.weather-forecast::-webkit-scrollbar { display: none; }
-.weather-hour {
-  flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
-  padding: 9px 11px 10px; gap: 3px; border-right: 1px solid var(--border);
-  min-width: 56px; cursor: default;
-}
-.weather-hour:last-child { border-right: none; }
-.weather-hour-time { font-size: 0.58rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.03em; }
-.weather-hour-icon { font-size: 1.05rem; line-height: 1; }
-.weather-hour-temp { font-size: 0.74rem; font-weight: 700; color: var(--text); }
-.weather-hour-rain { font-size: 0.54rem; color: #3A70C0; font-weight: 600; min-height: 0.8rem; }
-.weather-hour.now { background: var(--sage-pale); }
-.weather-hour.now .weather-hour-time { color: var(--sage); }
-.weather-loading {
-  padding: 18px 15px; display: flex; align-items: center; gap: 10px;
-  color: var(--text-dim); font-size: 0.8rem; font-style: italic;
-}
-.weather-loading i { font-size: 1rem; animation: spin 1.2s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.weather-error {
-  padding: 13px 15px; display: flex; align-items: center; gap: 10px;
-  font-size: 0.78rem; color: var(--text-sec);
-}
-.weather-error i { color: var(--text-dim); font-size: 1rem; }
-.btn-weather-retry {
-  background: none; border: 1px solid var(--border2); border-radius: 50px;
-  padding: 5px 13px; font-family: var(--font); font-size: 0.7rem; font-weight: 700;
-  color: var(--sage); cursor: pointer; margin-left: auto; flex-shrink: 0;
-}
-
 .urgency-banner{margin:12px 16px 0;background:var(--urgent-bg);border-radius:var(--radius-sm);border:1px solid rgba(192,64,48,0.2);padding:13px 15px;display:none;cursor:pointer;box-shadow:0 2px 12px rgba(192,64,48,0.08);}
 .urgency-banner.show{display:flex;align-items:center;gap:11px;}
 .urgency-icon{background:rgba(192,64,48,0.1);color:var(--urgent);width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.88rem;flex-shrink:0;}
@@ -177,7 +83,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .search-bar input{flex:1;border:none;background:transparent;font-family:var(--font);font-size:0.85rem;color:var(--text);outline:none;}
 .search-bar input::placeholder{color:var(--text-ghost);}
 .search-bar i{color:var(--text-dim);font-size:0.82rem;flex-shrink:0;}
-/* ── Mini weather strip ── */
 .weather-strip{flex:1;display:flex;align-items:center;gap:8px;background:var(--card);border-radius:var(--radius-sm);padding:10px 13px;border:1px solid var(--border);box-shadow:var(--shadow-sm);cursor:pointer;overflow:hidden;min-width:0;transition:background 0.15s;}
 .weather-strip:active{background:var(--card2);}
 .weather-strip-icon{font-size:1.3rem;line-height:1;flex-shrink:0;}
@@ -185,14 +90,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .weather-strip-temp{font-family:var(--font-serif);font-size:1rem;font-weight:700;color:var(--text);line-height:1;}
 .weather-strip-desc{font-size:0.58rem;color:var(--text-sec);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .weather-strip-alert{width:8px;height:8px;border-radius:50%;flex-shrink:0;animation:urgentPulse 1.8s ease-in-out infinite;}
-/* ── Prévisions nav button ── */
 .nav-btn-forecast-badge{position:absolute;top:3px;right:6px;font-size:0.75rem;line-height:1;}
-/* ── Forecast panel (slide-up depuis nav) ── */
 .forecast-panel{position:fixed;bottom:74px;left:0;right:0;background:rgba(250,248,243,0.98);backdrop-filter:blur(16px);border-top:1px solid var(--border);box-shadow:0 -8px 32px rgba(44,40,32,0.12);z-index:850;transform:translateY(100%);transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);padding:14px 16px 16px;}
 .forecast-panel.open{transform:translateY(0);}
 .forecast-panel-handle{width:36px;height:3px;border-radius:2px;background:var(--border2);margin:0 auto 12px;}
-.forecast-panel-title{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-sec);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.forecast-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.forecast-panel-title{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-sec);display:flex;align-items:center;gap:8px;}
 .forecast-panel-title i{color:var(--sage);}
+.btn-change-city{background:none;border:1px solid var(--border2);border-radius:50px;padding:5px 12px;font-family:var(--font);font-size:0.68rem;font-weight:700;color:var(--sage);cursor:pointer;display:flex;align-items:center;gap:5px;}
 .forecast-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}
 .forecast-row::-webkit-scrollbar{display:none;}
 .forecast-chip{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 11px 10px;background:var(--card);border-radius:12px;border:1px solid var(--border);min-width:54px;}
@@ -473,6 +378,9 @@ input[type="file"]{display:none;}
 .tuto-chip{padding:5px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;background:var(--sage-light);color:var(--sage);border:1px solid rgba(90,122,96,0.2);}
 .tuto-chip.terra{background:var(--terra-light);color:var(--terra);border-color:rgba(184,107,74,0.2);}
 .tuto-chip.gold{background:var(--gold-light);color:#8A6020;border-color:rgba(196,151,58,0.2);}
+/* City input in confirm-msg */
+.city-input-field{width:100%;border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-family:var(--font);font-size:0.9rem;margin-top:6px;outline:none;color:var(--text);background:var(--bg2);transition:border-color 0.2s;}
+.city-input-field:focus{border-color:var(--sage-mid);}
 </style>
 </head>
 <body>
@@ -533,7 +441,6 @@ input[type="file"]{display:none;}
         </div>
         <span class="home-count" id="bonsai-count">0 <span data-i18n="trees">arbres</span></span>
     </div>
-    
 
     <div class="urgency-banner" id="urgency-banner" onclick="openFirstUrgentTree()">
         <div class="urgency-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
@@ -557,10 +464,10 @@ input[type="file"]{display:none;}
             <input type="text" id="search-input" placeholder="Espèce, nom…" oninput="filterBonsais()">
           </div>
           <div class="weather-strip" id="weather-strip" onclick="toggleForecastPanel()">
-            <span class="weather-strip-icon" id="ws-icon">🌡️</span>
+            <span class="weather-strip-icon" id="ws-icon">📍</span>
             <div class="weather-strip-info">
               <div class="weather-strip-temp" id="ws-temp">—</div>
-              <div class="weather-strip-desc" id="ws-desc">Météo…</div>
+              <div class="weather-strip-desc" id="ws-desc">Définir ma ville</div>
             </div>
             <span class="weather-strip-alert" id="ws-alert" style="display:none"></span>
           </div>
@@ -647,11 +554,15 @@ input[type="file"]{display:none;}
     </div>
 </div>
 
-<!-- NAV -->
 <!-- FORECAST PANEL -->
 <div class="forecast-panel" id="forecast-panel">
   <div class="forecast-panel-handle"></div>
-  <div class="forecast-panel-title"><i class="fa-solid fa-cloud-sun"></i> <span id="fp-city"></span></div>
+  <div class="forecast-panel-header">
+    <div class="forecast-panel-title"><i class="fa-solid fa-cloud-sun"></i> <span id="fp-city">—</span></div>
+    <button class="btn-change-city" id="fp-change-city" onclick="promptCityInput()">
+      <i class="fa-solid fa-location-dot"></i> <span id="fp-change-label">Changer</span>
+    </button>
+  </div>
   <div class="forecast-row" id="fp-row"></div>
   <div class="forecast-alerts" id="fp-alerts"></div>
 </div>
@@ -760,13 +671,12 @@ monthsShort:['jan.','fév.','mars','avr.','mai','juin','juil.','août','sept.','
 weekdays:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
 days:['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
 monthsFull:['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'],
-weatherLocating:'Localisation en cours…',weatherLoading:'Chargement météo…',weatherDenied:'Localisation refusée',weatherError:'Météo indisponible',weatherRetry:'Réessayer',
+weatherLoading:'Chargement météo…',weatherNotSet:'Définir ma ville',weatherError:'Ville introuvable',weatherRetry:'Réessayer',weatherCityPromptTitle:'📍 Votre ville',weatherCityPromptPlaceholder:'Ex: Paris, Lyon, Tokyo…',weatherCityValidate:'Valider',weatherChangeLabel:'Changer',weatherCityNotFound:'⚠ Ville introuvable',
 weatherFrost:'❄️ Risque de gel ce soir',weatherFrostSub:'Rentrez vos bonsaïs sensibles au froid.',
 weatherHeat:'🌡️ Vague de chaleur',weatherHeatSub:"Arrosez matin et soir · ombrez l'après-midi.",
 weatherStorm:'⛈ Orage prévu',weatherStormSub:'Abritez vos bonsaïs délicats.',
 weatherWind:'💨 Vent fort',weatherWindSub:'Risque de dessèchement · arrosage supplémentaire.',
 weatherSnow:'🌨 Neige prévue',weatherSnowSub:'Protégez les bonsaïs tropicaux et de pépinière.',
-weatherUpdated:'màj',
 },
 en:{
 trees:'trees',tree:'tree',home:'Home',calendar:'Calendar',advice:'Tips',save:'Save',cancel:'Cancel',validate:'✓ Confirm',close:'Close',prev:'Prev.',next:'Next',export:'Export',import:'Import',add:'Add',edit:'Edit',newTree:'New tree',myCollection:'My Collection',saved:'Saved',nextActions:'Next Actions',repotting:'Repotting',pruning:'Pruning',fertilization:'Fertilization',wiring:'Wiring',late:'⚠ Overdue',globalFolder:'Global Folder',idCard:'Identity Card',species:'Species',nickname:'Nickname',category:'Category',acquisition:'Acquired',origin:'Origin',style:'Style',substrate:'Substrate',size:'Tree size',selectSpecies:'Type or select…',aiAdvice:'AI Advice',ask:'Ask',observations:'Notes',gallery:'Photo Gallery',noPhoto:'No photos added.',chooseSpecies:'Choose a species',search:'Search…',searchPlaceholder:'Search species, name, origin…',notesPlaceholder:'Free notes about this tree…',taskDescPlaceholder:'Ex: Check substrate…',newTask:'New task',taskType:'Task type',descOptional:'Description (optional)',treeOptional:'Tree (optional)',date:'Date',recurrence:'Recurrence',none:'None',weekly:'Weekly',monthly:'Monthly',yearly:'Yearly',saveTask:'✓ Save task',allTrees:'— All trees —',calTitle:'Calendar',upcomingTasks:'Upcoming tasks',next7days:'Next 7 days',urgentTree:'tree needs attention',urgentTrees:'trees need attention',daysWithout:'days without action',dayWithout:'day without action',andOthers:'and',other1:'other',others1:'others',actionPot:'repotting',actionCut:'pruning',actionFertil:'fertilization',actionWire:'wiring',actionDefoil:'defoliation',actionDeneedle:'deneedling',actionMekiri:'mekiri',actionMetsumi:'metsumi',defoliation:'Defoliation',deneedling:'Deneedling',mekiri:'Mekiri',metsumi:'Metsumi',noTaskDay:'No tasks this day.\nTap + to add one.',taskAdded:'✓ Task added!',deleteTask:'Delete this task?',taskDeleted:'The task will be permanently deleted.',deleteTree:'Delete this tree?',treeDeleted:'This action is irreversible. All photos will be lost.',deletePhoto:'Delete photo?',photoDeleted:'This photo will be permanently deleted.',importTitle:'Import data?',noTree:'⚠ No trees',exported:'✓ Exported!',nicknameRequired:'⚠ Nickname required',registered:'✓ Saved',deleted:'✓ Deleted',invalidFile:'⚠ Invalid file',confirmDelete:'Delete',confirmOk:'Confirm',confirmImport:'Import',adviceAll:'All',adviceFondamentaux:'Basics',adviceTaille:'Pruning',adviceLigature:'Wiring',adviceRempotage:'Repotting',adviceSaisons:'Seasons',speciesRequired:'⚠ Please set species first',noResult:'No results',chooseDate:'⚠ Please choose a date',conifers:'Conifers',deciduous:'Deciduous',others:'Other Bonsai',healthy:'Healthy',attention:'Attention',urgent:'Urgent',untracked:'Untracked',today:'Today',
@@ -775,13 +685,12 @@ monthsShort:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','
 weekdays:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
 days:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
 monthsFull:['January','February','March','April','May','June','July','August','September','October','November','December'],
-weatherLocating:'Getting location…',weatherLoading:'Loading weather…',weatherDenied:'Location denied',weatherError:'Weather unavailable',weatherRetry:'Retry',
+weatherLoading:'Loading weather…',weatherNotSet:'Set my city',weatherError:'City not found',weatherRetry:'Retry',weatherCityPromptTitle:'📍 Your city',weatherCityPromptPlaceholder:'E.g. Paris, Tokyo, London…',weatherCityValidate:'Confirm',weatherChangeLabel:'Change',weatherCityNotFound:'⚠ City not found',
 weatherFrost:'❄️ Frost risk tonight',weatherFrostSub:'Bring frost-sensitive bonsai inside.',
 weatherHeat:'🌡️ Heat wave',weatherHeatSub:'Water morning & evening · shade in afternoon.',
 weatherStorm:'⛈ Storm forecast',weatherStormSub:'Shelter your delicate bonsai.',
 weatherWind:'💨 Strong wind',weatherWindSub:'Drying risk · extra watering recommended.',
 weatherSnow:'🌨 Snow forecast',weatherSnowSub:'Protect tropical and nursery bonsai.',
-weatherUpdated:'upd.',
 }};
 
 let lang=localStorage.getItem('bonsai-lang')||'fr';
@@ -797,12 +706,22 @@ function toggleLang(){
   renderCalendar();renderList(bonsais);renderUrgencyBanner();renderUpcomingWidget();
   if(document.getElementById('screen-advice').classList.contains('active'))renderAdvice();
   if(weatherCache)renderWeather(weatherCache);
+  // Update city change button label
+  const lbl=document.getElementById('fp-change-label');
+  if(lbl)lbl.textContent=T('weatherChangeLabel');
+  // Update strip desc if no city
+  if(!localStorage.getItem('bonsai-weather-city')){
+    const wsDesc=document.getElementById('ws-desc');
+    if(wsDesc)wsDesc.textContent=T('weatherNotSet');
+  }
 }
 function applyLang(){
   document.getElementById('nav-lang-label').textContent=lang==='fr'?'EN':'FR';
   const sub=document.getElementById('advice-header-sub');
   if(sub)sub.textContent=lang==='fr'?"L'art du bonsaï japonais":'The art of Japanese bonsai';
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(T(k))el.textContent=T(k);});
+  const lbl=document.getElementById('fp-change-label');
+  if(lbl)lbl.textContent=T('weatherChangeLabel');
 }
 
 /* ══ ESPÈCES ══ */
@@ -1280,143 +1199,207 @@ function saveTask(){
   }
   saveTasks();closeTaskModal();renderCalendar();renderUpcomingWidget();showToast(T('taskAdded'));
 }
+
 /* ══════════════════════════════════════════
    MÉTÉO — OPEN-METEO (gratuit, sans clé)
+   Ville saisie manuellement par l'utilisateur
 ══════════════════════════════════════════ */
 let weatherCache = null;
 const WEATHER_TTL = 30 * 60 * 1000;
 
 const WMO_CODES = {
-  0:  { icon: '☀️',  cls: 'sunny',  fr: 'Ciel dégagé',         en: 'Clear sky'          },
-  1:  { icon: '🌤️', cls: 'sunny',  fr: 'Peu nuageux',          en: 'Mostly clear'       },
-  2:  { icon: '⛅',  cls: 'cloudy', fr: 'Partiellement nuageux', en: 'Partly cloudy'      },
-  3:  { icon: '☁️',  cls: 'cloudy', fr: 'Couvert',              en: 'Overcast'           },
-  45: { icon: '🌫️', cls: 'foggy',  fr: 'Brouillard',           en: 'Fog'                },
-  48: { icon: '🌫️', cls: 'foggy',  fr: 'Brouillard givrant',   en: 'Icy fog'            },
-  51: { icon: '🌦️', cls: 'rainy',  fr: 'Bruine légère',        en: 'Light drizzle'      },
-  53: { icon: '🌦️', cls: 'rainy',  fr: 'Bruine',               en: 'Drizzle'            },
-  55: { icon: '🌧️', cls: 'rainy',  fr: 'Bruine dense',         en: 'Dense drizzle'      },
-  61: { icon: '🌧️', cls: 'rainy',  fr: 'Pluie légère',         en: 'Light rain'         },
-  63: { icon: '🌧️', cls: 'rainy',  fr: 'Pluie modérée',        en: 'Moderate rain'      },
-  65: { icon: '🌧️', cls: 'rainy',  fr: 'Pluie forte',          en: 'Heavy rain'         },
-  71: { icon: '🌨️', cls: 'snowy',  fr: 'Neige légère',         en: 'Light snow'         },
-  73: { icon: '❄️',  cls: 'snowy',  fr: 'Neige modérée',        en: 'Moderate snow'      },
-  75: { icon: '❄️',  cls: 'snowy',  fr: 'Neige abondante',      en: 'Heavy snow'         },
-  77: { icon: '🌨️', cls: 'snowy',  fr: 'Grésil',               en: 'Snow grains'        },
-  80: { icon: '🌦️', cls: 'rainy',  fr: 'Averses légères',      en: 'Light showers'      },
-  81: { icon: '🌧️', cls: 'rainy',  fr: 'Averses',              en: 'Rain showers'       },
-  82: { icon: '🌧️', cls: 'rainy',  fr: 'Averses fortes',       en: 'Heavy showers'      },
-  85: { icon: '🌨️', cls: 'snowy',  fr: 'Averses de neige',     en: 'Snow showers'       },
-  86: { icon: '❄️',  cls: 'snowy',  fr: 'Fortes averses neige', en: 'Heavy snow showers' },
-  95: { icon: '⛈️', cls: 'stormy', fr: 'Orage',                en: 'Thunderstorm'       },
-  96: { icon: '⛈️', cls: 'stormy', fr: 'Orage avec grêle',     en: 'Thunderstorm + hail'},
-  99: { icon: '⛈️', cls: 'stormy', fr: 'Orage violent',        en: 'Violent thunderstorm'},
+  0:  { icon: '☀️',  cls: 'sunny',  fr: 'Ciel dégagé',          en: 'Clear sky'           },
+  1:  { icon: '🌤️', cls: 'sunny',  fr: 'Peu nuageux',           en: 'Mostly clear'        },
+  2:  { icon: '⛅',  cls: 'cloudy', fr: 'Partiellement nuageux',  en: 'Partly cloudy'       },
+  3:  { icon: '☁️',  cls: 'cloudy', fr: 'Couvert',               en: 'Overcast'            },
+  45: { icon: '🌫️', cls: 'foggy',  fr: 'Brouillard',            en: 'Fog'                 },
+  48: { icon: '🌫️', cls: 'foggy',  fr: 'Brouillard givrant',    en: 'Icy fog'             },
+  51: { icon: '🌦️', cls: 'rainy',  fr: 'Bruine légère',         en: 'Light drizzle'       },
+  53: { icon: '🌦️', cls: 'rainy',  fr: 'Bruine',                en: 'Drizzle'             },
+  55: { icon: '🌧️', cls: 'rainy',  fr: 'Bruine dense',          en: 'Dense drizzle'       },
+  61: { icon: '🌧️', cls: 'rainy',  fr: 'Pluie légère',          en: 'Light rain'          },
+  63: { icon: '🌧️', cls: 'rainy',  fr: 'Pluie modérée',         en: 'Moderate rain'       },
+  65: { icon: '🌧️', cls: 'rainy',  fr: 'Pluie forte',           en: 'Heavy rain'          },
+  71: { icon: '🌨️', cls: 'snowy',  fr: 'Neige légère',          en: 'Light snow'          },
+  73: { icon: '❄️',  cls: 'snowy',  fr: 'Neige modérée',         en: 'Moderate snow'       },
+  75: { icon: '❄️',  cls: 'snowy',  fr: 'Neige abondante',       en: 'Heavy snow'          },
+  77: { icon: '🌨️', cls: 'snowy',  fr: 'Grésil',                en: 'Snow grains'         },
+  80: { icon: '🌦️', cls: 'rainy',  fr: 'Averses légères',       en: 'Light showers'       },
+  81: { icon: '🌧️', cls: 'rainy',  fr: 'Averses',               en: 'Rain showers'        },
+  82: { icon: '🌧️', cls: 'rainy',  fr: 'Averses fortes',        en: 'Heavy showers'       },
+  85: { icon: '🌨️', cls: 'snowy',  fr: 'Averses de neige',      en: 'Snow showers'        },
+  86: { icon: '❄️',  cls: 'snowy',  fr: 'Fortes averses neige',  en: 'Heavy snow showers'  },
+  95: { icon: '⛈️', cls: 'stormy', fr: 'Orage',                 en: 'Thunderstorm'        },
+  96: { icon: '⛈️', cls: 'stormy', fr: 'Orage avec grêle',      en: 'Thunderstorm + hail' },
+  99: { icon: '⛈️', cls: 'stormy', fr: 'Orage violent',         en: 'Violent thunderstorm'},
 };
+function getWMO(code){return WMO_CODES[code]||{icon:'🌡️',cls:'cloudy',fr:'Conditions variables',en:'Variable conditions'};}
 
-function getWMO(code) {
-  return WMO_CODES[code] || { icon: '🌡️', cls: 'cloudy', fr: 'Conditions variables', en: 'Variable conditions' };
+function checkWeatherAlerts(data){
+  const alerts=[];
+  const {tempMin,tempMax,windMax,wmo,hourly}=data;
+  if(tempMin<=2)  alerts.push({type:'frost',priority:3,title:T('weatherFrost'),sub:`${T('weatherFrostSub')} (${Math.round(tempMin)}°C min)`});
+  if(tempMax>=35) alerts.push({type:'heat', priority:2,title:T('weatherHeat'), sub:`${T('weatherHeatSub')} (${Math.round(tempMax)}°C max)`});
+  const hasStorm=hourly?.wmos?.some(c=>c>=95);
+  if(hasStorm)    alerts.push({type:'storm',priority:2,title:T('weatherStorm'),sub:T('weatherStormSub')});
+  if(windMax>=50) alerts.push({type:'wind', priority:1,title:T('weatherWind'), sub:`${T('weatherWindSub')} (${Math.round(windMax)} km/h)`});
+  const hasSnow=(wmo>=71&&wmo<=77)||wmo===85||wmo===86;
+  if(hasSnow&&!alerts.find(a=>a.type==='frost')) alerts.push({type:'snow',priority:2,title:T('weatherSnow'),sub:T('weatherSnowSub')});
+  return alerts.sort((a,b)=>b.priority-a.priority);
 }
 
-function checkWeatherAlerts(data) {
-  const alerts = [];
-  const { tempMin, tempMax, windMax, wmo, hourly } = data;
-  if (tempMin <= 2)  alerts.push({ type:'frost', priority:3, title:T('weatherFrost'), sub:`${T('weatherFrostSub')} (${Math.round(tempMin)}°C min)` });
-  if (tempMax >= 35) alerts.push({ type:'heat',  priority:2, title:T('weatherHeat'),  sub:`${T('weatherHeatSub')} (${Math.round(tempMax)}°C max)` });
-  const hasStorm = hourly?.wmos?.some(c => c >= 95);
-  if (hasStorm) alerts.push({ type:'storm', priority:2, title:T('weatherStorm'), sub:T('weatherStormSub') });
-  if (windMax >= 50) alerts.push({ type:'wind', priority:1, title:T('weatherWind'), sub:`${T('weatherWindSub')} (${Math.round(windMax)} km/h)` });
-  const hasSnow = (wmo >= 71 && wmo <= 77) || wmo === 85 || wmo === 86;
-  if (hasSnow && !alerts.find(a => a.type==='frost')) alerts.push({ type:'snow', priority:2, title:T('weatherSnow'), sub:T('weatherSnowSub') });
-  return alerts.sort((a, b) => b.priority - a.priority);
-}
-
-let forecastPanelOpen = false;
-function toggleForecastPanel() {
-  const panel = document.getElementById('forecast-panel');
-  forecastPanelOpen = !forecastPanelOpen;
-  panel.classList.toggle('open', forecastPanelOpen);
-  const btn = document.getElementById('nav-forecast');
-  if (btn) btn.classList.toggle('active', forecastPanelOpen);
-  // Close on outside tap
-  if (forecastPanelOpen) {
-    setTimeout(() => {
-      document.addEventListener('click', closeForecastOnOutside, { once: true });
-    }, 50);
+/* ── Saisie ville ── */
+function promptCityInput(){
+  // Fermer le panel si ouvert
+  if(forecastPanelOpen){
+    forecastPanelOpen=false;
+    document.getElementById('forecast-panel').classList.remove('open');
   }
-}
-function closeForecastOnOutside(e) {
-  const panel = document.getElementById('forecast-panel');
-  const strip = document.getElementById('weather-strip');
-  const navBtn = document.getElementById('nav-forecast');
-  if (panel && !panel.contains(e.target) && e.target !== strip && !strip?.contains(e.target) && e.target !== navBtn && !navBtn?.contains(e.target)) {
-    forecastPanelOpen = false;
-    panel.classList.remove('open');
-    if (navBtn) navBtn.classList.remove('active');
-  }
-}
-
-function renderWeather(data) {
-  const wmo = getWMO(data.wmo);
-  const alerts = checkWeatherAlerts(data);
-
-  // ── STRIP (barre recherche) ──
-  const wsIcon = document.getElementById('ws-icon');
-  const wsTemp = document.getElementById('ws-temp');
-  const wsDesc = document.getElementById('ws-desc');
-  const wsAlert = document.getElementById('ws-alert');
-  if (wsIcon) wsIcon.textContent = wmo.icon;
-  if (wsTemp) {
-    let tColor = 'var(--text)';
-    if (data.tempNow <= 2) tColor = '#2A50C0';
-    else if (data.tempNow >= 35) tColor = '#C05800';
-    wsTemp.innerHTML = `<span style="color:${tColor}">${Math.round(data.tempNow)}°</span><span style="font-size:0.62rem;color:var(--text-dim);font-weight:500;margin-left:4px">↓${Math.round(data.tempMin)}° ↑${Math.round(data.tempMax)}°</span>`;
-  }
-  if (wsDesc) wsDesc.textContent = (data.city ? data.city + ' · ' : '') + (wmo[lang] || wmo.fr);
-  if (wsAlert) {
-    const alertColorMap = { frost:'#2A50C0', heat:'#C05800', storm:'#A07000', wind:'#3A5A7A', snow:'#2A50C0' };
-    if (alerts.length) {
-      wsAlert.style.display = 'block';
-      wsAlert.style.background = alertColorMap[alerts[0].type] || 'var(--urgent)';
-    } else {
-      wsAlert.style.display = 'none';
+  const overlay=document.getElementById('confirm-overlay');
+  document.getElementById('confirm-title').textContent=T('weatherCityPromptTitle');
+  document.getElementById('confirm-msg').innerHTML=
+    `<input id="city-input" class="city-input-field" type="text"
+      placeholder="${T('weatherCityPromptPlaceholder')}"
+      autocomplete="off" autocorrect="off" autocapitalize="on" spellcheck="false"
+      value="${localStorage.getItem('bonsai-weather-city')||''}">`;
+  const okBtn=document.getElementById('confirm-ok-btn');
+  okBtn.textContent=T('weatherCityValidate');
+  okBtn.className='confirm-ok';
+  document.getElementById('confirm-cancel-btn').textContent=T('cancel');
+  overlay.classList.add('open');
+  setTimeout(()=>{
+    const inp=document.getElementById('city-input');
+    if(inp){inp.focus();inp.select();}
+  },200);
+  const close=async(confirm)=>{
+    overlay.classList.remove('open');
+    okBtn.onclick=null;
+    document.getElementById('confirm-cancel-btn').onclick=null;
+    if(confirm){
+      const city=document.getElementById('city-input')?.value.trim();
+      if(city)await loadWeatherByCity(city);
     }
-  }
+  };
+  okBtn.onclick=()=>close(true);
+  document.getElementById('confirm-cancel-btn').onclick=()=>close(false);
+  setTimeout(()=>{
+    const inp=document.getElementById('city-input');
+    if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')close(true);});
+  },100);
+}
 
-  // ── NAV BADGE ──
-  const badge = document.getElementById('nav-forecast-badge');
-  if (badge) {
-    if (alerts.length) {
-      const alertIconMap = { frost:'❄️', heat:'🌡️', storm:'⛈️', wind:'💨', snow:'🌨️' };
-      badge.style.display = 'block';
-      badge.textContent = alertIconMap[alerts[0].type] || '⚠️';
-    } else {
-      badge.style.display = 'none';
+/* ── Chargement météo par nom de ville ── */
+async function loadWeatherByCity(cityName){
+  const wsIcon=document.getElementById('ws-icon');
+  const wsTemp=document.getElementById('ws-temp');
+  const wsDesc=document.getElementById('ws-desc');
+  if(wsIcon)wsIcon.textContent='⏳';
+  if(wsDesc)wsDesc.textContent=T('weatherLoading');
+  if(wsTemp)wsTemp.innerHTML='—';
+  try{
+    // Géocodage via Open-Meteo (gratuit, sans clé)
+    const geoUrl=`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=${lang}&format=json`;
+    const geoRes=await fetch(geoUrl);
+    const geoData=await geoRes.json();
+    if(!geoData.results||!geoData.results.length){
+      showToast(T('weatherCityNotFound'));
+      if(wsIcon)wsIcon.textContent='📍';
+      if(wsDesc)wsDesc.textContent=T('weatherNotSet');
+      if(wsTemp)wsTemp.innerHTML='—';
+      return;
     }
+    const {latitude:lat,longitude:lon,name,country_code}=geoData.results[0];
+    const wd=await fetchWeather(lat,lon);
+    wd.city=name+(country_code?` (${country_code.toUpperCase()})`:'');
+    wd.lat=lat;wd.lon=lon;
+    weatherCache=wd;
+    localStorage.setItem('bonsai-weather',JSON.stringify(wd));
+    localStorage.setItem('bonsai-weather-city',cityName);
+    renderWeather(wd);
+  }catch(e){
+    console.error('Weather error',e);
+    showWeatherError(T('weatherError'));
+  }
+}
+
+/* ── Fetch données météo Open-Meteo ── */
+async function fetchWeather(lat,lon){
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
+    +`&current=temperature_2m,relative_humidity_2m,weathercode,windspeed_10m,precipitation`
+    +`&hourly=temperature_2m,weathercode,precipitation`
+    +`&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max`
+    +`&forecast_days=2&timezone=auto`;
+  const r=await fetch(url);
+  const d=await r.json();
+  const cur=d.current,daily=d.daily,hourly=d.hourly;
+  return{
+    tempNow:  cur.temperature_2m,
+    tempMin:  daily.temperature_2m_min[0],
+    tempMax:  daily.temperature_2m_max[0],
+    windSpeed:cur.windspeed_10m,
+    windMax:  daily.windspeed_10m_max[0],
+    humidity: cur.relative_humidity_2m,
+    rainToday:cur.precipitation,
+    wmo:      cur.weathercode,
+    hourly:{times:hourly.time,temps:hourly.temperature_2m,wmos:hourly.weathercode,rains:hourly.precipitation},
+    updatedAt:Date.now(),
+  };
+}
+
+/* ── Rendu météo ── */
+function renderWeather(data){
+  const wmo=getWMO(data.wmo);
+  const alerts=checkWeatherAlerts(data);
+
+  // Strip
+  const wsIcon=document.getElementById('ws-icon');
+  const wsTemp=document.getElementById('ws-temp');
+  const wsDesc=document.getElementById('ws-desc');
+  const wsAlert=document.getElementById('ws-alert');
+  if(wsIcon)wsIcon.textContent=wmo.icon;
+  if(wsTemp){
+    let tColor='var(--text)';
+    if(data.tempNow<=2)tColor='#2A50C0';
+    else if(data.tempNow>=35)tColor='#C05800';
+    wsTemp.innerHTML=`<span style="color:${tColor}">${Math.round(data.tempNow)}°</span><span style="font-size:0.62rem;color:var(--text-dim);font-weight:500;margin-left:4px">↓${Math.round(data.tempMin)}° ↑${Math.round(data.tempMax)}°</span>`;
+  }
+  if(wsDesc)wsDesc.textContent=(data.city?data.city+' · ':'')+((wmo[lang]||wmo.fr));
+  if(wsAlert){
+    const alertColorMap={frost:'#2A50C0',heat:'#C05800',storm:'#A07000',wind:'#3A5A7A',snow:'#2A50C0'};
+    if(alerts.length){wsAlert.style.display='block';wsAlert.style.background=alertColorMap[alerts[0].type]||'var(--urgent)';}
+    else wsAlert.style.display='none';
   }
 
-  // ── FORECAST PANEL ──
-  const fpCity = document.getElementById('fp-city');
-  const fpRow  = document.getElementById('fp-row');
-  const fpAlerts = document.getElementById('fp-alerts');
-  if (fpCity) fpCity.textContent = data.city || (lang==='fr' ? 'Prévisions' : 'Forecast');
+  // Nav badge
+  const badge=document.getElementById('nav-forecast-badge');
+  if(badge){
+    const alertIconMap={frost:'❄️',heat:'🌡️',storm:'⛈️',wind:'💨',snow:'🌨️'};
+    if(alerts.length){badge.style.display='block';badge.textContent=alertIconMap[alerts[0].type]||'⚠️';}
+    else badge.style.display='none';
+  }
 
-  if (fpRow && data.hourly) {
-    const { times, temps, wmos, rains } = data.hourly;
-    const nowMs = new Date(); nowMs.setMinutes(0,0,0);
-    const nowTs = nowMs.getTime();
-    let chips = '';
-    let count = 0;
-    for (let i = 0; i < times.length && count < 8; i++) {
-      const t = new Date(times[i]);
-      if (t.getTime() < nowTs) continue;
-      const isNow = count === 0;
-      const hw = getWMO(wmos[i]);
-      const timeLabel = isNow ? (lang==='fr'?'Maint.':'Now') : `${String(t.getHours()).padStart(2,'0')}h`;
-      let tColor = 'var(--text)';
-      if (temps[i] <= 2) tColor = '#2A50C0';
-      else if (temps[i] >= 35) tColor = '#C05800';
-      const rainStr = rains[i] > 0.1 ? `${rains[i].toFixed(1)}mm` : '';
-      chips += `<div class="forecast-chip${isNow?' now':''}">
+  // Forecast panel city
+  const fpCity=document.getElementById('fp-city');
+  if(fpCity)fpCity.textContent=data.city||(lang==='fr'?'Prévisions':'Forecast');
+
+  // Forecast chips
+  const fpRow=document.getElementById('fp-row');
+  if(fpRow&&data.hourly){
+    const {times,temps,wmos,rains}=data.hourly;
+    const nowMs=new Date();nowMs.setMinutes(0,0,0);
+    const nowTs=nowMs.getTime();
+    let chips='';let count=0;
+    for(let i=0;i<times.length&&count<8;i++){
+      const t=new Date(times[i]);
+      if(t.getTime()<nowTs)continue;
+      const isNow=count===0;
+      const hw=getWMO(wmos[i]);
+      const timeLabel=isNow?(lang==='fr'?'Maint.':'Now'):`${String(t.getHours()).padStart(2,'0')}h`;
+      let tColor='var(--text)';
+      if(temps[i]<=2)tColor='#2A50C0';
+      else if(temps[i]>=35)tColor='#C05800';
+      const rainStr=rains[i]>0.1?`${rains[i].toFixed(1)}mm`:'';
+      chips+=`<div class="forecast-chip${isNow?' now':''}">
         <div class="forecast-chip-time">${timeLabel}</div>
         <div class="forecast-chip-icon">${hw.icon}</div>
         <div class="forecast-chip-temp" style="color:${tColor}">${Math.round(temps[i])}°</div>
@@ -1424,14 +1407,16 @@ function renderWeather(data) {
       </div>`;
       count++;
     }
-    fpRow.innerHTML = chips;
+    fpRow.innerHTML=chips;
   }
 
-  if (fpAlerts) {
-    const alertClsMap  = { frost:'frost', heat:'heat', storm:'storm', wind:'wind', snow:'snow' };
-    const alertIconMap = { frost:'❄️', heat:'🌡️', storm:'⛈️', wind:'💨', snow:'🌨️' };
-    if (alerts.length) {
-      fpAlerts.innerHTML = alerts.map(a => `
+  // Forecast alerts
+  const fpAlerts=document.getElementById('fp-alerts');
+  if(fpAlerts){
+    const alertClsMap={frost:'frost',heat:'heat',storm:'storm',wind:'wind',snow:'snow'};
+    const alertIconMap={frost:'❄️',heat:'🌡️',storm:'⛈️',wind:'💨',snow:'🌨️'};
+    if(alerts.length){
+      fpAlerts.innerHTML=alerts.map(a=>`
         <div class="forecast-alert-item ${alertClsMap[a.type]||''}">
           <span class="forecast-alert-icon">${alertIconMap[a.type]||'⚠️'}</span>
           <div>
@@ -1439,96 +1424,73 @@ function renderWeather(data) {
             <div class="forecast-alert-sub">${a.sub}</div>
           </div>
         </div>`).join('');
-    } else {
-      const okMsg = lang==='fr' ? '✅ Aucune alerte — conditions favorables pour vos bonsaïs.' : '✅ No alerts — conditions are good for your bonsai.';
-      fpAlerts.innerHTML = `<div style="font-size:0.78rem;color:var(--text-sec);padding:6px 2px">${okMsg}</div>`;
+    }else{
+      const okMsg=lang==='fr'?'✅ Aucune alerte — conditions favorables pour vos bonsaïs.':'✅ No alerts — conditions are good for your bonsai.';
+      fpAlerts.innerHTML=`<div style="font-size:0.78rem;color:var(--text-sec);padding:6px 2px">${okMsg}</div>`;
     }
   }
 }
 
-function showWeatherError(msg) {
-  const wsDesc = document.getElementById('ws-desc');
-  const wsIcon = document.getElementById('ws-icon');
-  if (wsIcon) wsIcon.textContent = '🌫️';
-  if (wsDesc) wsDesc.textContent = msg;
-  const fpRow = document.getElementById('fp-row');
-  if (fpRow) fpRow.innerHTML = `<div style="font-size:0.8rem;color:var(--text-dim);padding:8px 2px;font-style:italic">${msg} — <span style="color:var(--sage);cursor:pointer;font-weight:700" onclick="initWeather()">${T('weatherRetry')}</span></div>`;
+function showWeatherError(msg){
+  const wsDesc=document.getElementById('ws-desc');
+  const wsIcon=document.getElementById('ws-icon');
+  if(wsIcon)wsIcon.textContent='🌫️';
+  if(wsDesc)wsDesc.textContent=msg;
 }
 
-async function reverseGeocode(lat, lon) {
-  try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
-      { headers: { 'Accept-Language': lang==='fr'?'fr':'en' } });
-    const d = await r.json();
-    return d.address?.city || d.address?.town || d.address?.village || d.address?.municipality || '';
-  } catch { return ''; }
+/* ── Panel prévisions ── */
+let forecastPanelOpen=false;
+function toggleForecastPanel(){
+  const savedCity=localStorage.getItem('bonsai-weather-city');
+  if(!savedCity){
+    // Aucune ville → ouvrir directement la saisie
+    promptCityInput();
+    return;
+  }
+  const panel=document.getElementById('forecast-panel');
+  forecastPanelOpen=!forecastPanelOpen;
+  panel.classList.toggle('open',forecastPanelOpen);
+  const btn=document.getElementById('nav-forecast');
+  if(btn)btn.classList.toggle('active',forecastPanelOpen);
+  if(forecastPanelOpen){
+    setTimeout(()=>{
+      document.addEventListener('click',closeForecastOnOutside,{once:true});
+    },50);
+  }
+}
+function closeForecastOnOutside(e){
+  const panel=document.getElementById('forecast-panel');
+  const strip=document.getElementById('weather-strip');
+  const navBtn=document.getElementById('nav-forecast');
+  if(panel&&!panel.contains(e.target)&&e.target!==strip&&!strip?.contains(e.target)&&e.target!==navBtn&&!navBtn?.contains(e.target)){
+    forecastPanelOpen=false;
+    panel.classList.remove('open');
+    if(navBtn)navBtn.classList.remove('active');
+  }
 }
 
-async function fetchWeather(lat, lon) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
-    + `&current=temperature_2m,relative_humidity_2m,weathercode,windspeed_10m,precipitation`
-    + `&hourly=temperature_2m,weathercode,precipitation`
-    + `&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max`
-    + `&forecast_days=2&timezone=auto`;
-  const r  = await fetch(url);
-  const d  = await r.json();
-  const cur = d.current, daily = d.daily, hourly = d.hourly;
-  return {
-    tempNow:   cur.temperature_2m,
-    tempMin:   daily.temperature_2m_min[0],
-    tempMax:   daily.temperature_2m_max[0],
-    windSpeed: cur.windspeed_10m,
-    windMax:   daily.windspeed_10m_max[0],
-    humidity:  cur.relative_humidity_2m,
-    rainToday: cur.precipitation,
-    wmo:       cur.weathercode,
-    hourly:    { times: hourly.time, temps: hourly.temperature_2m, wmos: hourly.weathercode, rains: hourly.precipitation },
-    updatedAt: Date.now(),
-  };
-}
-
-async function initWeather() {
-  const loadTxt = document.getElementById('weather-loading-text');
-  if (loadTxt) loadTxt.textContent = T('weatherLocating');
-  // Try cache first
-  try {
-    const cached = JSON.parse(localStorage.getItem('bonsai-weather')||'null');
-    if (cached && Date.now() - cached.updatedAt < WEATHER_TTL) {
-      weatherCache = cached;
+/* ── Init météo ── */
+async function initWeather(){
+  const savedCity=localStorage.getItem('bonsai-weather-city');
+  if(!savedCity){
+    // Inviter l'utilisateur à saisir sa ville
+    const wsIcon=document.getElementById('ws-icon');
+    const wsDesc=document.getElementById('ws-desc');
+    if(wsIcon)wsIcon.textContent='📍';
+    if(wsDesc)wsDesc.textContent=T('weatherNotSet');
+    return;
+  }
+  // Vérifier le cache
+  try{
+    const cached=JSON.parse(localStorage.getItem('bonsai-weather')||'null');
+    if(cached&&Date.now()-cached.updatedAt<WEATHER_TTL){
+      weatherCache=cached;
       renderWeather(cached);
       return;
     }
-  } catch {}
-
-  // Try geolocation, fall back to IP-based location
-  async function loadByCoords(lat, lon) {
-    try {
-      if (loadTxt) loadTxt.textContent = T('weatherLoading');
-      const [wd, city] = await Promise.all([fetchWeather(lat, lon), reverseGeocode(lat, lon)]);
-      wd.city = city; wd.lat = lat; wd.lon = lon;
-      weatherCache = wd;
-      localStorage.setItem('bonsai-weather', JSON.stringify(wd));
-      renderWeather(wd);
-    } catch { showWeatherError(T('weatherError')); }
-  }
-
-  async function fallbackToIP() {
-    try {
-      if (loadTxt) loadTxt.textContent = T('weatherLoading');
-      const r = await fetch('https://ipapi.co/json/');
-      const d = await r.json();
-      if (d.latitude && d.longitude) {
-        await loadByCoords(d.latitude, d.longitude);
-      } else { showWeatherError(T('weatherError')); }
-    } catch { showWeatherError(T('weatherError')); }
-  }
-
-  if (!navigator.geolocation) { await fallbackToIP(); return; }
-  navigator.geolocation.getCurrentPosition(
-    async pos => { await loadByCoords(pos.coords.latitude, pos.coords.longitude); },
-    async () => { await fallbackToIP(); },
-    { timeout: 8000, maximumAge: WEATHER_TTL }
-  );
+  }catch{}
+  // Recharger depuis l'API
+  await loadWeatherByCity(savedCity);
 }
 
 /* ══ CONSEILS ══ */
